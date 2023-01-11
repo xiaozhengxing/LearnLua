@@ -1,0 +1,9 @@
+.idea
+.vs
+Debug
+*.filters
+*.vcxproj
+
+x64
+*.sln
+
