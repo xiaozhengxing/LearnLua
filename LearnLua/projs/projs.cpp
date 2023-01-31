@@ -3,7 +3,7 @@
 #include <windows.h>
 
 using namespace  std;
-extern "C"
+extern "C"//跟着<自己动手实现lua虚拟机>,使用5.3.4版本
 {
 #include "LuaSrc/lua.h"
 #include "LuaSrc/lauxlib.h"
