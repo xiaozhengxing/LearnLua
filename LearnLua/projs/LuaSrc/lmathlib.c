@@ -388,7 +388,7 @@ static const luaL_Reg mathlib[] = {
   {"huge", NULL},
   {"maxinteger", NULL},
   {"mininteger", NULL},
-  {NULL, NULL}
+  {NULL, NULL} //一定要以一个{NULL, NULL}结尾.具体原因见 luaL_newlib/luaL_setfuncs
 };
 
 

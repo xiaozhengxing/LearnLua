@@ -680,7 +680,8 @@ LUA_API int lua_rawgetp (lua_State *L, int idx, const void *p) {
 }
 
 
-/*新建table,并push到栈顶
+/*
+ *新建table,并push到栈顶
  * narray: 数组大小
  * nrec: 散列表大小
 */

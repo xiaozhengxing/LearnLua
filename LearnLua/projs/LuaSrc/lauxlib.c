@@ -930,6 +930,8 @@ LUALIB_API void luaL_openlib (lua_State *L, const char *libname,
 ** set functions from list 'l' into table at top - 'nup'; each
 ** function gets the 'nup' elements at the top as upvalues.
 ** Returns with only the table at the stack.
+*  当前栈{[table][upvalue]...[upvalue][top]}, 栈中含有nup个upvalue
+* xzxtodo
 */
 LUALIB_API void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup) {
   luaL_checkstack(L, nup, "too many upvalues");
