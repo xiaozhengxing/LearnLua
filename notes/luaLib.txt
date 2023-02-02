@@ -1,0 +1,124 @@
+Lua中只有false和nil值会被转换为false, 其余均为true
+
+----------------- L->top 指向的是当前空闲位置 -------------------
+//n>0, 弹出栈顶的n个数据, 
+//n=0, 不变
+//n < 0, 更新L->top = func + (-n)
+***** lua_pop(L, n) //lua_settop(L, -(n)-1)
+
+// idx >= 0, L->top = (func + 1) + idx
+// idx < 0, L->top += idx + 1
+***** lua_settop(L, idx)
+
+------------------ LUA_REGISTRYINDEX 相关 -------------
+LUA_REGISTRYINDEX (-LUAI_MAXSTACK - 1000)
+此栈索引指向 G->l_registry,是一个table
+
+--luaL_newmetatable(L, tableName):
+新建一个metatable mt(如果G->l_registry中无key为tableName)
+并设置 G->l_registry[tableName] = mt
+
+--luaL_getmetatable(L, tableName):
+查找G->l_registry[tableName]
+如果找到，将其入栈，并top++
+没找到，将nil入栈，并top++
+并返回ttnov[top - 1],也就是查找到的值的类型
+
+--luaL_setmetatable(L, objindex):
+此时栈顶(top-1)为metatable mt
+objindex为table/userdata
+赋值使得 obj.metatable = mt
+将栈顶元素退栈
+
+----------------- LUA_RIDX_GLOBALS = 2 相关 -------------
+--lua_getglobal(L, name):
+获取 G->l_registry[2][name]注意与 LUA_REGISTRYINDEX 的区别
+
+--lua_setglobal(L, name):
+赋值 G->l_registry[2][name] = 栈顶的元素
+并将栈顶元素退栈
+
+想在lua代码中直接使用的方法，需要通过函数 lua_setglobal()来注册
+
+注意：和 LUA_RIDX_GLOBALS 对应的是 LUA_RIDX_MAINTHREAD = 1
+也就是G->l_registry[1] = L(lua_State *)
+
+---------------------------------------------------------
+stack[LUA_REGISTRYINDEX]指向的是 G->l_registry,
+G->l_registry 为table
+G->l_registry[name] = metatable, 新建/查找元表 luaL_getmetatable
+G->l_registry[1] = lua_state *L
+G->l_registry[2] 为table
+G->l_registry[2][name] = obj(函数方法等),放置了lua_getglobal/lua_setglobal相关的数据
+
+----------------------------------------------------------
+
+***lua_rawset(L, int idx)
+idx指向一个table, top-2为key, top - 1为value
+执行: table[key] = value,  
+将key, value 都退栈
+
+***lua_rawseti(L, int idx, int n)
+idx指向一个table, n为key, 栈顶top-1为value
+执行: table[n] = value, 注意：这里的n直接是key,而不是堆栈索引???
+执行完后, 将栈顶元素出栈 
+
+***lua_rawget(L, int idx)
+idx指向一个table, top-1为key,
+执行: 赋值 L->(top - 1)  = table[key]
+返回 table[key]的变量的类型值
+相当于函数执行前栈顶为key, 函数执行后, 将key退栈，再将table[key]入栈
+
+***lua_rawgeti(L, int idx, int n)
+idx指向一个table, n为key, 注意：这里的n直接是key,而不是堆栈索引???
+把table[n]的值压入栈中
+
+***lua_remove(L, int idx)
+移除idx指向的元素, 把这个索引之上的所有元素移下来调补上这个空隙
+
+***lua_call(L, nargs, nresults)
+nargs个参数， nresults个返回值
+执行lua_call之前,已将(函数 + nargs个参数)压入栈中
+执行lua_call之后,弹出(函数 + nargs个参数),将nresults个返回值入栈
+
+***lua_setfield(L, idx, "name")
+idx指向一个table, 栈顶top-1为value，
+执行：table["name"] = value, 并且弹出栈顶的value.
+可能会触发"newindex"元方法 
+
+***lua_pop(L, int n)
+从堆栈中弹出n个元素
+
+***int luaL_ref(L, int idx)
+idx指向一个table, 栈顶为一个object
+在table中创建一个对象, 对象是当前栈顶的元素，并返回创建对象在table中的索引值， 之后会pop栈顶的对象
+https://blog.csdn.net/boshuzhang/article/details/77527350
+
+------- xLua ------ xLua -------- xLua ------- xLua --------- xLua ---- xLua -------- xLua -------- xLua ------- xLua ------ xLua -------
+***xlua_pgettable(L, idx)
+idx指向一个table, 栈顶top-1为key,函数执行完后, 弹出key,将table[key]入栈
+
+CS.UnityEngine.Debug.Log('hello world')
+
+
+
+gc, StaticLuaCallbacks.LuaGC
+对于引用类型，它的生命周期管理会略微复杂。mono和lua虚拟机有各自的gc系统，并且相互无法感知。
+当lua和c#同时引用一个对象时，我们需要能够保证对象生命周期的正确，不能一边还在引用，另一边却把它释放掉了。
+
+这个过程是由lua的gc驱动的。我们把对象push到lua时，会缓存在c#的对象池中，所以是不会被mono的gc所释放掉，
+这样就保证了lua能够安全的持有c#对象。同时我们也会把这个对象的代理缓存到lua中，
+而lua中对象的缓存表是一个弱表，也就是说，当没有其他的lua引用这个对象时，
+lua的gc会把这个对象从lua的缓存中回收，而对象被gc回收的过程会触发这个对象的的__gc元方法。
+
+而这个__gc元方法就会通知到c#这端，来告诉我们lua不再使用这个对象，我们可以把它从对象缓存池中移除。
+当没有其他c#对其的引用时，mono的gc就会正常的回收这个对象。
+
+
+
+
+
+
+
+
+
