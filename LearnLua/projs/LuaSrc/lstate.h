@@ -161,7 +161,7 @@ struct lua_State {
   CommonHeader;
   unsigned short nci;  /* number of items in 'ci' list */
   lu_byte status;
-  StkId top;  /* first free slot in the stack */
+  StkId top;  /* first free slot in the stack, L->top指向的是当前空闲位置 */
   global_State *l_G;
   CallInfo *ci;  /* call info for current function */
   const Instruction *oldpc;  /* last pc traced */

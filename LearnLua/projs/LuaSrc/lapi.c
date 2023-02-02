@@ -680,6 +680,10 @@ LUA_API int lua_rawgetp (lua_State *L, int idx, const void *p) {
 }
 
 
+/*新建table,并push到栈顶
+ * narray: 数组大小
+ * nrec: 散列表大小
+*/
 LUA_API void lua_createtable (lua_State *L, int narray, int nrec) {
   Table *t;
   lua_lock(L);
