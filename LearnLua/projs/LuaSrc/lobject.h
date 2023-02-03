@@ -459,7 +459,7 @@ typedef struct UpVal UpVal;
 typedef struct CClosure {
   ClosureHeader;
   lua_CFunction f;
-  TValue upvalue[1];  /* list of upvalues */
+  TValue upvalue[1];  /* list of upvalues, 其实是数组,保存Upvalue */
 } CClosure;
 
 
