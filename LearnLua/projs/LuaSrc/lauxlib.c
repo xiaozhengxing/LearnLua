@@ -930,9 +930,11 @@ LUALIB_API void luaL_openlib (lua_State *L, const char *libname,
 ** set functions from list 'l' into table at top - 'nup'; each
 ** function gets the 'nup' elements at the top as upvalues.
 ** Returns with only the table at the stack.
-*  当前栈 [table][upvalue]...[upvalue][top]
+*  将 l中的(name,c函数)一一插入至table中, 每个c函数用CClosure包装, 每个CClosure中保存nup个upvalue
+*  执行前: 栈情况[table][upvalue]...[upvalue][top]
+*  执行后: 栈情况[table][top]
 *  nup: 栈中的upvalue个数
-* xzxtodo
+*  l: 数组, 每个元素为(name, c函数)
 */
 LUALIB_API void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup) {
   luaL_checkstack(L, nup, "too many upvalues");
@@ -944,7 +946,7 @@ LUALIB_API void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup) {
     //[table][upvalue]...[upvalue][CClosure][top]
     lua_setfield(L, -(nup + 2), l->name);
   }
-  lua_pop(L, nup);  /* remove upvalues */
+  lua_pop(L, nup);  /* remove upvalues, 把几个upvalue出栈 */
 }
 
 
