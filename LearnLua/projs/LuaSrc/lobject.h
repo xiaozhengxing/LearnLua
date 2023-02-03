@@ -59,10 +59,14 @@
 #define LUA_TNUMINT	(LUA_TNUMBER | (1 << 4))  /* integer numbers */
 
 
-/* Bit mark for collectable types */
+/* Bit mark for collectable types
+ * 标志collectable tag
+ */
 #define BIT_ISCOLLECTABLE	(1 << 6)
 
-/* mark a tag as collectable */
+/* mark a tag as collectable,
+ * 设置collectable tag为1, 返回(t | 1<<6)
+ */
 #define ctb(t)			((t) | BIT_ISCOLLECTABLE)
 
 
@@ -192,7 +196,11 @@ typedef struct lua_TValue {
 		(righttt(obj) && (L == NULL || !isdead(G(L),gcvalue(obj)))))
 
 
-/* Macros to set values */
+/* Macros to set values
+ * 赋值 o->tt_ = t
+ * o:TValue*类型
+ * t:整数
+ */
 #define settt_(o,t)	((o)->tt_=(t))
 
 #define setfltvalue(obj,x) \
@@ -218,6 +226,11 @@ typedef struct lua_TValue {
 #define setbvalue(obj,x) \
   { TValue *io=(obj); val_(io).b=(x); settt_(io, LUA_TBOOLEAN); }
 
+/*
+ * 将x的值copy给obj,且设置obj的tag为(1<<6 | x->tt),即添加collectable tag, 表示需回收
+ * obj: TValue*类型
+ * x: GCObject*类型
+ */
 #define setgcovalue(L,obj,x) \
   { TValue *io = (obj); GCObject *i_g=(x); \
     val_(io).gc = i_g; settt_(io, ctb(i_g->tt)); }

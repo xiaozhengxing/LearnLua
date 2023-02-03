@@ -528,11 +528,15 @@ LUA_API const char *lua_pushfstring (lua_State *L, const char *fmt, ...) {
   return ret;
 }
 
-
+/* todo
+ * 执行前 栈情况[upvalue]...[upvalue][top]
+ * 执行后 栈情况???
+ * fn:c函数; n:upvalue个数
+ */
 LUA_API void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) {
   lua_lock(L);
   if (n == 0) {
-    setfvalue(L->top, fn);
+    setfvalue(L->top, fn);//没有upvalue,直接将c函数push入栈
   }
   else {
     CClosure *cl;
