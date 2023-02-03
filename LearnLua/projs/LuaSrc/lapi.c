@@ -528,9 +528,9 @@ LUA_API const char *lua_pushfstring (lua_State *L, const char *fmt, ...) {
   return ret;
 }
 
-/* todo
- * 执行前 栈情况[upvalue]...[upvalue][top]
- * 执行后 栈情况???
+/* 
+ * 执行前: 栈情况[upvalue]...[upvalue][top]
+ * 执行后: 1(无upvalue)栈情况 [light C function][top],  2(有upvalue)栈情况 [C closure][top]
  * fn:c函数; n:upvalue个数
  */
 LUA_API void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) {
@@ -544,9 +544,10 @@ LUA_API void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) {
     api_check(L, n <= MAXUPVAL, "upvalue index too large");
     cl = luaF_newCclosure(L, n);
     cl->f = fn;
+    //注意这里top值已经变了,相当于把几个Upvalue出栈了
     L->top -= n;
     while (n--) {
-      setobj2n(L, &cl->upvalue[n], L->top + n);
+      setobj2n(L, &cl->upvalue[n], L->top + n);//赋值upvalue[]数组
       /* does not need barrier because closure is white */
     }
     setclCvalue(L, L->top, cl);
