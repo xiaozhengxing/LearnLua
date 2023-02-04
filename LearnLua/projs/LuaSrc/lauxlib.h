@@ -28,6 +28,7 @@
 #define LUA_PRELOAD_TABLE	"_PRELOAD"
 
 
+//luaL_Reg数组形式的时候,一定要以一个{NULL, NULL}结尾.具体原因见 luaL_newlib/luaL_setfuncs
 typedef struct luaL_Reg {
   const char *name;
   lua_CFunction func;
@@ -116,6 +117,9 @@ LUALIB_API void (luaL_requiref) (lua_State *L, const char *modname,
 #define luaL_newlibtable(L,l)	\
   lua_createtable(L, 0, sizeof(l)/sizeof((l)[0]) - 1)
 
+/*
+ * 新建table,并将l中的(name, C函数)插入至table中
+ */
 #define luaL_newlib(L,l)  \
   (luaL_checkversion(L), luaL_newlibtable(L,l), luaL_setfuncs(L,l,0))
 

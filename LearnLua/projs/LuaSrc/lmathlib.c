@@ -396,7 +396,9 @@ static const luaL_Reg mathlib[] = {
 ** Open math library
 */
 LUAMOD_API int luaopen_math (lua_State *L) {
-  luaL_newlib(L, mathlib);//xzxtodo
+  luaL_newlib(L, mathlib);
+
+  //插入一些特殊值.
   lua_pushnumber(L, PI);
   lua_setfield(L, -2, "pi");
   lua_pushnumber(L, (lua_Number)HUGE_VAL);
