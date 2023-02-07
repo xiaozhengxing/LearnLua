@@ -851,7 +851,11 @@ LUA_API void lua_rawsetp (lua_State *L, int idx, const void *p) {
   lua_unlock(L);
 }
 
-
+/*
+ *将栈顶的table赋值给objindex索引处的TValue当做元表后, 将table出栈
+ *如果TValue类型不为{Table, UserData}, 则将元表赋值给Global中该类型共用的一个元表
+ *objindex: 索引,指向TValue*
+*/
 LUA_API int lua_setmetatable (lua_State *L, int objindex) {
   TValue *obj;
   Table *mt;
@@ -882,7 +886,7 @@ LUA_API int lua_setmetatable (lua_State *L, int objindex) {
       break;
     }
     default: {
-      G(L)->mt[ttnov(obj)] = mt;
+      G(L)->mt[ttnov(obj)] = mt;//除了UserData和Table, 对于其他类型, 每个类型共用一个global元表
       break;
     }
   }
