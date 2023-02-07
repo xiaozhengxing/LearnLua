@@ -1560,15 +1560,20 @@ static const luaL_Reg strlib[] = {
   {NULL, NULL}
 };
 
-
+/* 
+ * 给string赋值一个共用的metatable, 且插入键值对 ("__idnex", string library table)
+ * 栈顶为一个table: string library table
+ */
 static void createmetatable (lua_State *L) {
-  lua_createtable(L, 0, 1);  /* table to be metatable for strings */
+  
+  lua_createtable(L, 0, 1);  /* table to be metatable for strings, 新建一个string共用的一个metatable */
   lua_pushliteral(L, "");  /* dummy string */
   lua_pushvalue(L, -2);  /* copy table */
-  lua_setmetatable(L, -2);  /* set table as metatable for strings */
+  lua_setmetatable(L, -2);  /* set table as metatable for strings, 将上面新建的table赋值为string共用的metatable */
   lua_pop(L, 1);  /* pop dummy string */
+  
   lua_pushvalue(L, -2);  /* get string library */
-  lua_setfield(L, -2, "__index");  /* metatable.__index = string */
+  lua_setfield(L, -2, "__index");  /* 给string共用的metatable插入键值对, metatable.__index = string library table */
   lua_pop(L, 1);  /* pop metatable */
 }
 
