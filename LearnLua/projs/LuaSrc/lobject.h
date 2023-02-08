@@ -543,6 +543,7 @@ typedef struct Table {
 
 /*
 ** (address of) a fixed nil value
+* 一个为nil的TValue变量的地址, 类型为 TValue*
 */
 #define luaO_nilobject		(&luaO_nilobject_)
 

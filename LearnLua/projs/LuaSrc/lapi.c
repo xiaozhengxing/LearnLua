@@ -36,10 +36,15 @@ const char lua_ident[] =
   "$LuaAuthors: " LUA_AUTHORS " $";
 
 
-/* value at a non-valid index */
+/* value at a non-valid index
+ * 类型为TValue*, 一个为nil的TValue变量的地址
+ */
 #define NONVALIDVALUE		cast(TValue *, luaO_nilobject)
 
-/* corresponding test */
+/* corresponding test
+ * 判断o值指向的TValue是否有效
+ * o:类型为TValue*
+ */
 #define isvalid(o)	((o) != luaO_nilobject)
 
 /* test for pseudo index */
