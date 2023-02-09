@@ -47,13 +47,19 @@ const char lua_ident[] =
  */
 #define isvalid(o)	((o) != luaO_nilobject)
 
-/* test for pseudo index */
+/* test for pseudo index
+ * i是否是有效的索引
+ */
 #define ispseudo(i)		((i) <= LUA_REGISTRYINDEX)
 
-/* test for upvalue */
+/* test for upvalue
+ * 该索引是否指向upvalue
+ */
 #define isupvalue(i)		((i) < LUA_REGISTRYINDEX)
 
-/* test for valid but not pseudo index */
+/* test for valid but not pseudo index
+ * i是否是有效的栈索引, o值指向的TValue是否有效
+ */
 #define isstackindex(i, o)	(isvalid(o) && !ispseudo(i))
 
 #define api_checkvalidindex(l,o)  api_check(l, isvalid(o), "invalid index")
@@ -61,15 +67,18 @@ const char lua_ident[] =
 #define api_checkstackindex(l, i, o)  \
 	api_check(l, isstackindex(i, o), "index not in the stack")
 
-
+//xzxtodo
 static TValue *index2addr (lua_State *L, int idx) {
-  CallInfo *ci = L->ci;
+  CallInfo *ci = L->ci; //当前执行的函数L->ci放在第0个位置,
+
+  //1 正数
   if (idx > 0) {
     TValue *o = ci->func + idx;
     api_check(L, idx <= ci->top - (ci->func + 1), "unacceptable index");
     if (o >= L->top) return NONVALIDVALUE;
     else return o;
   }
+  //2 负数且 <= LUA_REGISTRYINDEX
   else if (!ispseudo(idx)) {  /* negative index */
     api_check(L, idx != 0 && -idx <= L->top - (ci->func + 1), "invalid index");
     return L->top + idx;

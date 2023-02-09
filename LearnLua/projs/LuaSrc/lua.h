@@ -40,6 +40,10 @@
 ** space after that to help overflow detection)
 */
 #define LUA_REGISTRYINDEX	(-LUAI_MAXSTACK - 1000)
+
+/*
+ *upvalue索引, 看起来upvalue都不在栈里面, todo
+ */
 #define lua_upvalueindex(i)	(LUA_REGISTRYINDEX - (i))
 
 
