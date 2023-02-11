@@ -78,13 +78,15 @@ static TValue *index2addr (lua_State *L, int idx) {
     if (o >= L->top) return NONVALIDVALUE;
     else return o;
   }
-  //2 负数且 <= LUA_REGISTRYINDEX
+  //2 负数 且 > LUA_REGISTRYINDEX
   else if (!ispseudo(idx)) {  /* negative index */
     api_check(L, idx != 0 && -idx <= L->top - (ci->func + 1), "invalid index");
     return L->top + idx;
   }
+  //3 负数 且 == LUA_REGISTRYINDEX
   else if (idx == LUA_REGISTRYINDEX)
     return &G(L)->l_registry;
+  //4 负数 且 < LUA_REGISTRYINDEX, 此时为upvalue, 参见 isupvalue(i)
   else {  /* upvalues */
     idx = LUA_REGISTRYINDEX - idx;
     api_check(L, idx <= MAXUPVAL + 1, "upvalue index too large");
