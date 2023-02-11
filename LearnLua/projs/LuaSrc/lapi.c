@@ -67,7 +67,8 @@ const char lua_ident[] =
 #define api_checkstackindex(l, i, o)  \
 	api_check(l, isstackindex(i, o), "index not in the stack")
 
-//xzxtodo
+//返回索引idx表示的TValue*值,
+//如果idx错误,则返回 NONVALIDVALUE{一个指向nil的TValue*指针}
 static TValue *index2addr (lua_State *L, int idx) {
   CallInfo *ci = L->ci; //当前执行的函数L->ci放在第0个位置,
 
@@ -88,10 +89,10 @@ static TValue *index2addr (lua_State *L, int idx) {
     return &G(L)->l_registry;
   //4 负数 且 < LUA_REGISTRYINDEX, 此时为upvalue, 参见 isupvalue(i)
   else {  /* upvalues */
-    idx = LUA_REGISTRYINDEX - idx;
+    idx = LUA_REGISTRYINDEX - idx;//区别于栈中的索引,使用 < LUA_REGISTRYINDEX来表示upvalue,
     api_check(L, idx <= MAXUPVAL + 1, "upvalue index too large");
     if (ttislcf(ci->func))  /* light C function? */
-      return NONVALIDVALUE;  /* it has no upvalues */
+      return NONVALIDVALUE;  /* it has no upvalues, c函数(c closure)是不存在upvalue的 */
     else {
       CClosure *func = clCvalue(ci->func);
       return (idx <= func->nupvalues) ? &func->upvalue[idx-1] : NONVALIDVALUE;
