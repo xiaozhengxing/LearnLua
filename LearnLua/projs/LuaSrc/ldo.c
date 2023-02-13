@@ -188,6 +188,9 @@ void luaD_reallocstack (lua_State *L, int newsize) {
 }
 
 
+/*
+ * 栈扩容, 计算"l = (原大小)*2",对比l与n的大小,取最大值,
+ */
 void luaD_growstack (lua_State *L, int n) {
   int size = L->stacksize;
   if (size > LUAI_MAXSTACK)  /* error after extra size? */
@@ -202,7 +205,7 @@ void luaD_growstack (lua_State *L, int n) {
       luaG_runerror(L, "stack overflow");
     }
     else
-      luaD_reallocstack(L, newsize);
+      luaD_reallocstack(L, newsize);//xzxtodo
   }
 }
 
