@@ -137,7 +137,10 @@ LUA_API int lua_checkstack (lua_State *L, int n) {
   return res;
 }
 
-
+/*
+ * 从栈“from”中pop出n个元素,并push到栈“to”中,顶部元素先从from中pop并先push到to中
+ * xzxtodo
+ */
 LUA_API void lua_xmove (lua_State *from, lua_State *to, int n) {
   int i;
   if (from == to) return;
