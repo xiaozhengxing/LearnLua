@@ -187,6 +187,7 @@ LUA_API const lua_Number *lua_version (lua_State *L) {
 
 /*
 ** convert an acceptable stack index into an absolute index
+* 返回索引idx对应的的正值 {特殊情况,idx <= LUA_REGISTRYINDEX时(upvalue或G.l_registry),返回idx}
 */
 LUA_API int lua_absindex (lua_State *L, int idx) {
   return (idx > 0 || ispseudo(idx))
@@ -194,7 +195,7 @@ LUA_API int lua_absindex (lua_State *L, int idx) {
          : cast_int(L->top - L->ci->func) + idx;
 }
 
-
+//xzxtodo
 LUA_API int lua_gettop (lua_State *L) {
   return cast_int(L->top - (L->ci->func + 1));
 }
