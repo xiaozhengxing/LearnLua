@@ -195,12 +195,16 @@ LUA_API int lua_absindex (lua_State *L, int idx) {
          : cast_int(L->top - L->ci->func) + idx;
 }
 
-//xzxtodo
+/*
+ * 返回栈中最顶部有效元素的索引(因为索引从1开始,所以返回值也表示当前栈中元素的个数)
+ */
 LUA_API int lua_gettop (lua_State *L) {
   return cast_int(L->top - (L->ci->func + 1));
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API void lua_settop (lua_State *L, int idx) {
   StkId func = L->ci->func;
   lua_lock(L);
