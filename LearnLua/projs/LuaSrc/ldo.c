@@ -194,7 +194,7 @@ void luaD_reallocstack (lua_State *L, int newsize) {
 
 /*
  * 栈扩容,并更新栈中的各种指针, 计算"l = (原大小)*2",对比l与(原大小+n)的大小,取最大值,
- * 看起来只有扩容,没有缩容?
+ * 看起来只有扩容,没有缩容?(luaD_shrinkstack)
  */
 void luaD_growstack (lua_State *L, int n) {
   int size = L->stacksize;
@@ -215,6 +215,9 @@ void luaD_growstack (lua_State *L, int n) {
 }
 
 
+/*
+ *返回栈中有效元素的个数(找到每个callInfo的top,取位于栈中位置最高的那个) 
+ */
 static int stackinuse (lua_State *L) {
   CallInfo *ci;
   StkId lim = L->top;
