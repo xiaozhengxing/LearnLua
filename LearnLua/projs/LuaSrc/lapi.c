@@ -139,7 +139,6 @@ LUA_API int lua_checkstack (lua_State *L, int n) {
 
 /*
  * 从栈“from”中pop出n个元素,并push到栈“to”中,顶部元素先从from中pop并先push到to中
- * xzxtodo
  */
 LUA_API void lua_xmove (lua_State *from, lua_State *to, int n) {
   int i;
@@ -156,7 +155,9 @@ LUA_API void lua_xmove (lua_State *from, lua_State *to, int n) {
   lua_unlock(to);
 }
 
-
+/*
+ * 将G->panic赋值为 panicf,并返回老的G->panic
+ */
 LUA_API lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf) {
   lua_CFunction old;
   lua_lock(L);
@@ -166,7 +167,11 @@ LUA_API lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf) {
   return old;
 }
 
-
+/*
+ * 返回版本号
+ * L为null,返回 LUA_VERSION_NUM的地址
+ * L不为NULL,返回G->version
+ */
 LUA_API const lua_Number *lua_version (lua_State *L) {
   static const lua_Number version = LUA_VERSION_NUM;
   if (L == NULL) return &version;
