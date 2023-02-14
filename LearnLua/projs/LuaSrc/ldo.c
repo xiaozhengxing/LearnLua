@@ -153,12 +153,14 @@ int luaD_rawrunprotected (lua_State *L, Pfunc f, void *ud) {
 /*
 ** {==================================================================
 ** Stack reallocation
+* 栈扩容后,更新L->top和L->openupval,L->ci{链表中所有callInfo},因为这些都是纯指针(指向栈中的TValue),并不是int索引或offset索引,所以需要更新,
+* oldstack: 扩容之前的栈底位置
 ** ===================================================================
 */
 static void correctstack (lua_State *L, TValue *oldstack) {
   CallInfo *ci;
   UpVal *up;
-  L->top = (L->top - oldstack) + L->stack;
+  L->top = (L->top - oldstack) + L->stack;/*更新top*/
   for (up = L->openupval; up != NULL; up = up->u.open.next)
     up->v = (up->v - oldstack) + L->stack;
   for (ci = L->ci; ci != NULL; ci = ci->previous) {
@@ -173,15 +175,17 @@ static void correctstack (lua_State *L, TValue *oldstack) {
 /* some space for error handling */
 #define ERRORSTACKSIZE	(LUAI_MAXSTACK + 200)
 
-
+/*
+ * 对栈进行realloc操作,并更新L中与栈相关的指针
+ */
 void luaD_reallocstack (lua_State *L, int newsize) {
   TValue *oldstack = L->stack;
   int lim = L->stacksize;
   lua_assert(newsize <= LUAI_MAXSTACK || newsize == ERRORSTACKSIZE);
   lua_assert(L->stack_last - L->stack == L->stacksize - EXTRA_STACK);
-  luaM_reallocvector(L, L->stack, L->stacksize, newsize, TValue);
+  luaM_reallocvector(L, L->stack, L->stacksize, newsize, TValue);//注意,这里L->stack会更新,和第一行的TValue*oldstack=L->stack中的oldstack的值已经不一样了,
   for (; lim < newsize; lim++)
-    setnilvalue(L->stack + lim); /* erase new segment */
+    setnilvalue(L->stack + lim); /* erase new segment,新增长的栈元素赋值为nil */
   L->stacksize = newsize;
   L->stack_last = L->stack + newsize - EXTRA_STACK;
   correctstack(L, oldstack);
@@ -190,6 +194,7 @@ void luaD_reallocstack (lua_State *L, int newsize) {
 
 /*
  * 栈扩容, 计算"l = (原大小)*2",对比l与n的大小,取最大值,
+ * 看起来只有扩容,没有缩容?
  */
 void luaD_growstack (lua_State *L, int n) {
   int size = L->stacksize;
