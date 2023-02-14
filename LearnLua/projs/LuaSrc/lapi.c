@@ -112,6 +112,11 @@ static void growstack (lua_State *L, void *ud) {
 }
 
 
+/*
+ * 检测栈中空间是有还能容纳n个元素(如果容纳不了则扩容并调整当前callInfo.top)
+ * 扩容失败或元素个数超过最大值,返回0
+ * 原本空间就足够或扩容成功, 返回1
+ */
 LUA_API int lua_checkstack (lua_State *L, int n) {
   int res;
   CallInfo *ci = L->ci;
@@ -127,7 +132,7 @@ LUA_API int lua_checkstack (lua_State *L, int n) {
       res = (luaD_rawrunprotected(L, &growstack, &n) == LUA_OK);
   }
   if (res && ci->top < L->top + n)
-    ci->top = L->top + n;  /* adjust frame top */
+    ci->top = L->top + n;  /* adjust frame top,很奇怪的是, CallInfo.top不是编码之后就已经确定了吗,这里怎么会去调整呢? */
   lua_unlock(L);
   return res;
 }
