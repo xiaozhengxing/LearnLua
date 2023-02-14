@@ -104,7 +104,7 @@ static TValue *index2addr (lua_State *L, int idx) {
 /*
 ** to be called by 'lua_checkstack' in protected mode, to grow stack
 ** capturing memory errors
-* xzxtodo
+*  给栈扩容,扩容(*ud)个栈元素, 实际扩容后大小一般这样处理{计算"l = (原大小)*2",对比l与(原大小+n)的大小,取最大值}
 */
 static void growstack (lua_State *L, void *ud) {
   int size = *(int *)ud;

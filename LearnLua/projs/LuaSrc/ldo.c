@@ -193,7 +193,7 @@ void luaD_reallocstack (lua_State *L, int newsize) {
 
 
 /*
- * 栈扩容, 计算"l = (原大小)*2",对比l与n的大小,取最大值,
+ * 栈扩容,并更新栈中的各种指针, 计算"l = (原大小)*2",对比l与(原大小+n)的大小,取最大值,
  * 看起来只有扩容,没有缩容?
  */
 void luaD_growstack (lua_State *L, int n) {
@@ -210,7 +210,7 @@ void luaD_growstack (lua_State *L, int n) {
       luaG_runerror(L, "stack overflow");
     }
     else
-      luaD_reallocstack(L, newsize);//xzxtodo
+      luaD_reallocstack(L, newsize);
   }
 }
 
