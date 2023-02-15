@@ -261,7 +261,9 @@ LUA_API void lua_rotate (lua_State *L, int idx, int n) {
   lua_unlock(L);
 }
 
-
+/*
+ *复制栈元素, [fromidx] = [toidx]
+ */
 LUA_API void lua_copy (lua_State *L, int fromidx, int toidx) {
   TValue *fr, *to;
   lua_lock(L);
@@ -269,6 +271,8 @@ LUA_API void lua_copy (lua_State *L, int fromidx, int toidx) {
   to = index2addr(L, toidx);
   api_checkvalidindex(L, to);
   setobj(L, to, fr);
+
+  //todo?
   if (isupvalue(toidx))  /* function upvalue? */
     luaC_barrier(L, clCvalue(L->ci->func), fr);
   /* LUA_REGISTRYINDEX does not need gc barrier
@@ -276,7 +280,9 @@ LUA_API void lua_copy (lua_State *L, int fromidx, int toidx) {
   lua_unlock(L);
 }
 
-
+/*
+ * 将idx索引处的元素push到栈顶,并top++
+ */
 LUA_API void lua_pushvalue (lua_State *L, int idx) {
   lua_lock(L);
   setobj2s(L, L->top, index2addr(L, idx));
@@ -290,13 +296,18 @@ LUA_API void lua_pushvalue (lua_State *L, int idx) {
 ** access functions (stack -> C)
 */
 
-
+/*
+ * 返回idx索引元素的 actual tag(bits 0-3, 最低的四个bit),
+ * 如果idx索引元素为 luaO_nilobject, 返回-1
+ */
 LUA_API int lua_type (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   return (isvalid(o) ? ttnov(o) : LUA_TNONE);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API const char *lua_typename (lua_State *L, int t) {
   UNUSED(L);
   api_check(L, LUA_TNONE <= t && t < LUA_NUMTAGS, "invalid tag");

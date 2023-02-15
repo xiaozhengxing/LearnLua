@@ -136,7 +136,9 @@ typedef struct lua_TValue {
 /* type tag of a TValue (bits 0-3 for tags + variant bits 4-5) */
 #define ttype(o)	(rttype(o) & 0x3F)
 
-/* type tag of a TValue with no variants (bits 0-3) */
+/* type tag of a TValue with no variants (bits 0-3)
+ * 返回actual tag(bits 0-3, 最低的四个bit)
+ */
 #define ttnov(o)	(novariant(rttype(o)))
 
 
