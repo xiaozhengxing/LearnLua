@@ -203,7 +203,9 @@ LUA_API int lua_gettop (lua_State *L) {
 }
 
 /*
- * xzxtodo
+ * 重新设置栈顶(栈顶增加,则中间的元素设置为nil, 栈顶减小,直接变化top指针,相当于pop掉一些元素)
+ * 其实就是让idx索引处的元素为栈顶元素(保留该元素,再往上就是top指针)
+ * idx==0 则清空栈中所有元素(针对于当前callInfo的栈空间)
  */
 LUA_API void lua_settop (lua_State *L, int idx) {
   StkId func = L->ci->func;
