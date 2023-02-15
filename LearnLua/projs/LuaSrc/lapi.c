@@ -242,7 +242,10 @@ static void reverse (lua_State *L, StkId from, StkId to) {
 /*
 ** Let x = AB, where A is a prefix of length 'n'. Then,
 ** rotate x n == BA. But BA == (A^r . B^r)^r.
-* xzxtodo
+*  旋转栈中[idx, top-1]的元素, idx指向[p]
+*  当n > 0, 执行前,栈 [p][...][m][...][t][top], 其中[...][t]共有n个元素
+*  当n < 0, 执行前,栈 [p][...][m][...][t][top], 其中[p][...][m]共有(-n)个元素
+*  最终将[abcd.ef.top]旋转为[ef.abcd.top]
 */
 LUA_API void lua_rotate (lua_State *L, int idx, int n) {
   StkId p, t, m;
