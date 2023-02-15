@@ -396,10 +396,14 @@ typedef union UTString {
  */
 #define svalue(o)       getstr(tsvalue(o))
 
-/* get string length from 'TString *s' */
+/* get string length from 'TString *s'
+ * 返回s(类型为TString*)中保存的短/长字符串(短)的长度,
+ */
 #define tsslen(s)	((s)->tt == LUA_TSHRSTR ? (s)->shrlen : (s)->u.lnglen)
 
-/* get string length from 'TValue *o' */
+/* get string length from 'TValue *o'
+ * 返回o(类型为TValue*)中保存的短/长字符串(短)的长度,
+ */
 #define vslen(o)	tsslen(tsvalue(o))
 
 
