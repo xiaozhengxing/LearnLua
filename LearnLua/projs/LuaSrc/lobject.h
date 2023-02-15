@@ -127,7 +127,9 @@ typedef struct lua_TValue {
 #define val_(o)		((o)->value_)
 
 
-/* raw type tag of a TValue */
+/* raw type tag of a TValue
+ * o:类型为TValue*,  返回TValue.tt) {bits 0-7}
+ */
 #define rttype(o)	((o)->tt_)
 
 /* tag with no variants (bits 0-3) */
@@ -143,7 +145,9 @@ typedef struct lua_TValue {
 
 
 /* Macros to test type */
+//判断"o.tt_ == t"是否成立, o类型为 TValue*
 #define checktag(o,t)		(rttype(o) == (t))
+
 #define checktype(o,t)		(ttnov(o) == (t))
 #define ttisnumber(o)		checktype((o), LUA_TNUMBER)
 #define ttisfloat(o)		checktag((o), LUA_TNUMFLT)
@@ -157,9 +161,15 @@ typedef struct lua_TValue {
 #define ttistable(o)		checktag((o), ctb(LUA_TTABLE))
 #define ttisfunction(o)		checktype(o, LUA_TFUNCTION)
 #define ttisclosure(o)		((rttype(o) & 0x1F) == LUA_TFUNCTION)
+
+//判断o(类型为TValue*)是不是 C Closure(collectable tag为1)
 #define ttisCclosure(o)		checktag((o), ctb(LUA_TCCL))
+
 #define ttisLclosure(o)		checktag((o), ctb(LUA_TLCL))
+
+//判断o(类型为TValue*)是不是 light C function{light c function并不需要GC, collectable tag为0,直接取LUA_TLCF进行对比就行了}
 #define ttislcf(o)		checktag((o), LUA_TLCF)
+
 #define ttisfulluserdata(o)	checktag((o), ctb(LUA_TUSERDATA))
 #define ttisthread(o)		checktag((o), ctb(LUA_TTHREAD))
 #define ttisdeadkey(o)		checktag((o), LUA_TDEADKEY)

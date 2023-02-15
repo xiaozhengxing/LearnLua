@@ -306,7 +306,7 @@ LUA_API int lua_type (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * t为actual tag, 返回对应的字符串名字
  */
 LUA_API const char *lua_typename (lua_State *L, int t) {
   UNUSED(L);
@@ -314,13 +314,17 @@ LUA_API const char *lua_typename (lua_State *L, int t) {
   return ttypename(t);
 }
 
-
+/*
+ * 判断idx索引处的元素是不是 light C function(collectable tag为0) 或 C Closure(collectable tag为1)
+ */
 LUA_API int lua_iscfunction (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   return (ttislcf(o) || (ttisCclosure(o)));
 }
 
-
+/*xzxtodo
+ * 
+ */
 LUA_API int lua_isinteger (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   return ttisinteger(o);
