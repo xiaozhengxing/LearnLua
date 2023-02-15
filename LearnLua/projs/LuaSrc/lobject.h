@@ -124,6 +124,7 @@ typedef struct lua_TValue {
 #define NILCONSTANT	{NULL}, LUA_TNIL
 
 //取TValue.value_(类型为Value, 是个Union)
+//o:类型为TValue*
 #define val_(o)		((o)->value_)
 
 
@@ -199,7 +200,7 @@ typedef struct lua_TValue {
 #define gcvalue(o)	check_exp(iscollectable(o), val_(o).gc)
 #define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p)
 
-//
+//取o(类型为TValue*)中保存的字符串TString*
 #define tsvalue(o)	check_exp(ttisstring(o), gco2ts(val_(o).gc))
 
 #define uvalue(o)	check_exp(ttisfulluserdata(o), gco2u(val_(o).gc))
@@ -371,6 +372,7 @@ typedef struct TString {
 
 /*
 ** Ensures that address after this type is always fully aligned.
+* TString中所保存的字符串内容的具体地址为 (TString*) + sizeof(UTString)
 */
 typedef union UTString {
   L_Umaxalign dummy;  /* ensures maximum alignment for strings */
@@ -380,7 +382,8 @@ typedef union UTString {
 
 /*
 ** Get the actual string (array of bytes) from a 'TString'.
-** (Access to 'extra' ensures that value is really a 'TString'.)
+** (Access to 'extra' ensures that value is really a 'TString'. 这里访问ts->extra只是为了编译通过,用来确保ts的类型为TString*)
+* 返回ts(类型为TString*)中存储字符串的首字符地址(类型为char*),
 */
 #define getstr(ts)  \
   check_exp(sizeof((ts)->extra), cast(char *, (ts)) + sizeof(UTString))

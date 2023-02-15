@@ -205,7 +205,8 @@ union GCUnion {
 
 /* macros to convert a GCObject into a specific value */
 
-//o(类型为GCObject*, 保存内容为string),将其类型强转为 GCUnion*
+//取o中的TString地址
+//o(类型为GCObject*, 保存内容为string),将其类型强转为 GCUnion*,并取GCUnion.ts(类型为TString)的地址
 #define gco2ts(o)  \
 	check_exp(novariant((o)->tt) == LUA_TSTRING, &((cast_u(o))->ts))
 
