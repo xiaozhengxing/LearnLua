@@ -239,12 +239,14 @@ typedef struct lua_TValue {
  */
 #define settt_(o,t)	((o)->tt_=(t))
 
+//使obj(类型为TValue*)中保存浮点数值x,并将其TValue.tt_赋值为LUA_TNUMFLT{bits 0-6, 因为无需gc,所以collectable tag为0}
 #define setfltvalue(obj,x) \
   { TValue *io=(obj); val_(io).n=(x); settt_(io, LUA_TNUMFLT); }
 
 #define chgfltvalue(obj,x) \
   { TValue *io=(obj); lua_assert(ttisfloat(io)); val_(io).n=(x); }
 
+//使obj(类型为TValue*)中保存整型值x,并将其TValue.tt_赋值为LUA_TNUMINT{bits 0-6, 因为无需gc,所以collectable tag为0}
 #define setivalue(obj,x) \
   { TValue *io=(obj); val_(io).i=(x); settt_(io, LUA_TNUMINT); }
 
@@ -390,7 +392,7 @@ typedef union UTString {
 
 
 /* get the actual string (array of bytes) from a Lua value
- * 
+ * 取o(类型为TValue*)中保存的字符串的首字符地址(类型为char*)
  */
 #define svalue(o)       getstr(tsvalue(o))
 

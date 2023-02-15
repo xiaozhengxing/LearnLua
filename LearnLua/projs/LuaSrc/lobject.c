@@ -270,6 +270,8 @@ static const char *l_str2dloc (const char *s, lua_Number *result, int mode) {
 ** locale accepts something else. In that case, the code copies 's'
 ** to a buffer (because 's' is read-only), changes the dot to the
 ** current locale radix mark, and tries to convert again.
+* 将字符串s转换为浮点型,保存在*result中
+* 如成功, 返回s中的最后一个字符地址; 失败返回null
 */
 static const char *l_str2d (const char *s, lua_Number *result) {
   const char *endptr;
@@ -296,6 +298,8 @@ static const char *l_str2d (const char *s, lua_Number *result) {
 #define MAXBY10		cast(lua_Unsigned, LUA_MAXINTEGER / 10)
 #define MAXLASTD	cast_int(LUA_MAXINTEGER % 10)
 
+//将字符串s转换为整型,保存在*result中,
+//如成功,返回s中的最后一个字符地址; 失败则返回null
 static const char *l_str2int (const char *s, lua_Integer *result) {
   lua_Unsigned a = 0;
   int empty = 1;
@@ -327,15 +331,20 @@ static const char *l_str2int (const char *s, lua_Integer *result) {
   }
 }
 
-
+/*
+ * 将字符串s转为数据(整型或浮点数),并保存在o中,
+ * 如成功,返回字符串长度;失败则返回0
+ */
 size_t luaO_str2num (const char *s, TValue *o) {
   lua_Integer i; lua_Number n;
   const char *e;
+  //整数,
   if ((e = l_str2int(s, &i)) != NULL) {  /* try as an integer */
-    setivalue(o, i);
+    setivalue(o, i);//将整型i保存到o中,并设置o的tag(TValue.tt_)为整型数据(LUA_TNUMINT{bits 0-6, 因为无需gc,所以collectable tag为0})
   }
+  //浮点数,
   else if ((e = l_str2d(s, &n)) != NULL) {  /* else try as a float */
-    setfltvalue(o, n);
+    setfltvalue(o, n);//将浮点数n保存到o中,并设置o的tag(TValue.tt_)为整型数据(LUA_TNUMFLT{bits 0-6, 因为无需gc,所以collectable tag为0})
   }
   else
     return 0;  /* conversion failed */
