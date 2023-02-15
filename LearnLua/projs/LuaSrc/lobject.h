@@ -153,6 +153,7 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)的actual tag(bits 0-3)是不是等于t
 #define checktype(o,t)		(ttnov(o) == (t))
 
+//判断o(类型为TValue*)是不是数字(integer/float)
 #define ttisnumber(o)		checktype((o), LUA_TNUMBER)
 
 //判断o(类型为TValue*)是不是 float{float并不需要GC, collectable tag为0,直接取LUA_TNUMFLT进行对比就行了}
@@ -195,8 +196,10 @@ typedef struct lua_TValue {
 //取o(类型为TValue*)中保存的float浮点数值,
 #define fltvalue(o)	check_exp(ttisfloat(o), val_(o).n)
 
+//取(类型为TValue*)中保存的数值(integer/float),将其转为double并返回,
 #define nvalue(o)	check_exp(ttisnumber(o), \
 	(ttisinteger(o) ? cast_num(ivalue(o)) : fltvalue(o)))
+
 #define gcvalue(o)	check_exp(iscollectable(o), val_(o).gc)
 #define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p)
 
@@ -397,12 +400,12 @@ typedef union UTString {
 #define svalue(o)       getstr(tsvalue(o))
 
 /* get string length from 'TString *s'
- * 返回s(类型为TString*)中保存的短/长字符串(短)的长度,
+ * 返回s(类型为TString*)中保存的短/长字符串的长度,
  */
 #define tsslen(s)	((s)->tt == LUA_TSHRSTR ? (s)->shrlen : (s)->u.lnglen)
 
 /* get string length from 'TValue *o'
- * 返回o(类型为TValue*)中保存的短/长字符串(短)的长度,
+ * 返回o(类型为TValue*)中保存的短/长字符串的长度,
  */
 #define vslen(o)	tsslen(tsvalue(o))
 

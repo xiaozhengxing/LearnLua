@@ -112,7 +112,10 @@ typedef LUAI_UACINT l_uacInt;
 
 #define cast_void(i)	cast(void, (i))
 #define cast_byte(i)	cast(lu_byte, (i))
+
+//将i强转为lua_Number(double)
 #define cast_num(i)	cast(lua_Number, (i))
+
 #define cast_int(i)	cast(int, (i))
 #define cast_uchar(i)	cast(unsigned char, (i))
 

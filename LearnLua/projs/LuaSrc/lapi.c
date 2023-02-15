@@ -331,12 +331,12 @@ LUA_API int lua_isinteger (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 判断idx索引处的元素是不是数值(integer或float),如果是字符串且能转为数字,也会返回1
  */
 LUA_API int lua_isnumber (lua_State *L, int idx) {
   lua_Number n;
   const TValue *o = index2addr(L, idx);
-  return tonumber(o, &n);
+  return tonumber(o, &n);//这里会将提取到的值保存到n中,
 }
 
 

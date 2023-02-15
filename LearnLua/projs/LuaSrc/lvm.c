@@ -68,7 +68,7 @@
 /*
 ** Try to convert a value to a float. The float case is already handled
 ** by the macro 'tonumber'.
-*
+* 提取obj(类型为TValue*)中保存的数值,并赋值给n,成功返回1,失败返回0
 */
 int luaV_tonumber_ (const TValue *obj, lua_Number *n) {
   TValue v;
@@ -77,7 +77,7 @@ int luaV_tonumber_ (const TValue *obj, lua_Number *n) {
     return 1;
   }
   else if (cvt2num(obj) &&  /* string convertible to number?, 判断obj是不是string */
-            luaO_str2num(svalue(obj), &v) == vslen(obj) + 1) {
+            luaO_str2num(svalue(obj), &v) == vslen(obj) + 1) {//解析字符串,转为数值(integer或float)
     *n = nvalue(&v);  /* convert result of 'luaO_str2num' to a float */
     return 1;
   }
