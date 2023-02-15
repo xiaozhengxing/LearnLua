@@ -227,6 +227,7 @@ LUA_API void lua_settop (lua_State *L, int idx) {
 /*
 ** Reverse the stack segment from 'from' to 'to'
 ** (auxiliary to 'lua_rotate')
+*  反向栈中的元素,索引范围为[from, to]
 */
 static void reverse (lua_State *L, StkId from, StkId to) {
   for (; from < to; from++, to--) {
@@ -241,6 +242,7 @@ static void reverse (lua_State *L, StkId from, StkId to) {
 /*
 ** Let x = AB, where A is a prefix of length 'n'. Then,
 ** rotate x n == BA. But BA == (A^r . B^r)^r.
+* xzxtodo
 */
 LUA_API void lua_rotate (lua_State *L, int idx, int n) {
   StkId p, t, m;
