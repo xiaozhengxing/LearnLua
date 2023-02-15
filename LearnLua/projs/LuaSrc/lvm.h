@@ -21,6 +21,7 @@
 
 
 #if !defined(LUA_NOCVTS2N)
+//判断o(类型为TValue*)是不是string
 #define cvt2num(o)	ttisstring(o)
 #else
 #define cvt2num(o)	0	/* no conversion from strings to numbers */
@@ -36,7 +37,11 @@
 #define LUA_FLOORN2I		0
 #endif
 
-
+/*
+ *
+ * o:类型为TValue*,
+ * 注意:表达式"(*(n) = fltvalue(o), 1)"中,先给n赋值,然后返回1
+ */
 #define tonumber(o,n) \
 	(ttisfloat(o) ? (*(n) = fltvalue(o), 1) : luaV_tonumber_(o,n))
 

@@ -123,7 +123,7 @@ typedef struct lua_TValue {
 /* macro defining a nil value */
 #define NILCONSTANT	{NULL}, LUA_TNIL
 
-
+//取TValue.value_(类型为Value, 是个Union)
 #define val_(o)		((o)->value_)
 
 
@@ -140,22 +140,33 @@ typedef struct lua_TValue {
 
 /* type tag of a TValue with no variants (bits 0-3)
  * 返回actual tag(bits 0-3, 最低的四个bit)
+ * o:类型为TValue*
  */
 #define ttnov(o)	(novariant(rttype(o)))
 
 
 /* Macros to test type */
-//判断"o.tt_ == t"是否成立, o类型为 TValue*
+//判断"o.tt_ == t"是否成立{包含所有tag,包括collectable tag}, o类型为 TValue*
 #define checktag(o,t)		(rttype(o) == (t))
 
+//判断o(类型为TValue*)的actual tag(bits 0-3)是不是等于t
 #define checktype(o,t)		(ttnov(o) == (t))
+
 #define ttisnumber(o)		checktype((o), LUA_TNUMBER)
+
+//判断o(类型为TValue*)是不是 float{float并不需要GC, collectable tag为0,直接取LUA_TNUMFLT进行对比就行了}
 #define ttisfloat(o)		checktag((o), LUA_TNUMFLT)
+
+//判断o(类型为TValue*)是不是 integer{integer并不需要GC, collectable tag为0,直接取LUA_TNUMINT进行对比就行了}
 #define ttisinteger(o)		checktag((o), LUA_TNUMINT)
+
 #define ttisnil(o)		checktag((o), LUA_TNIL)
 #define ttisboolean(o)		checktag((o), LUA_TBOOLEAN)
 #define ttislightuserdata(o)	checktag((o), LUA_TLIGHTUSERDATA)
+
+//判断o(类型为TValue*)是不是string
 #define ttisstring(o)		checktype((o), LUA_TSTRING)
+
 #define ttisshrstring(o)	checktag((o), ctb(LUA_TSHRSTR))
 #define ttislngstring(o)	checktag((o), ctb(LUA_TLNGSTR))
 #define ttistable(o)		checktag((o), ctb(LUA_TTABLE))
@@ -176,13 +187,21 @@ typedef struct lua_TValue {
 
 
 /* Macros to access values */
+
+//取o(类型为TValue*)中保存的integer整数值,
 #define ivalue(o)	check_exp(ttisinteger(o), val_(o).i)
+
+//取o(类型为TValue*)中保存的float浮点数值,
 #define fltvalue(o)	check_exp(ttisfloat(o), val_(o).n)
+
 #define nvalue(o)	check_exp(ttisnumber(o), \
 	(ttisinteger(o) ? cast_num(ivalue(o)) : fltvalue(o)))
 #define gcvalue(o)	check_exp(iscollectable(o), val_(o).gc)
 #define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p)
+
+//
 #define tsvalue(o)	check_exp(ttisstring(o), gco2ts(val_(o).gc))
+
 #define uvalue(o)	check_exp(ttisfulluserdata(o), gco2u(val_(o).gc))
 #define clvalue(o)	check_exp(ttisclosure(o), gco2cl(val_(o).gc))
 #define clLvalue(o)	check_exp(ttisLclosure(o), gco2lcl(val_(o).gc))
@@ -367,7 +386,9 @@ typedef union UTString {
   check_exp(sizeof((ts)->extra), cast(char *, (ts)) + sizeof(UTString))
 
 
-/* get the actual string (array of bytes) from a Lua value */
+/* get the actual string (array of bytes) from a Lua value
+ * 
+ */
 #define svalue(o)       getstr(tsvalue(o))
 
 /* get string length from 'TString *s' */

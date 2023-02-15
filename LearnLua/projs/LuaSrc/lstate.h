@@ -200,12 +200,15 @@ union GCUnion {
   struct lua_State th;  /* thread */
 };
 
-
+//o(类型为GCObject*),将其类型强转为 GCUnion*
 #define cast_u(o)	cast(union GCUnion *, (o))
 
 /* macros to convert a GCObject into a specific value */
+
+//o(类型为GCObject*, 保存内容为string),将其类型强转为 GCUnion*
 #define gco2ts(o)  \
 	check_exp(novariant((o)->tt) == LUA_TSTRING, &((cast_u(o))->ts))
+
 #define gco2u(o)  check_exp((o)->tt == LUA_TUSERDATA, &((cast_u(o))->u))
 #define gco2lcl(o)  check_exp((o)->tt == LUA_TLCL, &((cast_u(o))->cl.l))
 #define gco2ccl(o)  check_exp((o)->tt == LUA_TCCL, &((cast_u(o))->cl.c))

@@ -68,14 +68,15 @@
 /*
 ** Try to convert a value to a float. The float case is already handled
 ** by the macro 'tonumber'.
+*
 */
 int luaV_tonumber_ (const TValue *obj, lua_Number *n) {
   TValue v;
-  if (ttisinteger(obj)) {
+  if (ttisinteger(obj)) {//整数,
     *n = cast_num(ivalue(obj));
     return 1;
   }
-  else if (cvt2num(obj) &&  /* string convertible to number? */
+  else if (cvt2num(obj) &&  /* string convertible to number?, 判断obj是不是string */
             luaO_str2num(svalue(obj), &v) == vslen(obj) + 1) {
     *n = nvalue(&v);  /* convert result of 'luaO_str2num' to a float */
     return 1;

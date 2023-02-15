@@ -322,15 +322,17 @@ LUA_API int lua_iscfunction (lua_State *L, int idx) {
   return (ttislcf(o) || (ttisCclosure(o)));
 }
 
-/*xzxtodo
- * 
+/*
+ * 判断idx索引处的元素是不是 integer整数(collectable tag 为 0)
  */
 LUA_API int lua_isinteger (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   return ttisinteger(o);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_isnumber (lua_State *L, int idx) {
   lua_Number n;
   const TValue *o = index2addr(L, idx);
