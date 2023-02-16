@@ -382,7 +382,8 @@ LUA_API void lua_arith (lua_State *L, int op) {
 }
 
 /*
- * xzxtodo
+ * 比较index1和index2索引处的元素, 可以调用元方法,
+ * op: 0(==),1(<),2(<=)
  */
 LUA_API int lua_compare (lua_State *L, int index1, int index2, int op) {
   StkId o1, o2;
@@ -402,7 +403,9 @@ LUA_API int lua_compare (lua_State *L, int index1, int index2, int op) {
   return i;
 }
 
-
+/*
+ *xzxtodo 
+ */
 LUA_API size_t lua_stringtonumber (lua_State *L, const char *s) {
   size_t sz = luaO_str2num(s, L->top);
   if (sz != 0)
