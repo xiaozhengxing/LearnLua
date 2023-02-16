@@ -39,7 +39,7 @@
 #endif
 
 /*
- * 提取o(类型为TValue*)中保存的数值,并赋值给n(类型为lua_Number*),成功返回1,失败返回0
+ * 提取o(类型为TValue*)中保存的数值(也可以是可转为数字的字符串),并赋值给n(类型为lua_Number*),成功返回1,失败返回0
  * 注意:表达式"(*(n) = fltvalue(o), 1)"中,先给n赋值,然后返回1
  */
 #define tonumber(o,n) \

@@ -68,7 +68,7 @@
 /*
 ** Try to convert a value to a float. The float case is already handled
 ** by the macro 'tonumber'.
-* 提取obj(类型为TValue*)中保存的数值,并赋值给n,成功返回1,失败返回0
+* 提取obj(类型为TValue*)中保存的数值(也可以是可转为数字的字符串),并赋值给n,成功返回1,失败返回0
 */
 int luaV_tonumber_ (const TValue *obj, lua_Number *n) {
   TValue v;

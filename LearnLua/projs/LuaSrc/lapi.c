@@ -404,7 +404,7 @@ LUA_API int lua_compare (lua_State *L, int index1, int index2, int op) {
 }
 
 /*
- *xzxtodo 
+ *将字符串转为数字(整型或浮点数),如成功则push到栈中并返回字符串长度;失败则返回0
  */
 LUA_API size_t lua_stringtonumber (lua_State *L, const char *s) {
   size_t sz = luaO_str2num(s, L->top);
@@ -413,7 +413,9 @@ LUA_API size_t lua_stringtonumber (lua_State *L, const char *s) {
   return sz;
 }
 
-
+/*
+ * 提取idx索引处的元素中保存的数值(也可以是可转为数字的字符串),如成功, 返回该值(类型为lua_Number),且*pisnum=1; 如失败,返回0,且*pisnum=0
+ */
 LUA_API lua_Number lua_tonumberx (lua_State *L, int idx, int *pisnum) {
   lua_Number n;
   const TValue *o = index2addr(L, idx);
@@ -424,7 +426,9 @@ LUA_API lua_Number lua_tonumberx (lua_State *L, int idx, int *pisnum) {
   return n;
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API lua_Integer lua_tointegerx (lua_State *L, int idx, int *pisnum) {
   lua_Integer res;
   const TValue *o = index2addr(L, idx);
