@@ -355,7 +355,7 @@ LUA_API int lua_isuserdata (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 判断index1和index2索引处的元素是否相等(不调用元方法__eq)
  */
 LUA_API int lua_rawequal (lua_State *L, int index1, int index2) {
   StkId o1 = index2addr(L, index1);
@@ -363,11 +363,13 @@ LUA_API int lua_rawequal (lua_State *L, int index1, int index2) {
   return (isvalid(o1) && isvalid(o2)) ? luaV_rawequalobj(o1, o2) : 0;
 }
 
-
+/*
+ * 对栈顶的两个操作数进行计算,将其出栈,并将结果push到栈中,
+ */
 LUA_API void lua_arith (lua_State *L, int op) {
   lua_lock(L);
   if (op != LUA_OPUNM && op != LUA_OPBNOT)
-    api_checknelems(L, 2);  /* all other operations expect two operands */
+    api_checknelems(L, 2);  /* all other operations expect two operands, 需要两个操作数 */
   else {  /* for unary operations, add fake 2nd operand */
     api_checknelems(L, 1);
     setobjs2s(L, L->top, L->top - 1);
@@ -379,7 +381,9 @@ LUA_API void lua_arith (lua_State *L, int op) {
   lua_unlock(L);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_compare (lua_State *L, int index1, int index2, int op) {
   StkId o1, o2;
   int i = 0;

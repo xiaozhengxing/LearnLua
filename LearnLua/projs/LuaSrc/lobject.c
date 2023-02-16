@@ -119,7 +119,13 @@ static lua_Number numarith (lua_State *L, int op, lua_Number v1,
   }
 }
 
-
+/*
+ * todo
+ * 对操作数进行计算(如果是一元运算,则忽略操作数2)
+ * p1:操作数1
+ * p2:操作数2
+ * res:放置计算结果的地方,
+ */
 void luaO_arith (lua_State *L, int op, const TValue *p1, const TValue *p2,
                  TValue *res) {
   switch (op) {
