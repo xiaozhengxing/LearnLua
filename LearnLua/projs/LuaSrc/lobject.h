@@ -164,6 +164,8 @@ typedef struct lua_TValue {
 
 #define ttisnil(o)		checktag((o), LUA_TNIL)
 #define ttisboolean(o)		checktag((o), LUA_TBOOLEAN)
+
+//判断o(类型为TValue*)是不是 lightUserData{lightUserData并不需要GC, collectable tag为0,直接取LUA_TLIGHTUSERDATA进行对比就行了}
 #define ttislightuserdata(o)	checktag((o), LUA_TLIGHTUSERDATA)
 
 //判断o(类型为TValue*)是不是string
@@ -183,7 +185,9 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)是不是 light C function{light c function并不需要GC, collectable tag为0,直接取LUA_TLCF进行对比就行了}
 #define ttislcf(o)		checktag((o), LUA_TLCF)
 
+//判断o(类型为TValue*)是不是UserData(collectable tag为1)
 #define ttisfulluserdata(o)	checktag((o), ctb(LUA_TUSERDATA))
+
 #define ttisthread(o)		checktag((o), ctb(LUA_TTHREAD))
 #define ttisdeadkey(o)		checktag((o), LUA_TDEADKEY)
 

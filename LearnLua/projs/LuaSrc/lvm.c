@@ -404,6 +404,7 @@ int luaV_lessequal (lua_State *L, const TValue *l, const TValue *r) {
 /*
 ** Main operation for equality of Lua values; return 't1 == t2'.
 ** L == NULL means raw equality (no metamethods)
+* 返回 t1==t2?,如果L为null,则不用调用元方法__eq, todo
 */
 int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
   const TValue *tm;

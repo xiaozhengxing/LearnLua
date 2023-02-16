@@ -339,19 +339,24 @@ LUA_API int lua_isnumber (lua_State *L, int idx) {
   return tonumber(o, &n);//这里会将提取到的值保存到n中,
 }
 
-
+/*判断idx索引处的元素是不是字符串或者数字(integer或float)
+ */
 LUA_API int lua_isstring (lua_State *L, int idx) {
   const TValue *o = index2addr(L, idx);
   return (ttisstring(o) || cvt2str(o));
 }
 
-
+/*
+ * 判断idx索引处的元素是不是UserData或lightUserData
+ */
 LUA_API int lua_isuserdata (lua_State *L, int idx) {
   const TValue *o = index2addr(L, idx);
   return (ttisfulluserdata(o) || ttislightuserdata(o));
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_rawequal (lua_State *L, int index1, int index2) {
   StkId o1 = index2addr(L, index1);
   StkId o2 = index2addr(L, index2);

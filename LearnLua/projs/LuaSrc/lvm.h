@@ -14,6 +14,7 @@
 
 
 #if !defined(LUA_NOCVTN2S)
+//判断o(类型为TValue*)是不是数字(integer/float)
 #define cvt2str(o)	ttisnumber(o)
 #else
 #define cvt2str(o)	0	/* no conversion from numbers to strings */
@@ -49,6 +50,7 @@
 
 #define intop(op,v1,v2) l_castU2S(l_castS2U(v1) op l_castS2U(v2))
 
+//判断t1(类型为TValue*)和t2(类型为TValue*)是否相等,不调用元方法__eq
 #define luaV_rawequalobj(t1,t2)		luaV_equalobj(NULL,t1,t2)
 
 
