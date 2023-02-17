@@ -523,12 +523,13 @@
 
 /* The following definitions are good for most cases here */
 
-#define LUA_INTEGER_FMT		"%" LUA_INTEGER_FRMLEN "d"
+#define LUA_INTEGER_FMT		"%" LUA_INTEGER_FRMLEN "d" //格式 "%lld"
 
 #define LUAI_UACINT		LUA_INTEGER
 
+//将整数(integer)n转为char*,保存在s(char*)中,sz:s的长度;
 #define lua_integer2str(s,sz,n)  \
-	l_sprintf((s), sz, LUA_INTEGER_FMT, (LUAI_UACINT)(n))
+	l_sprintf((s), sz, LUA_INTEGER_FMT, (LUAI_UACINT)(n)) //sprintf(buffer, "%lld", n),
 
 /*
 ** use LUAI_UACINT here to avoid problems with promotions (which
@@ -605,6 +606,7 @@
 #if !defined(LUA_USE_C89)
 #define l_sprintf(s,sz,f,i)	snprintf(s,sz,f,i)
 #else
+//字符串格式化命令, sprintf(buffer, format, [argument,...]),这里只有一个参数i,
 #define l_sprintf(s,sz,f,i)	((void)(sz), sprintf(s,f,i))
 #endif
 

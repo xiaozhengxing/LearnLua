@@ -387,9 +387,9 @@ void luaO_tostring (lua_State *L, StkId obj) {
   char buff[MAXNUMBER2STR];
   size_t len;
   lua_assert(ttisnumber(obj));
-  if (ttisinteger(obj))
+  if (ttisinteger(obj))//整数integer
     len = lua_integer2str(buff, sizeof(buff), ivalue(obj));
-  else {
+  else {//float
     len = lua_number2str(buff, sizeof(buff), fltvalue(obj));
 #if !defined(LUA_COMPAT_FLOATSTRING)
     if (buff[strspn(buff, "-0123456789")] == '\0') {  /* looks like an int? */

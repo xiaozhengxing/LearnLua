@@ -439,20 +439,25 @@ LUA_API lua_Integer lua_tointegerx (lua_State *L, int idx, int *pisnum) {
   return res;
 }
 
-
+/*
+ * idx索引处的元素保存的值为false或者为nil,返回0, 其他情况返回1
+ */
 LUA_API int lua_toboolean (lua_State *L, int idx) {
   const TValue *o = index2addr(L, idx);
   return !l_isfalse(o);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   StkId o = index2addr(L, idx);
   if (!ttisstring(o)) {
-    if (!cvt2str(o)) {  /* not convertible? */
+    if (!cvt2str(o)) {  /* not convertible? 不是数字(integer或float) */
       if (len != NULL) *len = 0;
       return NULL;
     }
+    //不是字符串,而是数字(integer或float)
     lua_lock(L);  /* 'luaO_tostring' may create a new string */
     luaO_tostring(L, o);
     luaC_checkGC(L);

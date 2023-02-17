@@ -192,6 +192,8 @@ typedef struct lua_TValue {
 #define ttisfulluserdata(o)	checktag((o), ctb(LUA_TUSERDATA))
 
 #define ttisthread(o)		checktag((o), ctb(LUA_TTHREAD))
+
+
 #define ttisdeadkey(o)		checktag((o), LUA_TDEADKEY)
 
 
@@ -231,7 +233,7 @@ typedef struct lua_TValue {
 /* a dead value may get the 'gc' field, but cannot access its contents */
 #define deadvalue(o)	check_exp(ttisdeadkey(o), cast(void *, val_(o).gc))
 
-//判断o(类型为TValue*)中保存的值是否为false(或者为nil)
+//判断o(类型为TValue*)中保存的值是否为false(或者为nil),注意,是false返回1,否则返回0
 #define l_isfalse(o)	(ttisnil(o) || (ttisboolean(o) && bvalue(o) == 0))
 
 
