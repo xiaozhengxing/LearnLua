@@ -251,7 +251,7 @@ typedef struct lua_TValue {
  */
 #define righttt(obj)		(ttype(obj) == gcvalue(obj)->tt)
 
-//obj(类型为TValue*) todo
+//obj(类型为TValue*),一些正常的检测操作,如果是gc变量,会检测一下GCObject.tt和TValue.tt_之间是否对应等,
 #define checkliveness(L,obj) \
 	lua_longassert(!iscollectable(obj) || \
 		(righttt(obj) && (L == NULL || !isdead(G(L),gcvalue(obj)))))
@@ -290,7 +290,7 @@ typedef struct lua_TValue {
   { TValue *io=(obj); val_(io).b=(x); settt_(io, LUA_TBOOLEAN); }
 
 /*
- * 将x的值copy给obj,且设置obj的tag为(1<<6 | x->tt),即添加collectable tag, 表示需回收
+ * 将x(GCObject*类型)的值copy给obj.gc,且设置obj的tag为(1<<6 | x->tt),即添加collectable tag, 表示需回收
  * obj: TValue*类型
  * x: GCObject*类型
  */
@@ -298,7 +298,7 @@ typedef struct lua_TValue {
   { TValue *io = (obj); GCObject *i_g=(x); \
     val_(io).gc = i_g; settt_(io, ctb(i_g->tt)); }
 
-/*
+/* 将x(TString*类型)转成GCObject*,赋值给obj.gc,且设置obj的tag为(1<<6 | x->tt),即添加collectable tag, 表示需回收
  * obj:TValue*类型
  * x:TString*类型
  */
