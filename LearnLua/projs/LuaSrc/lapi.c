@@ -427,7 +427,7 @@ LUA_API lua_Number lua_tonumberx (lua_State *L, int idx, int *pisnum) {
 }
 
 /*
- * xzxtodo
+ * 提取idx索引处的元素中保存的整数值(也可以是可转为整数的字符串),如成功, 返回该值(类型为lua_Integer),且*pisnum=1; 如失败,返回0,且*pisnum=0
  */
 LUA_API lua_Integer lua_tointegerx (lua_State *L, int idx, int *pisnum) {
   lua_Integer res;

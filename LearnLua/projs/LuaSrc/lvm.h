@@ -45,6 +45,10 @@
 #define tonumber(o,n) \
 	(ttisfloat(o) ? (*(n) = fltvalue(o), 1) : luaV_tonumber_(o,n))
 
+/*
+ *提取o(类型为TValue*)中保存的整数值(也可以是可转为整型的字符串),并赋值给i(类型为lua_Integer*),成功返回1,失败返回0
+ * 注意:表达式"(*(i) = ivalue(o), 1)"中,先给i赋值,然后返回1
+ */
 #define tointeger(o,i) \
     (ttisinteger(o) ? (*(i) = ivalue(o), 1) : luaV_tointeger(o,i,LUA_FLOORN2I))
 

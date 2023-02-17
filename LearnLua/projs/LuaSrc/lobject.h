@@ -162,7 +162,10 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)是不是 integer{integer并不需要GC, collectable tag为0,直接取LUA_TNUMINT进行对比就行了}
 #define ttisinteger(o)		checktag((o), LUA_TNUMINT)
 
+//判断o(类型为TValue*)是不是 nil
 #define ttisnil(o)		checktag((o), LUA_TNIL)
+
+//判断o(类型为TValue*)是不是 boolean
 #define ttisboolean(o)		checktag((o), LUA_TBOOLEAN)
 
 //判断o(类型为TValue*)是不是 lightUserData{lightUserData并不需要GC, collectable tag为0,直接取LUA_TLIGHTUSERDATA进行对比就行了}
@@ -220,11 +223,15 @@ typedef struct lua_TValue {
 
 #define fvalue(o)	check_exp(ttislcf(o), val_(o).f)
 #define hvalue(o)	check_exp(ttistable(o), gco2t(val_(o).gc))
+
+//取o(类型为TValue*)中保存的boolean值,
 #define bvalue(o)	check_exp(ttisboolean(o), val_(o).b)
+
 #define thvalue(o)	check_exp(ttisthread(o), gco2th(val_(o).gc))
 /* a dead value may get the 'gc' field, but cannot access its contents */
 #define deadvalue(o)	check_exp(ttisdeadkey(o), cast(void *, val_(o).gc))
 
+//判断o(类型为TValue*)中保存的值是否为false(或者为nil)
 #define l_isfalse(o)	(ttisnil(o) || (ttisboolean(o) && bvalue(o) == 0))
 
 
