@@ -448,7 +448,9 @@ LUA_API int lua_toboolean (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 如果idx索引处的元素是字符串,则返回其保存的字符串首地址(Char*),*len=字符串长度,
+ * 如果idx索引处的元素是数字(integer或float),则将其转为字符串,新建TString,并更新idx索引处的元素为TString,并返回其保存的字符串首地址(Char*),*len=字符串长度,
+ * 如果是其他类型,返回null, *len=0
  */
 LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   StkId o = index2addr(L, idx);
@@ -470,7 +472,9 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   return svalue(o);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   switch (ttype(o)) {
