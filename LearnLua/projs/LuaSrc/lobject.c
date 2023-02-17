@@ -388,12 +388,13 @@ void luaO_tostring (lua_State *L, StkId obj) {
   size_t len;
   lua_assert(ttisnumber(obj));
   if (ttisinteger(obj))//整数integer
-    len = lua_integer2str(buff, sizeof(buff), ivalue(obj));
+    len = lua_integer2str(buff, sizeof(buff), ivalue(obj));//将整数转为char*,保存在buff中; 返回写入的字符总数,
   else {//float
-    len = lua_number2str(buff, sizeof(buff), fltvalue(obj));
+    len = lua_number2str(buff, sizeof(buff), fltvalue(obj));//将n(float)转为char*,保存在buff中; 返回写入的字符总数,
 #if !defined(LUA_COMPAT_FLOATSTRING)
+    //找到的第一个不是“-0123456789”中的任意一个的字符位置,其值刚好是在字符末尾,则该字符串看起来像是一个整数,则返回"xxxxxxx.0"
     if (buff[strspn(buff, "-0123456789")] == '\0') {  /* looks like an int? */
-      buff[len++] = lua_getlocaledecpoint();
+      buff[len++] = lua_getlocaledecpoint();// 小数点'.'
       buff[len++] = '0';  /* adds '.0' to result */
     }
 #endif

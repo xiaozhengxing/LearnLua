@@ -433,8 +433,9 @@
 
 #define l_floor(x)		(l_mathop(floor)(x))
 
+//将n(float)转为char*,保存在s(char*)中,sz:s的长度; 返回写入的字符总数,
 #define lua_number2str(s,sz,n)  \
-	l_sprintf((s), sz, LUA_NUMBER_FMT, (LUAI_UACNUMBER)(n))
+	l_sprintf((s), sz, LUA_NUMBER_FMT, (LUAI_UACNUMBER)(n))//sprintf(buffer, "%.14g", n),
 
 /*
 @@ lua_numbertointeger converts a float number to an integer, or
@@ -527,7 +528,7 @@
 
 #define LUAI_UACINT		LUA_INTEGER
 
-//将整数(integer)n转为char*,保存在s(char*)中,sz:s的长度;
+//将整数(integer)n转为char*,保存在s(char*)中,sz:s的长度; 返回写入的字符总数,
 #define lua_integer2str(s,sz,n)  \
 	l_sprintf((s), sz, LUA_INTEGER_FMT, (LUAI_UACINT)(n)) //sprintf(buffer, "%lld", n),
 
@@ -606,7 +607,7 @@
 #if !defined(LUA_USE_C89)
 #define l_sprintf(s,sz,f,i)	snprintf(s,sz,f,i)
 #else
-//字符串格式化命令, sprintf(buffer, format, [argument,...]),这里只有一个参数i,
+//字符串格式化命令, sprintf(buffer, format, [argument,...]),这里只有一个参数i,返回写入的字符总数,
 #define l_sprintf(s,sz,f,i)	((void)(sz), sprintf(s,f,i))
 #endif
 
@@ -672,6 +673,7 @@
 ** macro must include header 'locale.h'.)
 */
 #if !defined(lua_getlocaledecpoint)
+//看起来只是返回一个小数点‘.’,如果想定制小数点,则更改这个宏,
 #define lua_getlocaledecpoint()		(localeconv()->decimal_point[0])
 #endif
 
