@@ -478,9 +478,9 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
 LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   switch (ttype(o)) {
-    case LUA_TSHRSTR: return tsvalue(o)->shrlen;
-    case LUA_TLNGSTR: return tsvalue(o)->u.lnglen;
-    case LUA_TUSERDATA: return uvalue(o)->len;
+    case LUA_TSHRSTR: return tsvalue(o)->shrlen;//短字符串长度,
+    case LUA_TLNGSTR: return tsvalue(o)->u.lnglen;//长字符串长度
+    case LUA_TUSERDATA: return uvalue(o)->len;//userdata中申请的内存块大小,
     case LUA_TTABLE: return luaH_getn(hvalue(o));
     default: return 0;
   }

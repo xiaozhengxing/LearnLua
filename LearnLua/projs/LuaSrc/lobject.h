@@ -221,7 +221,10 @@ typedef struct lua_TValue {
 //取o(类型为TValue*)中保存的字符串TString*
 #define tsvalue(o)	check_exp(ttisstring(o), gco2ts(val_(o).gc))
 
+//取o(类型为TValue*)中保存的UData* (userdata)
 #define uvalue(o)	check_exp(ttisfulluserdata(o), gco2u(val_(o).gc))
+
+
 #define clvalue(o)	check_exp(ttisclosure(o), gco2cl(val_(o).gc))
 #define clLvalue(o)	check_exp(ttisLclosure(o), gco2lcl(val_(o).gc))
 
