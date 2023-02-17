@@ -382,6 +382,7 @@ int luaO_utf8esc (char *buff, unsigned long x) {
 
 /*
 ** Convert a number object to a string
+* 将obj(类型为TValue*)中保存的数值(int或float)转为字符串,并新建TString*,将其赋值到obj中,更改obj中的tag
 */
 void luaO_tostring (lua_State *L, StkId obj) {
   char buff[MAXNUMBER2STR];
@@ -399,6 +400,7 @@ void luaO_tostring (lua_State *L, StkId obj) {
     }
 #endif
   }
+  //新建TString,并将TString*的值保存到obj中,且设置obj的tag为(1<<6 | x->tt),即添加collectable tag, 表示需回收,
   setsvalue2s(L, obj, luaS_newlstr(L, buff, len));
 }
 
