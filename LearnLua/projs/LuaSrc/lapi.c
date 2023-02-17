@@ -453,13 +453,14 @@ LUA_API int lua_toboolean (lua_State *L, int idx) {
 LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
   StkId o = index2addr(L, idx);
   if (!ttisstring(o)) {
-    if (!cvt2str(o)) {  /* not convertible? 不是数字(integer或float) */
+    //不是数字(integer或float)
+    if (!cvt2str(o)) {  /* not convertible? */
       if (len != NULL) *len = 0;
       return NULL;
     }
     //不是字符串,而是数字(integer或float)
     lua_lock(L);  /* 'luaO_tostring' may create a new string */
-    luaO_tostring(L, o);
+    luaO_tostring(L, o);//将o(类型为TValue*)中保存的数值(int或float)转为字符串,并新建TString*,将其赋值到o中,更改o中的tag
     luaC_checkGC(L);
     o = index2addr(L, idx);  /* previous call may reallocate the stack */
     lua_unlock(L);
