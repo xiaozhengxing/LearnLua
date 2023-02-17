@@ -129,14 +129,18 @@ typedef struct lua_TValue {
 
 
 /* raw type tag of a TValue
- * o:类型为TValue*,  返回TValue.tt) {bits 0-7}
+ * o:类型为TValue*,  返回TValue.tt_) {bits 0-7}
  */
 #define rttype(o)	((o)->tt_)
 
-/* tag with no variants (bits 0-3) */
+/* tag with no variants (bits 0-3)
+ * x为tag值,返回其actual tag(bits 0-3,最低的四个bit)
+ */
 #define novariant(x)	((x) & 0x0F)
 
-/* type tag of a TValue (bits 0-3 for tags + variant bits 4-5) */
+/* type tag of a TValue (bits 0-3 for tags + variant bits 4-5)
+ * o(类型为TValue*),返回TValue.tt_中的 bits 0-5(variant tag + actual tag)
+ */
 #define ttype(o)	(rttype(o) & 0x3F)
 
 /* type tag of a TValue with no variants (bits 0-3)
@@ -205,11 +209,13 @@ typedef struct lua_TValue {
 //取o(类型为TValue*)中保存的float浮点数值,
 #define fltvalue(o)	check_exp(ttisfloat(o), val_(o).n)
 
-//取(类型为TValue*)中保存的数值(integer/float),将其转为double并返回,
+//取o(类型为TValue*)中保存的数值(integer/float),将其转为double并返回,
 #define nvalue(o)	check_exp(ttisnumber(o), \
 	(ttisinteger(o) ? cast_num(ivalue(o)) : fltvalue(o)))
 
+//取o(类型为TValue*)中保存的"GCObject*"变量gc, 会判断该TValue.tt_的collectable tag是否为1
 #define gcvalue(o)	check_exp(iscollectable(o), val_(o).gc)
+
 #define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p)
 
 //取o(类型为TValue*)中保存的字符串TString*
@@ -236,13 +242,16 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)中保存的值是否为false(或者为nil),注意,是false返回1,否则返回0
 #define l_isfalse(o)	(ttisnil(o) || (ttisboolean(o) && bvalue(o) == 0))
 
-
+//判断o(类型为TValue*)的tag中的collectable tag是否为1
 #define iscollectable(o)	(rttype(o) & BIT_ISCOLLECTABLE)
 
 
-/* Macros for internal tests */
+/* Macros for internal tests
+ * 判断obj(类型为TValue*).tt_中的bits 0-5(variant tag + actual tag)和其保存的GCObject*gc中的GCObject.tt是否一致,
+ */
 #define righttt(obj)		(ttype(obj) == gcvalue(obj)->tt)
 
+//obj(类型为TValue*) todo
 #define checkliveness(L,obj) \
 	lua_longassert(!iscollectable(obj) || \
 		(righttt(obj) && (L == NULL || !isdead(G(L),gcvalue(obj)))))
@@ -289,6 +298,10 @@ typedef struct lua_TValue {
   { TValue *io = (obj); GCObject *i_g=(x); \
     val_(io).gc = i_g; settt_(io, ctb(i_g->tt)); }
 
+/*
+ * obj:TValue*类型
+ * x:TString*类型
+ */
 #define setsvalue(L,obj,x) \
   { TValue *io = (obj); TString *x_ = (x); \
     val_(io).gc = obj2gco(x_); settt_(io, ctb(x_->tt)); \
@@ -345,7 +358,9 @@ typedef struct lua_TValue {
 #define setobjs2s	setobj
 /* to stack (not from same stack) */
 #define setobj2s	setobj
+
 #define setsvalue2s	setsvalue
+
 #define sethvalue2s	sethvalue
 #define setptvalue2s	setptvalue
 /* from table to same table */
