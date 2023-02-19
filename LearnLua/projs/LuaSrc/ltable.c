@@ -639,9 +639,9 @@ static int unbound_search (Table *t, unsigned int j) {
 ** such that t[i] is non-nil and t[i+1] is nil (and 0 if t[1] is nil).
 */
 int luaH_getn (Table *t) {
-  unsigned int j = t->sizearray;
-  if (j > 0 && ttisnil(&t->array[j - 1])) {
-    /* there is a boundary in the array part: (binary) search for it */
+  unsigned int j = t->sizearray;//数组,
+  if (j > 0 && ttisnil(&t->array[j - 1])) {//数组里面最后一格元素是nil,
+    /* there is a boundary in the array part: (binary) search for it, 二分法 */
     unsigned int i = 0;
     while (j - i > 1) {
       unsigned int m = (i+j)/2;
@@ -651,9 +651,9 @@ int luaH_getn (Table *t) {
     return i;
   }
   /* else must find a boundary in hash part */
-  else if (isdummy(t))  /* hash part is empty? */
+  else if (isdummy(t))  /* hash part is empty? hash表是空 */
     return j;  /* that is easy... */
-  else return unbound_search(t, j);
+  else return unbound_search(t, j);//hash表不为空,
 }
 
 

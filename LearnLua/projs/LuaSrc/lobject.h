@@ -180,7 +180,11 @@ typedef struct lua_TValue {
 
 #define ttisshrstring(o)	checktag((o), ctb(LUA_TSHRSTR))
 #define ttislngstring(o)	checktag((o), ctb(LUA_TLNGSTR))
+
+//判断o(类型为TValue*)是不是Table
 #define ttistable(o)		checktag((o), ctb(LUA_TTABLE))
+
+
 #define ttisfunction(o)		checktype(o, LUA_TFUNCTION)
 #define ttisclosure(o)		((rttype(o) & 0x1F) == LUA_TFUNCTION)
 
@@ -233,6 +237,8 @@ typedef struct lua_TValue {
 
 
 #define fvalue(o)	check_exp(ttislcf(o), val_(o).f)
+
+//取o(类型为TValue*)中保存的Table*
 #define hvalue(o)	check_exp(ttistable(o), gco2t(val_(o).gc))
 
 //取o(类型为TValue*)中保存的boolean值,
