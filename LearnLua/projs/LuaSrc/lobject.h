@@ -200,6 +200,7 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)是不是UserData(collectable tag为1)
 #define ttisfulluserdata(o)	checktag((o), ctb(LUA_TUSERDATA))
 
+//判断o(类型为TValue*)是不是Thread(lua_State, collectable tag为1)
 #define ttisthread(o)		checktag((o), ctb(LUA_TTHREAD))
 
 
@@ -246,7 +247,9 @@ typedef struct lua_TValue {
 //取o(类型为TValue*)中保存的boolean值,
 #define bvalue(o)	check_exp(ttisboolean(o), val_(o).b)
 
+//取o(类型为TValue*)中保存的Thread*(也就是lua_State)
 #define thvalue(o)	check_exp(ttisthread(o), gco2th(val_(o).gc))
+
 /* a dead value may get the 'gc' field, but cannot access its contents */
 #define deadvalue(o)	check_exp(ttisdeadkey(o), cast(void *, val_(o).gc))
 

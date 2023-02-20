@@ -512,14 +512,16 @@ LUA_API void *lua_touserdata (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 提取idx索引处的元素中保存的Thread*(也就是lua_State*),如果不是Thread,则返回null
  */
 LUA_API lua_State *lua_tothread (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   return (!ttisthread(o)) ? NULL : thvalue(o);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API const void *lua_topointer (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   switch (ttype(o)) {
