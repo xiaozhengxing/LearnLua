@@ -221,6 +221,7 @@ typedef struct lua_TValue {
 //取o(类型为TValue*)中保存的"GCObject*"变量gc, 会判断该TValue.tt_的collectable tag是否为1
 #define gcvalue(o)	check_exp(iscollectable(o), val_(o).gc)
 
+//取o(类型为TValue*)中保存的"void *"变量p,即 light userdata
 #define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p)
 
 //取o(类型为TValue*)中保存的字符串TString*
@@ -451,6 +452,7 @@ typedef union UTString {
 /*
 ** Header for userdata; memory area follows the end of this structure
 ** (aligned according to 'UUdata'; see next).
+* 通过宏getudatamem可知, Udata u实际数据保存的地址为 (char*)u + sizeof(UUdata),
 */
 typedef struct Udata {
   CommonHeader;
@@ -472,7 +474,8 @@ typedef union UUdata {
 
 /*
 **  Get the address of memory block inside 'Udata'.
-** (Access to 'ttuv_' ensures that value is really a 'Udata'.)
+** (Access to 'ttuv_' ensures that value is really a 'Udata'. 调用 u->ttuv_只是为了确定u的类型是Udata*)
+* 取U(类型为Udata*, userdata)中保存的数据, 看样子保存的地址是 (char*)u + sizeof(UUdata)
 */
 #define getudatamem(u)  \
   check_exp(sizeof((u)->ttuv_), (cast(char*, (u)) + sizeof(UUdata)))

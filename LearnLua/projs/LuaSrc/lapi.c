@@ -498,17 +498,22 @@ LUA_API lua_CFunction lua_tocfunction (lua_State *L, int idx) {
   else return NULL;  /* not a C function */
 }
 
-
+/*
+ * 提取idx索引处的元素中保存的userdata(void *),可以直接是light userdata,也可以是Udata中保存的数据
+ * 如果不是userdata, 返回null
+ */
 LUA_API void *lua_touserdata (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   switch (ttnov(o)) {
-    case LUA_TUSERDATA: return getudatamem(uvalue(o));
-    case LUA_TLIGHTUSERDATA: return pvalue(o);
+    case LUA_TUSERDATA: return getudatamem(uvalue(o));//udata,取(char*)u + sizeof(UUdata)
+    case LUA_TLIGHTUSERDATA: return pvalue(o);//light userdata,本身就是一个void*,
     default: return NULL;
   }
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API lua_State *lua_tothread (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   return (!ttisthread(o)) ? NULL : thvalue(o);
