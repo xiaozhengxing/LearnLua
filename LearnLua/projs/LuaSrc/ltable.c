@@ -493,6 +493,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 
 /*
 ** search function for integers
+*
 */
 const TValue *luaH_getint (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */

@@ -214,8 +214,14 @@ union GCUnion {
 //o(类型为GCObject*, 保存内容为UserData),将其类型强转为 GCUnion*,并取GCUnion.u(类型为Udata)的地址,
 #define gco2u(o)  check_exp((o)->tt == LUA_TUSERDATA, &((cast_u(o))->u))
 
+//取o中的LClosure(lua closure)地址,
+//o(类型为GCObject*, 保存内容为Closure),将其类型强转为 GCUnion*,并取GCUnion.cl.l(类型为Closure.LClosure)的地址,
 #define gco2lcl(o)  check_exp((o)->tt == LUA_TLCL, &((cast_u(o))->cl.l))
+
+//取o中的CClosure(c closure)地址,
+//o(类型为GCObject*, 保存内容为Closure),将其类型强转为 GCUnion*,并取GCUnion.cl.c(类型为Closure.CClosure)的地址,
 #define gco2ccl(o)  check_exp((o)->tt == LUA_TCCL, &((cast_u(o))->cl.c))
+
 #define gco2cl(o)  \
 	check_exp(novariant((o)->tt) == LUA_TFUNCTION, &((cast_u(o))->cl))
 

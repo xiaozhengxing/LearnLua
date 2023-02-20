@@ -491,8 +491,8 @@ LUA_API size_t lua_rawlen (lua_State *L, int idx) {
  */
 LUA_API lua_CFunction lua_tocfunction (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
-  if (ttislcf(o)) return fvalue(o);
-  else if (ttisCclosure(o))
+  if (ttislcf(o)) return fvalue(o);//light C function
+  else if (ttisCclosure(o))//C Closure
     return clCvalue(o)->f;
   else return NULL;  /* not a C function */
 }

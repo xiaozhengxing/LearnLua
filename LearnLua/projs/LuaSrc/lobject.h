@@ -191,6 +191,7 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)是不是 C Closure(collectable tag为1)
 #define ttisCclosure(o)		checktag((o), ctb(LUA_TCCL))
 
+//判断o(类型为TValue*)是不是 Lua Closure(collectable tag为1)
 #define ttisLclosure(o)		checktag((o), ctb(LUA_TLCL))
 
 //判断o(类型为TValue*)是不是 light C function{light c function并不需要GC, collectable tag为0,直接取LUA_TLCF进行对比就行了}
@@ -235,7 +236,7 @@ typedef struct lua_TValue {
 //
 #define clCvalue(o)	check_exp(ttisCclosure(o), gco2ccl(val_(o).gc))
 
-
+//取o(类型为TValue*)中保存的lua_CFunction(light c function)
 #define fvalue(o)	check_exp(ttislcf(o), val_(o).f)
 
 //取o(类型为TValue*)中保存的Table*
