@@ -222,6 +222,8 @@ union GCUnion {
 //o(类型为GCObject*, 保存内容为Closure),将其类型强转为 GCUnion*,并取GCUnion.cl.c(类型为Closure.CClosure)的地址,
 #define gco2ccl(o)  check_exp((o)->tt == LUA_TCCL, &((cast_u(o))->cl.c))
 
+//取o中的Closure(也是个union,包含 LClosure和CClosure)地址,
+//o(类型为GCObject*, 保存内容为Closure),将其类型强转为 GCUnion*,并取GCUnion.cl(类型为Closure)的地址,
 #define gco2cl(o)  \
 	check_exp(novariant((o)->tt) == LUA_TFUNCTION, &((cast_u(o))->cl))
 
@@ -230,6 +232,7 @@ union GCUnion {
 #define gco2t(o)  check_exp((o)->tt == LUA_TTABLE, &((cast_u(o))->h))
 
 #define gco2p(o)  check_exp((o)->tt == LUA_TPROTO, &((cast_u(o))->p))
+
 #define gco2th(o)  check_exp((o)->tt == LUA_TTHREAD, &((cast_u(o))->th))
 
 

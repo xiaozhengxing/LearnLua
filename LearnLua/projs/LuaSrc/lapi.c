@@ -487,13 +487,14 @@ LUA_API size_t lua_rawlen (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 提取idx索引处的元素中保存的lua_CFunction(可以直接是light c function,也可以是C closure中的 function)
+ * 如果不是 light c function 或 C closure, 则返回NULL
  */
 LUA_API lua_CFunction lua_tocfunction (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   if (ttislcf(o)) return fvalue(o);//light C function
   else if (ttisCclosure(o))//C Closure
-    return clCvalue(o)->f;
+    return clCvalue(o)->f;//取C Closure中的 lua_CFunction
   else return NULL;  /* not a C function */
 }
 
