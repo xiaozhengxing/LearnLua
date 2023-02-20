@@ -473,7 +473,7 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
 }
 
 /*
- * xzxtodo
+ * xzxtodo(完成TString的时候再看)
  */
 LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
@@ -486,7 +486,9 @@ LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   }
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API lua_CFunction lua_tocfunction (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   if (ttislcf(o)) return fvalue(o);

@@ -122,6 +122,7 @@ typedef LUAI_UACINT l_uacInt;
 
 /* cast a signed lua_Integer to lua_Unsigned */
 #if !defined(l_castS2U)
+//(unsigned long long)i
 #define l_castS2U(i)	((lua_Unsigned)(i))
 #endif
 
