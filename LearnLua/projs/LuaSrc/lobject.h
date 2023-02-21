@@ -233,6 +233,8 @@ typedef struct lua_TValue {
 
 
 #define clvalue(o)	check_exp(ttisclosure(o), gco2cl(val_(o).gc))
+
+//取o(类型为TValue*)中的LClosure(lua closure)地址,
 #define clLvalue(o)	check_exp(ttisLclosure(o), gco2lcl(val_(o).gc))
 
 //取o(类型为TValue*)中的CClosure(c closure)地址,

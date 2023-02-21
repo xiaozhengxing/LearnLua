@@ -520,18 +520,19 @@ LUA_API lua_State *lua_tothread (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 提取idx索引处的元素中所保存的值(表, closure,thread,userdata,light userdata,如果不属于这些类型则返回null)的地址,
+ * 不同的对象会给出不同的指针,无法将指针转换回其原始值,通常此函数仅用于散列和调试信息,
  */
 LUA_API const void *lua_topointer (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
   switch (ttype(o)) {
-    case LUA_TTABLE: return hvalue(o);
-    case LUA_TLCL: return clLvalue(o);
-    case LUA_TCCL: return clCvalue(o);
-    case LUA_TLCF: return cast(void *, cast(size_t, fvalue(o)));
-    case LUA_TTHREAD: return thvalue(o);
-    case LUA_TUSERDATA: return getudatamem(uvalue(o));
-    case LUA_TLIGHTUSERDATA: return pvalue(o);
+    case LUA_TTABLE: return hvalue(o);//Table*
+    case LUA_TLCL: return clLvalue(o);//LClosure*
+    case LUA_TCCL: return clCvalue(o);//CClosure*
+    case LUA_TLCF: return cast(void *, cast(size_t, fvalue(o)));//lua_CFunction*(light c function)
+    case LUA_TTHREAD: return thvalue(o);//Thread*(也就是lua_State)
+    case LUA_TUSERDATA: return getudatamem(uvalue(o));//取U(类型为Udata*, userdata)中保存的数据, 看样子保存的地址是 (char*)u + sizeof(UUdata)
+    case LUA_TLIGHTUSERDATA: return pvalue(o);//"void *"变量p,即 light userdata
     default: return NULL;
   }
 }
@@ -542,7 +543,9 @@ LUA_API const void *lua_topointer (lua_State *L, int idx) {
 ** push functions (C -> stack)
 */
 
-
+/*
+ * xzxtodo
+ */
 LUA_API void lua_pushnil (lua_State *L) {
   lua_lock(L);
   setnilvalue(L->top);
