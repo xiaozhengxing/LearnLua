@@ -554,7 +554,7 @@ LUA_API void lua_pushnil (lua_State *L) {
 }
 
 /*
- * xzxtodo
+ * push 浮点数n到栈顶,
  */
 LUA_API void lua_pushnumber (lua_State *L, lua_Number n) {
   lua_lock(L);
@@ -563,7 +563,9 @@ LUA_API void lua_pushnumber (lua_State *L, lua_Number n) {
   lua_unlock(L);
 }
 
-
+/*
+ * push 整数n到栈顶,
+ */
 LUA_API void lua_pushinteger (lua_State *L, lua_Integer n) {
   lua_lock(L);
   setivalue(L->top, n);
