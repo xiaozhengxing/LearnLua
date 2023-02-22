@@ -578,6 +578,8 @@ LUA_API void lua_pushinteger (lua_State *L, lua_Integer n) {
 ** Pushes on the stack a string with given length. Avoid using 's' when
 ** 'len' == 0 (as 's' can be NULL in that case), due to later use of
 ** 'memcmp' and 'memcpy'.
+*  使用字符串s(len可以为0) 新建一个TString并push到栈中, 返回保存在TString中的字符串首字符地址,
+*  注意是memcpy,并不会影响到原来的字符串s
 */
 LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
   TString *ts;
