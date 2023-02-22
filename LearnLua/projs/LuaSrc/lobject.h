@@ -294,6 +294,7 @@ typedef struct lua_TValue {
 #define chgivalue(obj,x) \
   { TValue *io=(obj); lua_assert(ttisinteger(io)); val_(io).i=(x); }
 
+//设置obj(类型为TValue*)的标记为nil
 #define setnilvalue(obj) settt_(obj, LUA_TNIL)
 
 #define setfvalue(obj,x) \

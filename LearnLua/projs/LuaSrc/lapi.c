@@ -544,7 +544,7 @@ LUA_API const void *lua_topointer (lua_State *L, int idx) {
 */
 
 /*
- * xzxtodo
+ * push nil 到栈顶,
  */
 LUA_API void lua_pushnil (lua_State *L) {
   lua_lock(L);
@@ -553,7 +553,9 @@ LUA_API void lua_pushnil (lua_State *L) {
   lua_unlock(L);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API void lua_pushnumber (lua_State *L, lua_Number n) {
   lua_lock(L);
   setfltvalue(L->top, n);
