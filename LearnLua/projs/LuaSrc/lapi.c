@@ -592,7 +592,10 @@ LUA_API const char *lua_pushlstring (lua_State *L, const char *s, size_t len) {
   return getstr(ts);
 }
 
-
+/*
+ * 使用字符串s(len可以为0) 新建一个TString并push到栈中, 返回保存在TString中的字符串首字符地址,
+ * 如果s为null,则push一个nil到栈中,
+ */
 LUA_API const char *lua_pushstring (lua_State *L, const char *s) {
   lua_lock(L);
   if (s == NULL)
@@ -609,7 +612,9 @@ LUA_API const char *lua_pushstring (lua_State *L, const char *s) {
   return s;
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API const char *lua_pushvfstring (lua_State *L, const char *fmt,
                                       va_list argp) {
   const char *ret;
