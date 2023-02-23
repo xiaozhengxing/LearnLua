@@ -303,6 +303,7 @@ typedef struct lua_TValue {
 #define setpvalue(obj,x) \
   { TValue *io=(obj); val_(io).p=(x); settt_(io, LUA_TLIGHTUSERDATA); }
 
+//设置obj(类型为TValue*)中保存bool值x
 #define setbvalue(obj,x) \
   { TValue *io=(obj); val_(io).b=(x); settt_(io, LUA_TBOOLEAN); }
 

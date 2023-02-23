@@ -665,7 +665,7 @@ LUA_API void lua_pushcclosure (lua_State *L, lua_CFunction fn, int n) {
   lua_unlock(L);
 }
 
-
+//push bool值(b != 0)到栈中,
 LUA_API void lua_pushboolean (lua_State *L, int b) {
   lua_lock(L);
   setbvalue(L->top, (b != 0));  /* ensure that true is 1 */
@@ -673,7 +673,7 @@ LUA_API void lua_pushboolean (lua_State *L, int b) {
   lua_unlock(L);
 }
 
-
+//xzxtodo
 LUA_API void lua_pushlightuserdata (lua_State *L, void *p) {
   lua_lock(L);
   setpvalue(L->top, p);
