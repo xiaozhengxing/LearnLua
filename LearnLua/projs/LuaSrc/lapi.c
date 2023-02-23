@@ -612,9 +612,7 @@ LUA_API const char *lua_pushstring (lua_State *L, const char *s) {
   return s;
 }
 
-/*
- * xzxtodo
- */
+//将格式化字符串push到栈中,
 LUA_API const char *lua_pushvfstring (lua_State *L, const char *fmt,
                                       va_list argp) {
   const char *ret;
@@ -625,7 +623,7 @@ LUA_API const char *lua_pushvfstring (lua_State *L, const char *fmt,
   return ret;
 }
 
-
+//将格式化字符串push到栈中,
 LUA_API const char *lua_pushfstring (lua_State *L, const char *fmt, ...) {
   const char *ret;
   va_list argp;
