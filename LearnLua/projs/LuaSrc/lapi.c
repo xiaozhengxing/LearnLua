@@ -720,7 +720,12 @@ LUA_API int lua_getglobal (lua_State *L, const char *name) {
   return auxgetstr(L, luaH_getint(reg, LUA_RIDX_GLOBALS), name);
 }
 
-
+/*
+ * idx索引处的元素是一个table
+ * 执行前的栈: [key][top]
+ * 执行后的栈: [table[key]][top]
+ * 返回 table[key]的actual tag(bits 0-3, 最低的四个bit)
+ */
 LUA_API int lua_gettable (lua_State *L, int idx) {
   StkId t;
   lua_lock(L);
@@ -730,7 +735,9 @@ LUA_API int lua_gettable (lua_State *L, int idx) {
   return ttnov(L->top - 1);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_getfield (lua_State *L, int idx, const char *k) {
   lua_lock(L);
   return auxgetstr(L, index2addr(L, idx), k);

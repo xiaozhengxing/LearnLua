@@ -73,6 +73,7 @@
 
 /*
 ** standard implementation for 'gettable'
+*
 */
 #define luaV_gettable(L,t,k,v) { const TValue *slot; \
   if (luaV_fastget(L,t,k,slot,luaH_get)) { setobj2s(L, v, slot); } \
