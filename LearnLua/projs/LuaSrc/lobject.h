@@ -300,6 +300,7 @@ typedef struct lua_TValue {
 #define setfvalue(obj,x) \
   { TValue *io=(obj); val_(io).f=(x); settt_(io, LUA_TLCF); }
 
+//设置obj(类型为TValue*)的标记为light userdata,并保存值x(void*)
 #define setpvalue(obj,x) \
   { TValue *io=(obj); val_(io).p=(x); settt_(io, LUA_TLIGHTUSERDATA); }
 
@@ -330,6 +331,11 @@ typedef struct lua_TValue {
     val_(io).gc = obj2gco(x_); settt_(io, ctb(LUA_TUSERDATA)); \
     checkliveness(L,io); }
 
+/*
+ *将x(Thread*类型,即lua_State*类型)转成GCObject*,赋值给obj.gc, 且设置obj.tag为(1<<6 | LUA_TTHREAD),即添加collectable tag,表示需回收
+ *obj: TValue*类型
+ *x:Thread*类型,即lua_State*类型,
+ */
 #define setthvalue(L,obj,x) \
   { TValue *io = (obj); lua_State *x_ = (x); \
     val_(io).gc = obj2gco(x_); settt_(io, ctb(LUA_TTHREAD)); \
