@@ -681,7 +681,7 @@ LUA_API void lua_pushlightuserdata (lua_State *L, void *p) {
   lua_unlock(L);
 }
 
-//xzxtodo
+//push L(lua_state*)到栈中,如果L是主线程则返回1
 LUA_API int lua_pushthread (lua_State *L) {
   lua_lock(L);
   setthvalue(L, L->top, L);
@@ -696,7 +696,7 @@ LUA_API int lua_pushthread (lua_State *L) {
 ** get functions (Lua -> stack)
 */
 
-
+//todo,
 static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
@@ -713,7 +713,7 @@ static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   return ttnov(L->top - 1);
 }
 
-
+//查找G->Global[name],将value push到栈中,并返回value的actual tag(bits 0-3, 最低的四个bit)
 LUA_API int lua_getglobal (lua_State *L, const char *name) {
   Table *reg = hvalue(&G(L)->l_registry);
   lua_lock(L);

@@ -497,15 +497,15 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 */
 const TValue *luaH_getint (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */
-  if (l_castS2U(key) - 1 < t->sizearray)
+  if (l_castS2U(key) - 1 < t->sizearray)//这里其实有个问题,在表格resize的时候,原来在hash表中的node.key>srcSize但node.key<dstSize的节点,会不会搬到新table的array中,
     return &t->array[key - 1];
-  else {
+  else {//到hash表中查询,
     Node *n = hashint(t, key);
     for (;;) {  /* check whether 'key' is somewhere in the chain */
       if (ttisinteger(gkey(n)) && ivalue(gkey(n)) == key)
         return gval(n);  /* that's it */
       else {
-        int nx = gnext(n);
+        int nx = gnext(n);//取链表中的下一个node,
         if (nx == 0) break;
         n += nx;
       }
