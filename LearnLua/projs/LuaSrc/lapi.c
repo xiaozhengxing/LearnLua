@@ -738,6 +738,7 @@ LUA_API int lua_gettable (lua_State *L, int idx) {
 /*
  * 将table[k] push到栈中,(查找table[k]的时候,可能会触发元方法__index)
  * idx:索引处的元素为table
+ * 返回 table[k]的actual tag(bits 0-3, 最低的四个bit)
  */
 LUA_API int lua_getfield (lua_State *L, int idx, const char *k) {
   lua_lock(L);
@@ -745,7 +746,9 @@ LUA_API int lua_getfield (lua_State *L, int idx, const char *k) {
 }
 
 /*
- * xzxtodo
+* 将table[n] push到栈中,(查找table[n]的时候,可能会触发元方法__index)
+* idx:索引处的元素为table
+* 返回 table[n]的actual tag(bits 0-3, 最低的四个bit)
  */
 LUA_API int lua_geti (lua_State *L, int idx, lua_Integer n) {
   StkId t;
