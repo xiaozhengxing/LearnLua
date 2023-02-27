@@ -736,14 +736,17 @@ LUA_API int lua_gettable (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 将table[k] push到栈中,(查找table[k]的时候,可能会触发元方法__index)
+ * idx:索引处的元素为table
  */
 LUA_API int lua_getfield (lua_State *L, int idx, const char *k) {
   lua_lock(L);
   return auxgetstr(L, index2addr(L, idx), k);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_geti (lua_State *L, int idx, lua_Integer n) {
   StkId t;
   const TValue *slot;
