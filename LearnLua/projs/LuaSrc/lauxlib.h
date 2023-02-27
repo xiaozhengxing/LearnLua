@@ -84,6 +84,7 @@ LUALIB_API void (luaL_unref) (lua_State *L, int t, int ref);
 LUALIB_API int (luaL_loadfilex) (lua_State *L, const char *filename,
                                                const char *mode);
 
+//todo,看起来loadfile里面会判断改文件是xxx.lua还是二进制文件(已编译过),
 #define luaL_loadfile(L,f)	luaL_loadfilex(L,f,NULL)
 
 LUALIB_API int (luaL_loadbufferx) (lua_State *L, const char *buff, size_t sz,
