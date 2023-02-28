@@ -984,7 +984,9 @@ LUA_API void lua_rawset (lua_State *L, int idx) {
 }
 
 /*
- * xzxtodo
+ * 执行table[n] = val,table为idx索引处的元素,不会触发元方法__newindex
+ * 执行前的栈:[val][top]
+ * 执行后的栈:[top]
  */
 LUA_API void lua_rawseti (lua_State *L, int idx, lua_Integer n) {
   StkId o;
