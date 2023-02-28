@@ -723,8 +723,8 @@ LUA_API int lua_getglobal (lua_State *L, const char *name) {
 /*
  * idx索引处的元素是一个table
  * 执行前的栈: [key][top]
- * 执行后的栈: [table[key]][top]
- * 返回 table[key]的actual tag(bits 0-3, 最低的四个bit)
+ * 执行后的栈: [table[key]][top], 可能会触发元方法__index
+ * 返回 table[key]的actual tag(bits 0-3, 最低的四个bit),
  */
 LUA_API int lua_gettable (lua_State *L, int idx) {
   StkId t;
@@ -768,7 +768,12 @@ LUA_API int lua_geti (lua_State *L, int idx, lua_Integer n) {
   return ttnov(L->top - 1);
 }
 
-
+/*
+ * idx索引处的元素是一个table
+ * 执行前的栈: [key][top]
+ * 执行后的栈: [table[key]][top], 不会触发元方法,
+ * 返回 table[key]的actual tag(bits 0-3, 最低的四个bit), 
+ */
 LUA_API int lua_rawget (lua_State *L, int idx) {
   StkId t;
   lua_lock(L);
