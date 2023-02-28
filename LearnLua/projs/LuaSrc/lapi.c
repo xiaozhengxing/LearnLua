@@ -1022,7 +1022,10 @@ LUA_API void lua_rawsetp (lua_State *L, int idx, const void *p) {
   lua_unlock(L);
 }
 
-/*xzxtodo
+/*
+ *赋值 val(objindex).metatable = metatable
+ 执行前的栈: [metatable][top]
+ 执行后的栈: [top]
  *将栈顶的table赋值给objindex索引处的TValue当做元表后, 将table出栈
  *如果TValue类型不为{Table, UserData}, 则将元表赋值给Global中该类型共用的一个元表
  *objindex: 索引,指向TValue*
@@ -1066,7 +1069,9 @@ LUA_API int lua_setmetatable (lua_State *L, int objindex) {
   return 1;
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API void lua_setuservalue (lua_State *L, int idx) {
   StkId o;
   lua_lock(L);
