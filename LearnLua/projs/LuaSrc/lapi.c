@@ -771,7 +771,7 @@ LUA_API int lua_geti (lua_State *L, int idx, lua_Integer n) {
 /*
  * idx索引处的元素是一个table
  * 执行前的栈: [key][top]
- * 执行后的栈: [table[key]][top], 不会触发元方法,
+ * 执行后的栈: [table[key]][top], (查找table[key]的时候,不会触发元方法),
  * 返回 table[key]的actual tag(bits 0-3, 最低的四个bit), 
  */
 LUA_API int lua_rawget (lua_State *L, int idx) {
@@ -784,7 +784,11 @@ LUA_API int lua_rawget (lua_State *L, int idx) {
   return ttnov(L->top - 1);
 }
 
-
+/*
+* 将table[n] push到栈中,(查找table[n]的时候,不会触发元方法__index)
+* idx:索引处的元素为table
+* 返回 table[n]的actual tag(bits 0-3, 最低的四个bit)
+ */
 LUA_API int lua_rawgeti (lua_State *L, int idx, lua_Integer n) {
   StkId t;
   lua_lock(L);
@@ -796,7 +800,11 @@ LUA_API int lua_rawgeti (lua_State *L, int idx, lua_Integer n) {
   return ttnov(L->top - 1);
 }
 
-
+/*
+* 将table[p] push到栈中,(p包装成一个lihgt userdata, 查找table[p]的时候,不会触发元方法__index)
+* idx:索引处的元素为table
+* 返回 table[p]的actual tag(bits 0-3, 最低的四个bit)
+ */
 LUA_API int lua_rawgetp (lua_State *L, int idx, const void *p) {
   StkId t;
   TValue k;
@@ -828,7 +836,9 @@ LUA_API void lua_createtable (lua_State *L, int narray, int nrec) {
   lua_unlock(L);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_getmetatable (lua_State *L, int objindex) {
   const TValue *obj;
   Table *mt;
