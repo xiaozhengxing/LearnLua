@@ -916,7 +916,7 @@ LUA_API void lua_setglobal (lua_State *L, const char *name) {
 }
 
 /*
- * 执行 table[key] = val, table为idx索引处的元素,
+ * 执行 table[key] = val, table为idx索引处的元素,可能会触发元方法__newindex
  * 执行前的栈: [key][val][top]
  * 执行后的栈: [top]
  */
@@ -942,7 +942,9 @@ LUA_API void lua_setfield (lua_State *L, int idx, const char *k) {
 }
 
 /*
- * xzxtodo
+ * 执行table[n] = val,table为idx索引处的元素,可能会触发元方法__newindex
+ * 执行前的栈:[val][top]
+ * 执行后的栈:[top]
  */
 LUA_API void lua_seti (lua_State *L, int idx, lua_Integer n) {
   StkId t;
@@ -961,7 +963,11 @@ LUA_API void lua_seti (lua_State *L, int idx, lua_Integer n) {
   lua_unlock(L);
 }
 
-
+/*
+ * 执行 table[key] = val, table为idx索引处的元素,不会触发元方法__newindex
+ * 执行前的栈: [key][val][top]
+ * 执行后的栈: [top]
+ */
 LUA_API void lua_rawset (lua_State *L, int idx) {
   StkId o;
   TValue *slot;
@@ -977,7 +983,9 @@ LUA_API void lua_rawset (lua_State *L, int idx) {
   lua_unlock(L);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API void lua_rawseti (lua_State *L, int idx, lua_Integer n) {
   StkId o;
   lua_lock(L);
