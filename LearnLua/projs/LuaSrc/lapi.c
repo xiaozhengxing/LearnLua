@@ -1001,6 +1001,12 @@ LUA_API void lua_rawseti (lua_State *L, int idx, lua_Integer n) {
 }
 
 
+/*
+ * 执行table[p] = val, table为idx索引处的元素, 不会触发元方法__newindex
+ * 执行前的栈: [val][top]
+ * 执行后的栈: [top]
+ * "void *"变量p,即 light userdata
+ */
 LUA_API void lua_rawsetp (lua_State *L, int idx, const void *p) {
   StkId o;
   TValue k, *slot;
@@ -1016,7 +1022,7 @@ LUA_API void lua_rawsetp (lua_State *L, int idx, const void *p) {
   lua_unlock(L);
 }
 
-/*
+/*xzxtodo
  *将栈顶的table赋值给objindex索引处的TValue当做元表后, 将table出栈
  *如果TValue类型不为{Table, UserData}, 则将元表赋值给Global中该类型共用的一个元表
  *objindex: 索引,指向TValue*
