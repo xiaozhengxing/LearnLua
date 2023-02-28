@@ -696,7 +696,7 @@ LUA_API int lua_pushthread (lua_State *L) {
 ** get functions (Lua -> stack)
 */
 
-//todo,
+//todo,可能会触发元方法__index
 static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
@@ -889,7 +889,7 @@ LUA_API int lua_getuservalue (lua_State *L, int idx) {
 
 /*
 ** t[k] = value at the top of the stack (where 'k' is a string)
-* xzxtodo
+* todo,可能会触发元方法__newindex
 */
 static void auxsetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
@@ -906,14 +906,20 @@ static void auxsetstr (lua_State *L, const TValue *t, const char *k) {
   lua_unlock(L);  /* lock done by caller */
 }
 
-
+/*
+ * G->Global[name] = top, 并将top出栈,
+ */
 LUA_API void lua_setglobal (lua_State *L, const char *name) {
   Table *reg = hvalue(&G(L)->l_registry);
   lua_lock(L);  /* unlock done in 'auxsetstr' */
   auxsetstr(L, luaH_getint(reg, LUA_RIDX_GLOBALS), name);
 }
 
-
+/*
+ * 执行 table[key] = val, table为idx索引处的元素,
+ * 执行前的栈: [key][val][top]
+ * 执行后的栈: [top]
+ */
 LUA_API void lua_settable (lua_State *L, int idx) {
   StkId t;
   lua_lock(L);
@@ -925,12 +931,19 @@ LUA_API void lua_settable (lua_State *L, int idx) {
 }
 
 
+/*
+ * 执行table[k] = val, table为idx索引处的元素,可能会触发元方法__newindex
+ * 执行前的栈:[val][top]
+ * 执行后的栈:[top]
+ */
 LUA_API void lua_setfield (lua_State *L, int idx, const char *k) {
   lua_lock(L);  /* unlock done in 'auxsetstr' */
   auxsetstr(L, index2addr(L, idx), k);
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API void lua_seti (lua_State *L, int idx, lua_Integer n) {
   StkId t;
   const TValue *slot;
