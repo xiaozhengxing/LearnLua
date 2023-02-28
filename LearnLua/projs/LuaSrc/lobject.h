@@ -472,7 +472,7 @@ typedef struct Udata {
   lu_byte ttuv_;  /* user value's tag */
   struct Table *metatable;
   size_t len;  /* number of bytes */
-  union Value user_;  /* user value */
+  union Value user_;  /* user value, 目前还不知道这个Value是用来存储什么的,因为数据是保存在getudatamem地址的 */
 } Udata;
 
 
@@ -493,13 +493,16 @@ typedef union UUdata {
 #define getudatamem(u)  \
   check_exp(sizeof((u)->ttuv_), (cast(char*, (u)) + sizeof(UUdata)))
 
+/*
+ * 将o(类型为TValue*)的Value值赋给u(类型为Udata*),并赋值tag
+ */
 #define setuservalue(L,u,o) \
 	{ const TValue *io=(o); Udata *iu = (u); \
 	  iu->user_ = io->value_; iu->ttuv_ = rttype(io); \
 	  checkliveness(L,io); }
 
 /*
- * 将U(类型为Udata*)的Value值赋给O(类型为TValue*),并设置tag
+ * 将U(类型为Udata*)的Value值赋给O(类型为TValue*),并赋值tag
  */
 #define getuservalue(L,u,o) \
 	{ TValue *io=(o); const Udata *iu = (u); \

@@ -1070,7 +1070,9 @@ LUA_API int lua_setmetatable (lua_State *L, int objindex) {
 }
 
 /*
- * xzxtodo
+ * 将userdata的值赋给idx所处的元素,
+ * 执行前的栈:[userdata][top]
+ * 执行后的栈:[top]
  */
 LUA_API void lua_setuservalue (lua_State *L, int idx) {
   StkId o;
@@ -1089,7 +1091,9 @@ LUA_API void lua_setuservalue (lua_State *L, int idx) {
 ** 'load' and 'call' functions (run Lua code)
 */
 
-
+/*
+ * 检测栈空间是否充足(考虑函数的参数与返回值个数)
+ */
 #define checkresults(L,na,nr) \
      api_check(L, (nr) == LUA_MULTRET || (L->ci->top - L->top >= (nr) - (na)), \
 	"results from function overflow current stack size")
@@ -1325,7 +1329,10 @@ LUA_API int lua_next (lua_State *L, int idx) {
   return more;
 }
 
-
+/*
+ * todo,将栈顶n个字符串从栈顶弹出,合并后push到栈中,
+ * n为0的时候,push一个空字符串到栈顶,
+ */
 LUA_API void lua_concat (lua_State *L, int n) {
   lua_lock(L);
   api_checknelems(L, n);
