@@ -867,7 +867,9 @@ LUA_API int lua_getmetatable (lua_State *L, int objindex) {
 }
 
 /*
- * xzxtodo
+ * idx:索引处的元素为UserData
+ * 将Userdata中的Value和tag赋值给TValue后,将TValue push到栈中,
+ * 返回actual tag(bits 0-3, 最低的四个bit),
  */
 LUA_API int lua_getuservalue (lua_State *L, int idx) {
   StkId o;
@@ -887,6 +889,7 @@ LUA_API int lua_getuservalue (lua_State *L, int idx) {
 
 /*
 ** t[k] = value at the top of the stack (where 'k' is a string)
+* xzxtodo
 */
 static void auxsetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;

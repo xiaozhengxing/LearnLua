@@ -498,7 +498,9 @@ typedef union UUdata {
 	  iu->user_ = io->value_; iu->ttuv_ = rttype(io); \
 	  checkliveness(L,io); }
 
-
+/*
+ * 将U(类型为Udata*)的Value值赋给O(类型为TValue*),并设置tag
+ */
 #define getuservalue(L,u,o) \
 	{ TValue *io=(o); const Udata *iu = (u); \
 	  io->value_ = iu->user_; settt_(io, iu->ttuv_); \
