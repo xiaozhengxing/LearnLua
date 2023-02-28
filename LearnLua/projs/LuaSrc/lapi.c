@@ -837,7 +837,8 @@ LUA_API void lua_createtable (lua_State *L, int narray, int nrec) {
 }
 
 /*
- * xzxtodo
+ * 查找idx索引处的元素的元表,如果有,将其push到栈中,并返回1;如果没有,直接返回0
+ * 如果idx的元素是table或userdata,直接返回其xxx.metatable,如果idx的元素是其他类型,则返回对应的保存在G中的元表,
  */
 LUA_API int lua_getmetatable (lua_State *L, int objindex) {
   const TValue *obj;
@@ -853,7 +854,7 @@ LUA_API int lua_getmetatable (lua_State *L, int objindex) {
       mt = uvalue(obj)->metatable;
       break;
     default:
-      mt = G(L)->mt[ttnov(obj)];
+      mt = G(L)->mt[ttnov(obj)];//对于其他类型, 每个类型共用一个global元表,
       break;
   }
   if (mt != NULL) {
@@ -865,7 +866,9 @@ LUA_API int lua_getmetatable (lua_State *L, int objindex) {
   return res;
 }
 
-
+/*
+ * xzxtodo
+ */
 LUA_API int lua_getuservalue (lua_State *L, int idx) {
   StkId o;
   lua_lock(L);
