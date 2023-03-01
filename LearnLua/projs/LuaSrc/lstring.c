@@ -185,7 +185,7 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
   //2、在G->strt(类型为stringtable)中查找失败, 因为要新创建一个字符串, 所以check一下stringtable是不是要扩容并更新,
   if (g->strt.nuse >= g->strt.size && g->strt.size <= MAX_INT/2) {
     luaS_resize(L, g->strt.size * 2);
-    list = &g->strt.hash[lmod(h, g->strt.size)];  /* recompute with new size */
+    list = &g->strt.hash[lmod(h, g->strt.size)];  /* recompute with new size, 重新计算一下在哪个hash链表中 */
   }
   
   ts = createstrobj(L, l, LUA_TSHRSTR, h);

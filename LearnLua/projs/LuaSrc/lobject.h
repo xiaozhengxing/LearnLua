@@ -424,7 +424,7 @@ typedef struct TString {
   unsigned int hash;
   union {
     size_t lnglen;  /* length for long strings */
-    struct TString *hnext;  /* linked list for hash table */
+    struct TString *hnext;  /* linked list for hash table,短字符串时,TString会存在g->stringtable中, hnext指向下一个TString, */
   } u;
 } TString;
 
