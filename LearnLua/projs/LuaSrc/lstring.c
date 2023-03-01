@@ -45,10 +45,10 @@ int luaS_eqlngstr (TString *a, TString *b) {
      (memcmp(getstr(a), getstr(b), len) == 0));  /* equal contents */
 }
 
-
+//计算hash值,
 unsigned int luaS_hash (const char *str, size_t l, unsigned int seed) {
   unsigned int h = seed ^ cast(unsigned int, l);
-  size_t step = (l >> LUAI_HASHLIMIT) + 1;
+  size_t step = (l >> LUAI_HASHLIMIT) + 1;//注意这里有个步长,并不会每个字符都去会计算,不同字符串也可能会相同的hash值,
   for (; l >= step; l -= step)
     h ^= ((h<<5) + (h>>2) + cast_byte(str[l - 1]));
   return h;
@@ -167,6 +167,8 @@ void luaS_remove (lua_State *L, TString *ts) {
 static TString *internshrstr (lua_State *L, const char *str, size_t l) {
   TString *ts;
   global_State *g = G(L);
+
+  //1、先在G->strt(类型为stringtable)中查找,如果找到了则直接返回,
   unsigned int h = luaS_hash(str, l, g->seed);
   TString **list = &g->strt.hash[lmod(h, g->strt.size)];
   lua_assert(str != NULL);  /* otherwise 'memcmp'/'memcpy' are undefined */
@@ -179,10 +181,13 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
       return ts;
     }
   }
+
+  //2、在G->strt(类型为stringtable)中查找失败, 因为要新创建一个字符串, 所以check一下stringtable是不是要扩容并更新,
   if (g->strt.nuse >= g->strt.size && g->strt.size <= MAX_INT/2) {
     luaS_resize(L, g->strt.size * 2);
     list = &g->strt.hash[lmod(h, g->strt.size)];  /* recompute with new size */
   }
+  
   ts = createstrobj(L, l, LUA_TSHRSTR, h);
   memcpy(getstr(ts), str, l * sizeof(char));
   ts->shrlen = cast_byte(l);

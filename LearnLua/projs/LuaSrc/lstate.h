@@ -55,8 +55,8 @@ struct lua_longjmp;  /* defined in ldo.c */
 #define KGC_EMERGENCY	1	/* gc was forced by an allocation failure */
 
 
-typedef struct stringtable {
-  TString **hash;
+typedef struct stringtable {//短字符串表,
+  TString **hash;//一个TString hash表, 每个元素都链接一个链表,给链表中的字符串所计算出来的hash值都一样,
   int nuse;  /* number of elements */
   int size;
 } stringtable;
