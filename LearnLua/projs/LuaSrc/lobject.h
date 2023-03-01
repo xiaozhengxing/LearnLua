@@ -79,6 +79,7 @@ typedef struct GCObject GCObject;
 /*
 ** Common Header for all collectable objects (in macro form, to be
 ** included in other objects)
+* marked用来就是gc标记清除法中用来设置颜色的,
 */
 #define CommonHeader	GCObject *next; lu_byte tt; lu_byte marked
 
@@ -414,10 +415,11 @@ typedef TValue *StkId;  /* index to stack elements */
 /*
 ** Header for string value; string bytes follow the end of this structure
 ** (aligned according to 'UTString'; see next).
+* 这个只是string的头部,TString中所保存的字符串内容的具体地址为 (TString*) + sizeof(UTString)
 */
 typedef struct TString {
   CommonHeader;
-  lu_byte extra;  /* reserved words for short strings; "has hash" for longs */
+  lu_byte extra;  /* reserved words for short strings; "has hash" for longs, 短字符串时,表示对应的保留字index;长字符串时? */
   lu_byte shrlen;  /* length for short strings */
   unsigned int hash;
   union {
@@ -465,12 +467,12 @@ typedef union UTString {
 /*
 ** Header for userdata; memory area follows the end of this structure
 ** (aligned according to 'UUdata'; see next).
-* 通过宏getudatamem可知, Udata u实际数据保存的地址为 (char*)u + sizeof(UUdata),
+* 这个只是Udata的头部, 通过宏getudatamem可知, Udata u实际数据保存的地址为 (char*)u + sizeof(UUdata),
 */
 typedef struct Udata {
   CommonHeader;
   lu_byte ttuv_;  /* user value's tag */
-  struct Table *metatable;
+  struct Table *metatable;//Udata和table都有属于自己的metatable
   size_t len;  /* number of bytes */
   union Value user_;  /* user value, 目前还不知道这个Value是用来存储什么的,因为数据是保存在getudatamem地址的 */
 } Udata;
@@ -511,7 +513,7 @@ typedef union UUdata {
 
 
 /*
-** Description of an upvalue for function prototypes
+** Description of an upvalue for function prototypes,仅在编译的时候使用到,
 */
 typedef struct Upvaldesc {
   TString *name;  /* upvalue name (for debug information) */
@@ -573,28 +575,30 @@ typedef struct UpVal UpVal;
 #define ClosureHeader \
 	CommonHeader; lu_byte nupvalues; GCObject *gclist//nupvalues表示upvalue的个数,
 
+//c closure
 typedef struct CClosure {
   ClosureHeader;
   lua_CFunction f;
   TValue upvalue[1];  /* list of upvalues, 其实是数组,保存Upvalue */
 } CClosure;
 
-
+//lua closure
 typedef struct LClosure {
   ClosureHeader;
   struct Proto *p;
   UpVal *upvals[1];  /* list of upvalues */
 } LClosure;
 
-
+//包含 c closure 和 lua closure
 typedef union Closure {
   CClosure c;
   LClosure l;
 } Closure;
 
-
+//判断o(类型为TValue*)是不是 Lua Closure(collectable tag为1)
 #define isLfunction(o)	ttisLclosure(o)
 
+//取o(类型为TValue*)中的LClosure.Proto* p
 #define getproto(o)	(clLvalue(o)->p)
 
 
@@ -604,14 +608,16 @@ typedef union Closure {
 
 typedef union TKey {
   struct {
-    TValuefields;
+    TValuefields;//TValue
     int next;  /* for chaining (offset for next node) */
   } nk;
   TValue tvk;
 } TKey;
 
 
-/* copy a value into a key without messing up field 'next' */
+/* copy a value into a key without messing up field 'next'
+ * 将obj(类型为TValue*)的值赋给key(类型为TKey)
+ */
 #define setnodekey(L,key,obj) \
 	{ TKey *k_=(key); const TValue *io_=(obj); \
 	  k_->nk.value_ = io_->value_; k_->nk.tt_ = io_->tt_; \

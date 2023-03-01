@@ -55,6 +55,7 @@ typedef unsigned char lu_byte;
 ** conversion of pointer to unsigned integer:
 ** this is for hashing only; there is no problem if the integer
 ** cannot hold the whole pointer value
+* 将指针转为unit,方便计算hash值等,
 */
 #define point2uint(p)	((unsigned int)((size_t)(p) & UINT_MAX))
 
