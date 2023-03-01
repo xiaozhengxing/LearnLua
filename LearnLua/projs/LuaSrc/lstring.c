@@ -195,6 +195,7 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
 
 /*
 ** new string (with explicit length)
+* xzxtodo
 */
 TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
   if (l <= LUAI_MAXSHORTLEN)  /* short string? */
@@ -215,19 +216,23 @@ TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
 ** cache (using the string address as a key). The cache can contain
 ** only zero-terminated strings, so it is safe to use 'strcmp' to
 ** check hits.
+* 使用str(char*)来构建TString,先在strcache里面找,找不到则调用 luaS_newlstr
 */
 TString *luaS_new (lua_State *L, const char *str) {
   unsigned int i = point2uint(str) % STRCACHE_N;  /* hash */
   int j;
+
+  //先在strcache里面查找是否已经有了同样的字符串,
   TString **p = G(L)->strcache[i];
   for (j = 0; j < STRCACHE_M; j++) {
     if (strcmp(str, getstr(p[j])) == 0)  /* hit? */
       return p[j];  /* that is it */
   }
+  
   /* normal route */
   for (j = STRCACHE_M - 1; j > 0; j--)
     p[j] = p[j - 1];  /* move out last element */
-  /* new element is first in the list */
+  /* new element is first in the list, 更新strCache */
   p[0] = luaS_newlstr(L, str, strlen(str));
   return p[0];
 }
