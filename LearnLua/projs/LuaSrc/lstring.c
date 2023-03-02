@@ -36,6 +36,7 @@
 
 /*
 ** equality for long strings
+* a,b均为长字符串,对比其是否相等,
 */
 int luaS_eqlngstr (TString *a, TString *b) {
   size_t len = a->u.lnglen;
@@ -45,7 +46,7 @@ int luaS_eqlngstr (TString *a, TString *b) {
      (memcmp(getstr(a), getstr(b), len) == 0));  /* equal contents */
 }
 
-//计算hash值,
+//计算字符串的hash值,
 unsigned int luaS_hash (const char *str, size_t l, unsigned int seed) {
   unsigned int h = seed ^ cast(unsigned int, l);
   size_t step = (l >> LUAI_HASHLIMIT) + 1;//注意这里有个步长,并不会每个字符都去会计算,不同字符串也可能会相同的hash值,
@@ -54,7 +55,7 @@ unsigned int luaS_hash (const char *str, size_t l, unsigned int seed) {
   return h;
 }
 
-
+//返回长字符串的hash值{如果还未计算,就先计算一次}
 unsigned int luaS_hashlongstr (TString *ts) {
   lua_assert(ts->tt == LUA_TLNGSTR);
   if (ts->extra == 0) {  /* no hash? */
