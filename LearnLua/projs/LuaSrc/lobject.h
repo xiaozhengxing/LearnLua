@@ -419,9 +419,9 @@ typedef TValue *StkId;  /* index to stack elements */
 */
 typedef struct TString {
   CommonHeader;
-  lu_byte extra;  /* reserved words for short strings; "has hash" for longs, 短字符串时,表示对应的保留字index;长字符串时? */
+  lu_byte extra;  /* reserved words for short strings; "has hash" for longs, 短字符串时 >0表示对应的保留字index, ==0表示一般的短字符串;长字符串时:值为1表示hash值已计算,为0表示还未计算 */
   lu_byte shrlen;  /* length for short strings */
-  unsigned int hash;
+  unsigned int hash;//长字符串时,该值的初始值为G->seed{参见luaS_newlstr()},此时extra=0表示还未计算hash值;短字符串时,如果不是保留字,则在创建的时候就会赋值hash
   union {
     size_t lnglen;  /* length for long strings */
     struct TString *hnext;  /* linked list for hash table,短字符串时,TString会存在g->stringtable中, hnext指向下一个TString, */

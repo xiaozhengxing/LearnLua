@@ -208,7 +208,7 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
 * xzxtodo
 */
 TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
-  if (l <= LUAI_MAXSHORTLEN)  /* short string? */
+  if (l <= LUAI_MAXSHORTLEN)  /* short string? 短字符串 */
     return internshrstr(L, str, l);
   else {
     TString *ts;
