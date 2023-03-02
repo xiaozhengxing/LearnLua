@@ -144,7 +144,9 @@ static TString *createstrobj (lua_State *L, size_t l, int tag, unsigned int h) {
   return ts;
 }
 
-
+/*
+ * 创建长字符串,默认不会计算hash值,初始hash值为G->seed
+ */
 TString *luaS_createlngstrobj (lua_State *L, size_t l) {
   TString *ts = createstrobj(L, l, LUA_TLNGSTR, G(L)->seed);
   ts->u.lnglen = l;
@@ -205,7 +207,7 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
 
 /*
 ** new string (with explicit length)
-* xzxtodo
+* 创建字符串(短或长)
 */
 TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
   if (l <= LUAI_MAXSHORTLEN)  /* short string? 短字符串 */
