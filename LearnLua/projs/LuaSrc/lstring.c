@@ -129,12 +129,13 @@ void luaS_init (lua_State *L) {
 
 /*
 ** creates a new string object
+* 创建字符串TString(字符长度为l, 这里还没有将str copy进去), 设置tag, hash
 */
 static TString *createstrobj (lua_State *L, size_t l, int tag, unsigned int h) {
   TString *ts;
   GCObject *o;
   size_t totalsize;  /* total size of TString object */
-  totalsize = sizelstring(l);
+  totalsize = sizelstring(l);//这里 sizeof(UTString) + l + 1, 最后一位用来存入'\0'
   o = luaC_newobj(L, tag, totalsize);
   ts = gco2ts(o);
   ts->hash = h;
@@ -163,6 +164,9 @@ void luaS_remove (lua_State *L, TString *ts) {
 
 /*
 ** checks whether short string exists and reuses it or creates a new one
+* 创建短字符串TString
+* (1)先在G->strt(类型为stringtable)中查找,如果找到了则直接返回,
+* (2)没找到则先检测G->strt是否要扩容,并将新建的TString插入到G->strt的hash链表(通过hash值计算在哪个链表中)头部,
 */
 static TString *internshrstr (lua_State *L, const char *str, size_t l) {
   TString *ts;
@@ -187,11 +191,12 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
     luaS_resize(L, g->strt.size * 2);
     list = &g->strt.hash[lmod(h, g->strt.size)];  /* recompute with new size, 重新计算一下在哪个hash链表中 */
   }
-  
+
+  //3、创建新的TString,复制字符串进去,设置tag,hash等值,
   ts = createstrobj(L, l, LUA_TSHRSTR, h);
   memcpy(getstr(ts), str, l * sizeof(char));
   ts->shrlen = cast_byte(l);
-  ts->u.hnext = *list;
+  ts->u.hnext = *list;//将新建的TString放到g->stringtable的hash链表(前面计算了在哪个hash链表中)的第一个节点,
   *list = ts;
   g->strt.nuse++;
   return ts;
