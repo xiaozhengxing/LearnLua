@@ -68,7 +68,7 @@ unsigned int luaS_hashlongstr (TString *ts) {
 
 /*
 ** resizes the string table
-* 给g->stringTable重新设置大小(扩容或者缩容),并更新hash数组各自对应的链表,
+* 给g->stringTable(保存的是短字符串)重新设置大小(扩容或者缩容),并更新hash数组各自对应的链表,
 * xzxtodo
 */
 void luaS_resize (lua_State *L, int newsize) {
@@ -79,7 +79,8 @@ void luaS_resize (lua_State *L, int newsize) {
     for (i = tb->size; i < newsize; i++)//对新增的数组元素(注意i的起始大小)直接置为null
       tb->hash[i] = NULL;
   }
-  
+
+  //重新hash,将hash表格中每个元素对应的链表中的TString重新计算位置并移动过去,
   for (i = 0; i < tb->size; i++) {  /* rehash */
     TString *p = tb->hash[i];
     tb->hash[i] = NULL;
@@ -87,10 +88,12 @@ void luaS_resize (lua_State *L, int newsize) {
       TString *hnext = p->u.hnext;  /* save next */
       unsigned int h = lmod(p->hash, newsize);  /* new position */
       p->u.hnext = tb->hash[h];  /* chain it */
-      tb->hash[h] = p;
+      tb->hash[h] = p;//放到链首,
       p = hnext;
     }
   }
+
+  //xzxtodo
   if (newsize < tb->size) {  /* shrink table if needed */
     /* vanishing slice should be empty */
     lua_assert(tb->hash[newsize] == NULL && tb->hash[tb->size - 1] == NULL);
