@@ -68,15 +68,18 @@ unsigned int luaS_hashlongstr (TString *ts) {
 
 /*
 ** resizes the string table
+* 给g->stringTable重新设置大小(扩容或者缩容),并更新hash数组各自对应的链表,
+* xzxtodo
 */
 void luaS_resize (lua_State *L, int newsize) {
   int i;
   stringtable *tb = &G(L)->strt;
   if (newsize > tb->size) {  /* grow table if needed */
-    luaM_reallocvector(L, tb->hash, tb->size, newsize, TString *);
-    for (i = tb->size; i < newsize; i++)
+    luaM_reallocvector(L, tb->hash, tb->size, newsize, TString *);//对hash数组进行重新分配,注意这个realloc会将原内存中的值拷贝到新的内存中,
+    for (i = tb->size; i < newsize; i++)//对新增的数组元素(注意i的起始大小)直接置为null
       tb->hash[i] = NULL;
   }
+  
   for (i = 0; i < tb->size; i++) {  /* rehash */
     TString *p = tb->hash[i];
     tb->hash[i] = NULL;
@@ -213,7 +216,7 @@ static TString *internshrstr (lua_State *L, const char *str, size_t l) {
 TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
   if (l <= LUAI_MAXSHORTLEN)  /* short string? 短字符串 */
     return internshrstr(L, str, l);
-  else {
+  else {//长字符串,
     TString *ts;
     if (l >= (MAX_SIZE - sizeof(TString))/sizeof(char))
       luaM_toobig(L);
@@ -229,7 +232,7 @@ TString *luaS_newlstr (lua_State *L, const char *str, size_t l) {
 ** cache (using the string address as a key). The cache can contain
 ** only zero-terminated strings, so it is safe to use 'strcmp' to
 ** check hits.
-* 使用str(char*)来构建TString,先在strcache里面找,找不到则调用 luaS_newlstr
+* 使用str(char*)来构建TString,先在strcache里面找,找不到则调用 luaS_newlstr新建字符串,并且将新建的字符串更新到strcache中,
 */
 TString *luaS_new (lua_State *L, const char *str) {
   unsigned int i = point2uint(str) % STRCACHE_N;  /* hash */

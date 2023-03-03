@@ -123,7 +123,7 @@ typedef struct global_State {
   l_mem GCdebt;  /* bytes allocated not yet compensated by the collector */
   lu_mem GCmemtrav;  /* memory traversed by the GC */
   lu_mem GCestimate;  /* an estimate of the non-garbage memory in use */
-  stringtable strt;  /* hash table for strings */
+  stringtable strt;  /* hash table for strings, 注意stringtable中只保存短字符串 */
   TValue l_registry;
   unsigned int seed;  /* randomized seed for hashes */
   lu_byte currentwhite;
@@ -150,7 +150,7 @@ typedef struct global_State {
   TString *memerrmsg;  /* memory-error message */
   TString *tmname[TM_N];  /* array with tag-method names */
   struct Table *mt[LUA_NUMTAGS];  /* metatables for basic types, 除了UserData和Table, 对于其他类型, 每个类型共用一个global元表 */
-  TString *strcache[STRCACHE_N][STRCACHE_M];  /* cache for strings in API */
+  TString *strcache[STRCACHE_N][STRCACHE_M];  /* cache for strings in API,一个快速的缓存,新建字符串(长或短)时会现在这里面找,找不到则新建字符串,并将字符串更新到strcache中 */
 } global_State;
 
 
