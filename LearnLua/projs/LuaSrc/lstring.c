@@ -97,6 +97,9 @@ void luaS_resize (lua_State *L, int newsize) {
   if (newsize < tb->size) {  /* shrink table if needed */
     /* vanishing slice should be empty */
     lua_assert(tb->hash[newsize] == NULL && tb->hash[tb->size - 1] == NULL);
+    //有点看不懂这里了,感觉因为要缩容,直接将[tb->size, newSize]之间的hash表中的元素不管了,
+    //不过因为这个只是stringtable,即使不管了,丢弃了,也不会引起什么问题,因为可以再次构建newTString就可以了,
+    //丢弃了的hash表中的元素再之后也会被GC掉,???但还是有问题,对字符串对比的时候是直接对比的指针(eqshrstr)
     luaM_reallocvector(L, tb->hash, tb->size, newsize, TString *);
   }
   tb->size = newsize;
