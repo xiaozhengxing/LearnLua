@@ -69,7 +69,6 @@ unsigned int luaS_hashlongstr (TString *ts) {
 /*
 ** resizes the string table
 * 给g->stringTable(保存的是短字符串)重新设置大小(扩容或者缩容),并更新hash数组各自对应的链表,
-* xzxtodo
 */
 void luaS_resize (lua_State *L, int newsize) {
   int i;
@@ -93,7 +92,7 @@ void luaS_resize (lua_State *L, int newsize) {
     }
   }
 
-  //xzxtodo
+  //?
   if (newsize < tb->size) {  /* shrink table if needed */
     /* vanishing slice should be empty */
     lua_assert(tb->hash[newsize] == NULL && tb->hash[tb->size - 1] == NULL);
@@ -109,6 +108,7 @@ void luaS_resize (lua_State *L, int newsize) {
 /*
 ** Clear API string cache. (Entries cannot be empty, so fill them with
 ** a non-collectable string.)
+*清除G->strcache中保存的字符串(长或短),需要是白色的(包含两种白)
 */
 void luaS_clearcache (global_State *g) {
   int i, j;
