@@ -108,25 +108,29 @@ void luaS_resize (lua_State *L, int newsize) {
 /*
 ** Clear API string cache. (Entries cannot be empty, so fill them with
 ** a non-collectable string.)
-*清除G->strcache中保存的字符串(长或短),需要是白色的(包含两种白)
+*清除G->strcache中保存的字符串(长或短),需要是白色的(包含两种白),
 */
 void luaS_clearcache (global_State *g) {
   int i, j;
   for (i = 0; i < STRCACHE_N; i++)
     for (j = 0; j < STRCACHE_M; j++) {
     if (iswhite(g->strcache[i][j]))  /* will entry be collected? */
-      g->strcache[i][j] = g->memerrmsg;  /* replace it with something fixed */
+      g->strcache[i][j] = g->memerrmsg;  /* replace it with something fixed,虽然没有区分是哪种白色,但只是擦除并重新赋值,并没有处理保存的TString,所以不会影响gc */
     }
 }
 
 
 /*
 ** Initialize the string table and the string cache
+*初始化G->strt(string table)和G->strcache
 */
 void luaS_init (lua_State *L) {
   global_State *g = G(L);
   int i, j;
+  //1 初始化G->strt(string table,保存短字符串)的大小为128
   luaS_resize(L, MINSTRTABSIZE);  /* initial size of string table */
+
+  //2 初始化 G->strcache(保存长或短字符串,仅仅作为一个快速的缓存)
   /* pre-create memory-error message */
   g->memerrmsg = luaS_newliteral(L, MEMERRMSG);
   luaC_fix(L, obj2gco(g->memerrmsg));  /* it should never be collected */
