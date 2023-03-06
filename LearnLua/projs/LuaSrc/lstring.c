@@ -167,7 +167,9 @@ TString *luaS_createlngstrobj (lua_State *L, size_t l) {
   return ts;
 }
 
-
+/*
+ * 将字符串ts(短字符串)从G->strt(stringtable)中移除,
+ */
 void luaS_remove (lua_State *L, TString *ts) {
   stringtable *tb = &G(L)->strt;
   TString **p = &tb->hash[lmod(ts->hash, tb->size)];
