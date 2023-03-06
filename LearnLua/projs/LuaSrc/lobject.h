@@ -473,7 +473,7 @@ typedef struct Udata {
   CommonHeader;
   lu_byte ttuv_;  /* user value's tag */
   struct Table *metatable;//Udata和table都有属于自己的metatable
-  size_t len;  /* number of bytes */
+  size_t len;  /* number of bytes, 保存数据的大小,不包含头部 */
   union Value user_;  /* user value, 目前还不知道这个Value是用来存储什么的,因为数据是保存在getudatamem地址的 */
 } Udata;
 

@@ -265,7 +265,9 @@ TString *luaS_new (lua_State *L, const char *str) {
   return p[0];
 }
 
-
+/*
+ * 新建Udata, s为需要保存的数据大小(不包含udata头部所占空间)
+ */
 Udata *luaS_newudata (lua_State *L, size_t s) {
   Udata *u;
   GCObject *o;
@@ -275,7 +277,7 @@ Udata *luaS_newudata (lua_State *L, size_t s) {
   u = gco2u(o);
   u->len = s;
   u->metatable = NULL;
-  setuservalue(L, u, luaO_nilobject);
+  setuservalue(L, u, luaO_nilobject);//将nil object赋值给udata.user_(Value),暂时不知道是用来干嘛的,因为udata的数据是保存在头部之后的,
   return u;
 }
 
