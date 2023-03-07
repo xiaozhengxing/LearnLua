@@ -646,13 +646,15 @@ typedef struct Table {
 
 /*
 ** 'module' operation for hashing (size is always a power of 2)
-* 按位与操作, size一般为2的n次幂的值(size - 1)后bit全是1,
+* 求模, 按位与操作, size一般为2的n次幂的值(size - 1)后bit全是1,
 */
 #define lmod(s,size) \
 	(check_exp((size&(size-1))==0, (cast(int, (s) & ((size)-1)))))
 
-
+//1<<x
 #define twoto(x)	(1<<(x))
+
+//求table的node数组大小,
 #define sizenode(t)	(twoto((t)->lsizenode))
 
 

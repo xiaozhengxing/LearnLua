@@ -59,12 +59,15 @@
 
 #define hashstr(t,str)		hashpow2(t, (str)->hash)
 #define hashboolean(t,p)	hashpow2(t, p)
+
+//求t[i]对应的node地址,i为int值,
 #define hashint(t,i)		hashpow2(t, i)
 
 
 /*
 ** for some types, it is better to avoid modulus by power of 2, as
 ** they tend to have many 2 factors.
+* 求t[n]对应的node的地址,n为int值,
 */
 #define hashmod(t,n)	(gnode(t, ((n) % ((sizenode(t)-1)|1))))
 
@@ -113,6 +116,7 @@ static int l_hashfloat (lua_Number n) {
 /*
 ** returns the 'main' position of an element in a table (that is, the index
 ** of its hash value)
+* xzxtodo
 */
 static Node *mainposition (const Table *t, const TValue *key) {
   switch (ttype(key)) {
