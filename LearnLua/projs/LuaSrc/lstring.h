@@ -11,18 +11,23 @@
 #include "lobject.h"
 #include "lstate.h"
 
-
+//求字符串所占内存空间大小:头部+字符个数(l) + 最后一位'\0'
 #define sizelstring(l)  (sizeof(union UTString) + ((l) + 1) * sizeof(char))
 
+//求Udata所占内存空间大小:头部+保存的数据大小(l)
 #define sizeludata(l)	(sizeof(union UUdata) + (l))
+
+//求Udata中保存的数据大小(不包括头部)
 #define sizeudata(u)	sizeludata((u)->len)
 
+//新建字符串s,(这里宏的写法 {"" s}只是为了保证s是一个字符串, 另外,sizeof("123")==4, 传入长度参数后面需要减1)
 #define luaS_newliteral(L, s)	(luaS_newlstr(L, "" s, \
                                  (sizeof(s)/sizeof(char))-1))
 
 
 /*
 ** test whether a string is a reserved word
+*判断s（TString*）是不是保留字符串(关键字, 短字符串且extra>0)
 */
 #define isreserved(s)	((s)->tt == LUA_TSHRSTR && (s)->extra > 0)
 
