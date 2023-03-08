@@ -60,6 +60,7 @@
 //求t[str]对应的node地址(使用了str->hash)
 #define hashstr(t,str)		hashpow2(t, (str)->hash)
 
+//求bool值p对应的node地址,
 #define hashboolean(t,p)	hashpow2(t, p)
 
 //求t[i]对应的node地址,i为int值,
@@ -73,7 +74,7 @@
 */
 #define hashmod(t,n)	(gnode(t, ((n) % ((sizenode(t)-1)|1))))
 
-
+//将light userdata("void *"变量p)转为uint,求其对应的node的地址,
 #define hashpointer(t,p)	hashmod(t, point2uint(p))
 
 
