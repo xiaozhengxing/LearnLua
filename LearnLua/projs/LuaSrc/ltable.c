@@ -57,7 +57,9 @@
 
 #define hashpow2(t,n)		(gnode(t, lmod((n), sizenode(t))))
 
+//求t[str]对应的node地址(使用了str->hash)
 #define hashstr(t,str)		hashpow2(t, (str)->hash)
+
 #define hashboolean(t,p)	hashpow2(t, p)
 
 //求t[i]对应的node地址,i为int值,
@@ -124,9 +126,9 @@ static Node *mainposition (const Table *t, const TValue *key) {
       return hashint(t, ivalue(key));
     case LUA_TNUMFLT:
       return hashmod(t, l_hashfloat(fltvalue(key)));
-    case LUA_TSHRSTR:
+    case LUA_TSHRSTR://短或长字符串都是取TString.hash 和 table.sizenode(求幂)来计算对应node的地址,
       return hashstr(t, tsvalue(key));
-    case LUA_TLNGSTR:
+    case LUA_TLNGSTR://短或长字符串都是取TString.hash 和 table.sizenode(求幂)来计算对应node的地址,
       return hashpow2(t, luaS_hashlongstr(tsvalue(key)));
     case LUA_TBOOLEAN:
       return hashboolean(t, bvalue(key));
