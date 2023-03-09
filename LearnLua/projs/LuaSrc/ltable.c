@@ -168,7 +168,7 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
   unsigned int i;
   if (ttisnil(key)) return 0;  /* first iteration */
   i = arrayindex(key);
-  if (i != 0 && i <= t->sizearray)  /* is 'key' inside array part? */
+  if (i != 0 && i <= t->sizearray)  /* is 'key' inside array part?, key是个整数,根据值大小判断是否在table的数组部分 */
     return i;  /* yes; that's the index */
   else {
     int nx;

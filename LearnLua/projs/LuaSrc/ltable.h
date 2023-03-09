@@ -17,7 +17,9 @@
 #define gnext(n)	((n)->i_key.nk.next)
 
 
-/* 'const' to avoid wrong writings that can mess up field 'next' */
+/* 'const' to avoid wrong writings that can mess up field 'next'
+ * 提取n(类型为Node*)中的key.tvk(类型为TValue*)
+ */
 #define gkey(n)		cast(const TValue*, (&(n)->i_key.tvk))
 
 /*
