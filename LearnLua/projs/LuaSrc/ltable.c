@@ -163,6 +163,9 @@ static unsigned int arrayindex (const TValue *key) {
 ** returns the index of a 'key' for table traversals. First goes all
 ** elements in the array part, then elements in the hash part. The
 ** beginning of a traversal is signaled by 0.
+* 返回key在table中对应的位置下标:
+* key为数字 且  0 < key <= table.sizearray，则返回对应的int值
+* key不为数字则在table的hash node中查找,找到了返回 (table.sizearray + hash node下标 + 1)
 */
 static unsigned int findindex (lua_State *L, Table *t, StkId key) {
   unsigned int i;
@@ -177,10 +180,11 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
       /* key may be dead already, but it is ok to use it in 'next' */
       if (luaV_rawequalobj(gkey(n), key) ||
             (ttisdeadkey(gkey(n)) && iscollectable(key) &&
-             deadvalue(gkey(n)) == gcvalue(key))) {
+             deadvalue(gkey(n)) == gcvalue(key)))
+      {
         i = cast_int(n - gnode(t, 0));  /* key index in hash table */
         /* hash elements are numbered after array ones */
-        return (i + 1) + t->sizearray;
+        return (i + 1) + t->sizearray;//数组个数 + hash node下标 + 1
       }
       nx = gnext(n);
       if (nx == 0)

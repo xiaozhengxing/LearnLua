@@ -14,6 +14,7 @@
 
 #define gval(n)		(&(n)->i_val)
 
+//取n(类型为node*)的下一个node的偏移,
 #define gnext(n)	((n)->i_key.nk.next)
 
 
