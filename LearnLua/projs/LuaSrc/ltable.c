@@ -74,7 +74,7 @@
 */
 #define hashmod(t,n)	(gnode(t, ((n) % ((sizenode(t)-1)|1))))
 
-//将light userdata("void *"变量p)转为uint,求其对应的node的地址,
+//将指针p(light userdata或light c function或 GCObject*)转为uint,求其对应的node的地址,
 #define hashpointer(t,p)	hashmod(t, point2uint(p))
 
 
@@ -119,7 +119,7 @@ static int l_hashfloat (lua_Number n) {
 /*
 ** returns the 'main' position of an element in a table (that is, the index
 ** of its hash value)
-* xzxtodo
+*  根据key(TValue*)的类型,计算其对应的Table.node(hash部分)数组元素的地址,
 */
 static Node *mainposition (const Table *t, const TValue *key) {
   switch (ttype(key)) {
@@ -147,6 +147,7 @@ static Node *mainposition (const Table *t, const TValue *key) {
 /*
 ** returns the index for 'key' if 'key' is an appropriate key to live in
 ** the array part of the table, 0 otherwise.
+* 计算key(TValue*类型,保存的是integer值)对应的数组下标,其实就是返回key中的integer值, 如不符合条件则返回0
 */
 static unsigned int arrayindex (const TValue *key) {
   if (ttisinteger(key)) {
