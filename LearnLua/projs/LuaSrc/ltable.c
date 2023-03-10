@@ -147,7 +147,7 @@ static Node *mainposition (const Table *t, const TValue *key) {
 /*
 ** returns the index for 'key' if 'key' is an appropriate key to live in
 ** the array part of the table, 0 otherwise.
-* 计算key(TValue*类型,保存的是integer值)对应的数组下标,其实就是返回key中的integer值, 如不符合条件则返回0
+* 计算key(TValue*类型,保存的是integer值)应该对应的数组下标,其实就是返回key中的integer值, 如不符合条件则返回0
 */
 static unsigned int arrayindex (const TValue *key) {
   if (ttisinteger(key)) {
@@ -274,6 +274,8 @@ static int countint (const TValue *key, unsigned int *nums) {
 ** Count keys in array part of table 't': Fill 'nums[i]' with
 ** number of keys that will go into corresponding slice and return
 ** total number of non-nil keys.
+* nums[i]用来保存 key(注意key为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
+* 返回table.array中总的“table[key]不为nil”的key的个数,
 */
 static unsigned int numusearray (const Table *t, unsigned int *nums) {
   int lg;
@@ -300,10 +302,12 @@ static unsigned int numusearray (const Table *t, unsigned int *nums) {
   return ause;
 }
 
-
+/*
+ * xzxtodo
+ */
 static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
   int totaluse = 0;  /* total number of elements */
-  int ause = 0;  /* elements added to 'nums' (can go to array part) */
+  int ause = 0;  /* elements added to 'nums' (can go to array part), hash node中，key xzxtodo */
   int i = sizenode(t);
   while (i--) {
     Node *n = &t->node[i];

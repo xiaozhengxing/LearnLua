@@ -63,7 +63,7 @@ int luaO_fb2int (int x) {
 ** Computes ceil(log2(x))
 */
 int luaO_ceillog2 (unsigned int x) {
-  static const lu_byte log_2[256] = {  /* log_2[i] = ceil(log2(i - 1)) */
+  static const lu_byte log_2[256] = {  /* log_2[i] = ceil(log2(i - 1)), log_2[i]保存的是求对数log(i),底数为2, 即 log2(256) = 8 */
     0,1,2,2,3,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
     6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
     7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,

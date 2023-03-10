@@ -12,6 +12,7 @@
 //取table中的node[i]
 #define gnode(t,i)	(&(t)->node[i])
 
+//取&Node.i_val(TValue*)
 #define gval(n)		(&(n)->i_val)
 
 //取n(类型为node*)的下一个node的偏移,
