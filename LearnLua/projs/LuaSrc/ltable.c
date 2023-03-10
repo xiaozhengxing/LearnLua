@@ -169,7 +169,7 @@ static unsigned int arrayindex (const TValue *key) {
 */
 static unsigned int findindex (lua_State *L, Table *t, StkId key) {
   unsigned int i;
-  if (ttisnil(key)) return 0;  /* first iteration */
+  if (ttisnil(key)) return 0;  /* first iteration, 第一次迭代一般都是会push一个nil进来,此时返回0,可查看lua_next的用法 */
   i = arrayindex(key);
   if (i != 0 && i <= t->sizearray)  /* is 'key' inside array part?, key是个整数,根据值大小判断是否在table的数组部分 */
     return i;  /* yes; that's the index */
@@ -194,19 +194,28 @@ static unsigned int findindex (lua_State *L, Table *t, StkId key) {
   }
 }
 
-
+/*
+ *查找key对应的table[key]和下一个key,如成功返回1,失败返回0,
+ *执行前的栈: [key][top]
+ *执行后的栈:[next(key)][table[key]][top],其中next[key]指的是根据key在table中的位置(array中或hash node中),查找下一个位置,
+ */
 int luaH_next (lua_State *L, Table *t, StkId key) {
   unsigned int i = findindex(L, t, key);  /* find original element */
+
+  //需要注意当findindex返回的是sizearray的时候,会执行下面的第二个for循环,会找到table.node[0]
+  //数组部分,
   for (; i < t->sizearray; i++) {  /* try first array part */
     if (!ttisnil(&t->array[i])) {  /* a non-nil value? */
-      setivalue(key, i + 1);
+      setivalue(key, i + 1);//将整型值(i+1,遍历过程中的下一个下标)赋给key(TValue*)
       setobj2s(L, key+1, &t->array[i]);
       return 1;
     }
   }
+
+  //hash node部分,
   for (i -= t->sizearray; cast_int(i) < sizenode(t); i++) {  /* hash part */
     if (!ttisnil(gval(gnode(t, i)))) {  /* a non-nil value? */
-      setobj2s(L, key, gkey(gnode(t, i)));
+      setobj2s(L, key, gkey(gnode(t, i)));//当前key所在位置对应的next hash node,将改node.key赋值到key(TValue*)中,
       setobj2s(L, key+1, gval(gnode(t, i)));
       return 1;
     }
