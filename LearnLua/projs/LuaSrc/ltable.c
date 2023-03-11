@@ -258,7 +258,11 @@ static unsigned int computesizes (unsigned int nums[], unsigned int *pna) {
   return optimal;
 }
 
-
+/*
+ * nums[i]用来保存 key(注意key中保存的值为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
+ * key中保存的值为整数,则往nums数组中相应的值+1,并返回1
+ * 不是整数则返回0
+ */
 static int countint (const TValue *key, unsigned int *nums) {
   unsigned int k = arrayindex(key);
   if (k != 0) {  /* is 'key' an appropriate array index? */
@@ -304,6 +308,7 @@ static unsigned int numusearray (const Table *t, unsigned int *nums) {
 
 /*
  * xzxtodo
+ * nums[i]用来保存 key(注意key为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
  */
 static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
   int totaluse = 0;  /* total number of elements */
