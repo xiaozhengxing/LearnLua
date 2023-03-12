@@ -307,12 +307,13 @@ static unsigned int numusearray (const Table *t, unsigned int *nums) {
 }
 
 /*
- * xzxtodo
  * nums[i]用来保存 key(注意key为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
+ * pna用来保存node中key(TValue)中保存的类型为整数，这样的key的个数
+ * 返回table的node中value(TValue)不为nil的个数
  */
 static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
   int totaluse = 0;  /* total number of elements */
-  int ause = 0;  /* elements added to 'nums' (can go to array part), hash node中，key xzxtodo */
+  int ause = 0;  /* elements added to 'nums' (can go to array part), 保存 hash node中,"key(TValue)中保存的类型为整数",这样的key的个数 */
   int i = sizenode(t);
   while (i--) {
     Node *n = &t->node[i];
@@ -325,7 +326,7 @@ static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
   return totaluse;
 }
 
-
+//xzxtodo
 static void setarrayvector (lua_State *L, Table *t, unsigned int size) {
   unsigned int i;
   luaM_reallocvector(L, t->array, t->sizearray, size, TValue);
