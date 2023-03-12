@@ -329,8 +329,9 @@ static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
 //xzxtodo
 static void setarrayvector (lua_State *L, Table *t, unsigned int size) {
   unsigned int i;
+  //注意这里的realloc会做copy操作,old array中的数据会copy到new array中,
   luaM_reallocvector(L, t->array, t->sizearray, size, TValue);
-  for (i=t->sizearray; i<size; i++)
+  for (i=t->sizearray; i<size; i++)//将new array中新增的内存元素全部赋值为nil
      setnilvalue(&t->array[i]);
   t->sizearray = size;
 }
