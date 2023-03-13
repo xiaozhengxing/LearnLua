@@ -326,7 +326,7 @@ static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
   return totaluse;
 }
 
-//xzxtodo
+//设置table.array的大小为size,并更新array中的元素值,
 static void setarrayvector (lua_State *L, Table *t, unsigned int size) {
   unsigned int i;
   //注意这里的realloc会做copy操作,old array中的数据会copy到new array中,
@@ -336,7 +336,7 @@ static void setarrayvector (lua_State *L, Table *t, unsigned int size) {
   t->sizearray = size;
 }
 
-
+//设置table.node的大小为size,并将node中的所有元素信息清除,table.lastfree指针指向最后一个元素node[size](注意这个是一个越界值),
 static void setnodevector (lua_State *L, Table *t, unsigned int size) {
   if (size == 0) {  /* no elements to hash part? */
     t->node = cast(Node *, dummynode);  /* use common 'dummynode' */
@@ -348,8 +348,9 @@ static void setnodevector (lua_State *L, Table *t, unsigned int size) {
     int lsize = luaO_ceillog2(size);
     if (lsize > MAXHBITS)
       luaG_runerror(L, "table overflow");
-    size = twoto(lsize);
+    size = twoto(lsize);//求间隔最近的2^n值,
     t->node = luaM_newvector(L, size, Node);
+    
     for (i = 0; i < (int)size; i++) {
       Node *n = gnode(t, i);
       gnext(n) = 0;
@@ -361,7 +362,7 @@ static void setnodevector (lua_State *L, Table *t, unsigned int size) {
   }
 }
 
-
+//xzxtodo
 void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
                                           unsigned int nhsize) {
   unsigned int i;
