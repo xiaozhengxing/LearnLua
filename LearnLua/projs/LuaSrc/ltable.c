@@ -362,7 +362,10 @@ static void setnodevector (lua_State *L, Table *t, unsigned int size) {
   }
 }
 
-//xzxtodo
+/* xzxtodo
+ * nasize: new array size
+ * nhsize: new hash node size
+ */
 void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
                                           unsigned int nhsize) {
   unsigned int i;
@@ -370,11 +373,14 @@ void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
   unsigned int oldasize = t->sizearray;
   int oldhsize = allocsizenode(t);
   Node *nold = t->node;  /* save old hash ... */
-  if (nasize > oldasize)  /* array part must grow? */
-    setarrayvector(L, t, nasize);
+  
+  if (nasize > oldasize)  /* array part must grow? 数组扩容 */
+    setarrayvector(L, t, nasize);//设置table.array的大小为size,并更新array中的元素值,
+
   /* create new hash part with appropriate size */
-  setnodevector(L, t, nhsize);
-  if (nasize < oldasize) {  /* array part must shrink? */
+  setnodevector(L, t, nhsize);//设置table.node的大小为size,并将node中的所有元素信息清除
+  
+  if (nasize < oldasize) {  /* array part must shrink?数组缩容 */
     t->sizearray = nasize;
     /* re-insert elements from vanishing slice */
     for (i=nasize; i<oldasize; i++) {
