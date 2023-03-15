@@ -532,7 +532,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 
 /*
 ** search function for integers
-*
+* 返回table[key], 可能是在数组array中,也可能是在hash node中,
 */
 const TValue *luaH_getint (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */
@@ -635,7 +635,10 @@ TValue *luaH_set (lua_State *L, Table *t, const TValue *key) {
   else return luaH_newkey(L, t, key);
 }
 
-
+/*xzxtodo, 设置t[key] = value,
+1 如果t[key]存在(包含情况:key<arraysize,但 t[key]=nil,也就是找得到对应的TValue就行),则更新即可,
+2 如果t[key]不存在,则需要新建node
+*/
 void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
   const TValue *p = luaH_getint(t, key);
   TValue *cell;
