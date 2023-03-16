@@ -88,9 +88,10 @@ int luaV_tonumber_ (const TValue *obj, lua_Number *n) {
 
 /*
 ** try to convert a value to an integer, rounding according to 'mode':
-** mode == 0: accepts only integral values
-** mode == 1: takes the floor of the number
-** mode == 2: takes the ceil of the number
+** mode == 0: accepts only integral values, 只接受obj为整数,
+** mode == 1: takes the floor of the number, 向下取整,
+** mode == 2: takes the ceil of the number,向上取整,
+* 将obj转为整数,并保存在p中, 失败返回0,成功返回1
 */
 int luaV_tointeger (const TValue *obj, lua_Integer *p, int mode) {
   TValue v;
