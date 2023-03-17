@@ -534,6 +534,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 /*
 ** search function for integers
 * 返回table[key], 可能是在数组array中,也可能是在hash node中,
+* 找到返回对应的value,找不到返回luaO_nilobject
 */
 const TValue *luaH_getint (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */
@@ -545,7 +546,7 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
       if (ttisinteger(gkey(n)) && ivalue(gkey(n)) == key)
         return gval(n);  /* that's it */
       else {
-        int nx = gnext(n);//取链表中的下一个node,
+        int nx = gnext(n);//取链表中的下一个node,查找key在不在对应的node中(这里面维持了一个类似链表后指针的结构,)
         if (nx == 0) break;
         n += nx;
       }
