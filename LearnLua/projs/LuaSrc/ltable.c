@@ -478,12 +478,13 @@ static Node *getfreepos (Table *t) {
 ** put new key in its main position; otherwise (colliding node is in its main
 ** position), new key goes to an empty position.
 * 将新的key(TValue*)插入到table的hash node中,
+* xzxtodo
 */
 TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   Node *mp;
   TValue aux;
   if (ttisnil(key)) luaG_runerror(L, "table index is nil");
-  else if (ttisfloat(key)) {
+  else if (ttisfloat(key)) {//如果是float则需要转成整数,保存到aux中,
     lua_Integer k;
     if (luaV_tointeger(key, &k, 0)) {  /* does index fit in an integer? */
       setivalue(&aux, k);
@@ -533,7 +534,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 
 /*
 ** search function for integers
-* 返回table[key], 可能是在数组array中,也可能是在hash node中,
+* 返回table[key],key是个整数, 可能是在数组array中,也可能是在hash node中,
 * 找到返回对应的value,找不到返回luaO_nilobject
 */
 const TValue *luaH_getint (Table *t, lua_Integer key) {
