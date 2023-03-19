@@ -336,7 +336,8 @@ static void setarrayvector (lua_State *L, Table *t, unsigned int size) {
   t->sizearray = size;
 }
 
-//设置table.node的大小为size,并将node中的所有元素信息清除,table.lastfree指针指向最后一个元素node[size](注意这个是一个越界值),
+//设置table.node的大小为size,并将node中的所有元素信息清除,
+//table.lastfree指针指向最后一个元素node[size](注意这个是一个越界值,插入新的(key,val)时,会从lastfree--开始计算,见luaH_newkey),
 static void setnodevector (lua_State *L, Table *t, unsigned int size) {
   if (size == 0) {  /* no elements to hash part? */
     t->node = cast(Node *, dummynode);  /* use common 'dummynode' */
@@ -493,7 +494,9 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     else if (luai_numisnan(fltvalue(key)))
       luaG_runerror(L, "table index is NaN");
   }
-  mp = mainposition(t, key);
+  
+  mp = mainposition(t, key);//先求出位置:对应的Table.node(hash部分)数组元素的地址,
+  
   if (!ttisnil(gval(mp)) || isdummy(t)) {  /* main position is taken? */
     Node *othern;
     Node *f = getfreepos(t);  /* get a free place */

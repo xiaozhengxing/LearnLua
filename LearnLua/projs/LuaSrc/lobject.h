@@ -637,7 +637,7 @@ typedef struct Table {
   unsigned int sizearray;  /* size of 'array' array */
   TValue *array;  /* array part */
   Node *node;
-  Node *lastfree;  /* any free position is before this position */
+  Node *lastfree;  /* any free position is before this position, 新建了node数组之后,该值为&node[nodesize]，见setnodevector, 注意这是个越界值,取用的使用从lastfree--开始 */
   struct Table *metatable;
   GCObject *gclist;
 } Table;
