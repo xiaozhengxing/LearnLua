@@ -458,7 +458,7 @@ void luaH_free (lua_State *L, Table *t) {
   luaM_free(L, t);
 }
 
-
+//从(lastfree--)开始,查找到第一个空闲node(key为nil,并更新 lastfree )并返回,
 static Node *getfreepos (Table *t) {
   if (!isdummy(t)) {
     while (t->lastfree > t->node) {
@@ -485,7 +485,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   Node *mp;
   TValue aux;
   if (ttisnil(key)) luaG_runerror(L, "table index is nil");
-  else if (ttisfloat(key)) {//如果是float则需要转成整数,保存到aux中,
+  else if (ttisfloat(key)) {//如果是float则需要转成整数,保存到aux中,最终将整数保存回key中,
     lua_Integer k;
     if (luaV_tointeger(key, &k, 0)) {  /* does index fit in an integer? */
       setivalue(&aux, k);
@@ -505,6 +505,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
       /* whatever called 'newkey' takes care of TM cache */
       return luaH_set(L, t, key);  /* insert key into grown table */
     }
+    
     lua_assert(!isdummy(t));
     othern = mainposition(t, gkey(mp));
     if (othern != mp) {  /* is colliding node out of its main position? */
