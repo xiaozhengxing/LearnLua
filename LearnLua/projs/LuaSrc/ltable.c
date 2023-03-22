@@ -500,7 +500,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   if (!ttisnil(gval(mp)) || isdummy(t)) {  /* main position is taken? */
     Node *othern;
     Node *f = getfreepos(t);  /* get a free place */
-    if (f == NULL) {  /* cannot find a free place? */
+    if (f == NULL) {  /* cannot find a free place?没有空间了 */
       rehash(L, t, key);  /* grow table */
       /* whatever called 'newkey' takes care of TM cache */
       return luaH_set(L, t, key);  /* insert key into grown table */
@@ -510,8 +510,8 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     othern = mainposition(t, gkey(mp));
     if (othern != mp) {  /* is colliding node out of its main position? */
       /* yes; move colliding node into free position */
-      while (othern + gnext(othern) != mp)  /* find previous */
-        othern += gnext(othern);
+      while (othern + gnext(othern) != mp)  /* find previous,找到othern的前一个node, 不同的Tkey计算出来的hash值相同,使用TKey.nk.next串起来 */
+        othern += gnext(othern);//xzxtodo0322
       gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f' */
       *f = *mp;  /* copy colliding node into free pos. (mp->next also goes) */
       if (gnext(mp) != 0) {
