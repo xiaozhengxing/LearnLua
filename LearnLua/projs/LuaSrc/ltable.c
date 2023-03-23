@@ -511,14 +511,22 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     if (othern != mp) {  /* is colliding node out of its main position? */
       /* yes; move colliding node into free position */
       while (othern + gnext(othern) != mp)  /* find previous,找到othern的前一个node, 不同的Tkey计算出来的hash值相同,使用TKey.nk.next串起来 */
-        othern += gnext(othern);//xzxtodo0322
-      gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f' */
-      *f = *mp;  /* copy colliding node into free pos. (mp->next also goes) */
+        othern += gnext(othern);//
+
+      //挪动mainPosition中的已有的元素node(node.key值做hash后 != key值(函数参数)做hash)
+      //1、修改node前一个元素的next偏移值,
+      //2、将node移动到freePos
+      //3、更新node.next偏移值,
+      
+      //此刻othern为mainpositoin(被占用的node)的前一个node,
+      //修改othern的next偏移值,使它指向f(freePos)
+      gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f',1.修改node前一个元素的next偏移值 */
+      *f = *mp;  /* copy colliding node into free pos. (mp->next also goes),2.将node移动到freePos */
       if (gnext(mp) != 0) {
-        gnext(f) += cast_int(mp - f);  /* correct 'next' */
-        gnext(mp) = 0;  /* now 'mp' is free */
+        gnext(f) += cast_int(mp - f);  /* correct 'next' ,3.更新node.next偏移值*/
+        gnext(mp) = 0;  /* now 'mp' is free, mainPosition位置的node*/
       }
-      setnilvalue(gval(mp));
+      setnilvalue(gval(mp));//最终腾出来的空余node
     }
     else {  /* colliding node is in its own main position */
       /* new node will go into free position */
