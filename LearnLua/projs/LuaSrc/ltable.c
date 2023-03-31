@@ -497,7 +497,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   
   mp = mainposition(t, key);//先求出位置:对应的Table.node(hash部分)数组元素的地址,
   
-  if (!ttisnil(gval(mp)) || isdummy(t)) {  /* main position is taken? */
+  if (!ttisnil(gval(mp)) || isdummy(t)) {  /* 该node中已被占用, main position is taken? */
     Node *othern;
     Node *f = getfreepos(t);  /* get a free place */
     if (f == NULL) {  /* cannot find a free place?没有空间了 */
@@ -507,19 +507,19 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     }
     
     lua_assert(!isdummy(t));
-    othern = mainposition(t, gkey(mp));
-    if (othern != mp) {  /* is colliding node out of its main position? */
+    othern = mainposition(t, gkey(mp));//冲突元素实际的位置,
+    if (othern != mp) {  /* 冲突元素的实际位置并不是mp(新插入key的实际位置), is colliding node out of its main position? */
       /* yes; move colliding node into free position */
-      while (othern + gnext(othern) != mp)  /* find previous,找到othern的前一个node, 不同的Tkey计算出来的hash值相同,使用TKey.nk.next串起来 */
+      while (othern + gnext(othern) != mp)  /* find previous,找到othern(冲突元素)的前一个node, 不同的Tkey计算出来的hash值相同,使用TKey.nk.next串起来 */
         othern += gnext(othern);//
 
-      //挪动mainPosition中的已有的元素node(node.key值做hash后 != key值(函数参数)做hash)
+      //挪动 mainPosition中的冲突元素node(node.key值做hash后 != key值(函数参数)做hash)
       //1、修改node前一个元素的next偏移值,
       //2、将node移动到freePos
       //3、更新node.next偏移值,
       
-      //此刻othern为mainpositoin(被占用的node)的前一个node,
-      //修改othern的next偏移值,使它指向f(freePos)
+      //此刻othern冲突元素为mainpositoin(被占用的node)的前一个node,
+      //修改othern冲突元素的next偏移值,使它指向f(freePos)
       gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f',1.修改node前一个元素的next偏移值 */
       *f = *mp;  /* copy colliding node into free pos. (mp->next also goes),2.将node移动到freePos */
       if (gnext(mp) != 0) {
@@ -528,11 +528,16 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
       }
       setnilvalue(gval(mp));//最终腾出来的空余node
     }
-    else {  /* colliding node is in its own main position */
-      /* new node will go into free position */
+    else {  /* 冲突元素的实际位置和mp(新插入key的实际位置)一样,colliding node is in its own main position */
+      /* new node will go into free position, 将新key插入到freePos, 调整next值，使得
+       * 原链: mp->mpNext
+       * 现在: mp->newKey->mpNext
+       */
       if (gnext(mp) != 0)
         gnext(f) = cast_int((mp + gnext(mp)) - f);  /* chain new position */
-      else lua_assert(gnext(f) == 0);
+      else
+        lua_assert(gnext(f) == 0);
+      
       gnext(mp) = cast_int(f - mp);
       mp = f;
     }
