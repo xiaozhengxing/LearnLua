@@ -501,7 +501,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   if (!ttisnil(gval(mp)) || isdummy(t)) {  /* 该node中已被占用, main position is taken? */
     Node *othern;
     Node *f = getfreepos(t);  /* get a free place */
-    if (f == NULL) {  /* cannot find a free place?没有空间了 */
+    if (f == NULL) {  /* cannot find a free place? 没有空间了,则扩容 */
       rehash(L, t, key);  /* grow table */
       /* whatever called 'newkey' takes care of TM cache */
       return luaH_set(L, t, key);  /* insert key into grown table */
@@ -515,16 +515,16 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
         othern += gnext(othern);//
 
       //挪动 mainPosition中的冲突元素node(node.key值做hash后 != key值(函数参数)做hash)
-      //1、修改node前一个元素的next偏移值,
-      //2、将node移动到freePos
+      //1、修改冲突node前一个元素的next偏移值,另起指向freepos
+      //2、将冲突node移动到freePos
       //3、更新node.next偏移值,
       
       //此刻othern冲突元素为mainpositoin(被占用的node)的前一个node,
       //修改othern冲突元素的next偏移值,使它指向f(freePos)
-      gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f',1.修改node前一个元素的next偏移值 */
-      *f = *mp;  /* copy colliding node into free pos. (mp->next also goes),2.将node移动到freePos */
+      gnext(othern) = cast_int(f - othern);  /* rechain to point to 'f',1.修改冲突node前一个元素的next偏移值 */
+      *f = *mp;  /* copy colliding node into free pos. (mp->next also goes),2.将冲突node移动到freePos */
       if (gnext(mp) != 0) {
-        gnext(f) += cast_int(mp - f);  /* correct 'next' ,3.更新node.next偏移值*/
+        gnext(f) += cast_int(mp - f);  /* correct 'next' ,3.更新冲突node.next偏移值,注意这里是"+="而不是"="*/
         gnext(mp) = 0;  /* now 'mp' is free, mainPosition位置的node*/
       }
       setnilvalue(gval(mp));//最终腾出来的空余node
@@ -532,7 +532,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     else {  /* 冲突元素的实际位置和mp(新插入key的实际位置)一样,colliding node is in its own main position */
       /* new node will go into free position, 将新key插入到freePos, 调整next值，使得
        * 原链: mp->mpNext
-       * 现在: mp->newKey->mpNext
+       * 现在: mp->newKey->mpNext, 感觉这里是直接插入到链首的下一个节点,就是链的第二个节点,而不是链尾,
        */
       if (gnext(mp) != 0)
         gnext(f) = cast_int((mp + gnext(mp)) - f);  /* chain new position */
@@ -543,6 +543,8 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
       mp = f;
     }
   }
+
+  //xzxtodo
   setnodekey(L, &mp->i_key, key);
   luaC_barrierback(L, t, key);
   lua_assert(ttisnil(gval(mp)));
