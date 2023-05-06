@@ -300,7 +300,7 @@ typedef unsigned long Instruction;
 #define luai_numeq(a,b)         ((a)==(b))
 #define luai_numlt(a,b)         ((a)<(b))
 #define luai_numle(a,b)         ((a)<=(b))
-#define luai_numisnan(a)        (!luai_numeq((a), (a)))
+#define luai_numisnan(a)        (!luai_numeq((a), (a)))//isnan(is not a number)判断a是否为一个数字,如果a不是数字,这里的操作符“==”会直接报错.
 #endif
 
 

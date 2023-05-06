@@ -478,6 +478,7 @@ static Node *getfreepos (Table *t) {
 ** position or not: if it is not, move colliding node to an empty place and
 ** put new key in its main position; otherwise (colliding node is in its main
 ** position), new key goes to an empty position.
+*
 * 将新的key(TValue*)插入到table的hash node中,
 * xzxtodo
 */
@@ -655,12 +656,14 @@ TValue *luaH_set (lua_State *L, Table *t, const TValue *key) {
   else return luaH_newkey(L, t, key);
 }
 
-/*xzxtodo, 设置t[key] = value,
+/*xzxtodo,
+ *
+ * key为整数, 设置t[key] = value,
 1 如果t[key]存在(包含情况:key<arraysize,但 t[key]=nil,也就是找得到对应的TValue就行),则更新即可,
 2 如果t[key]不存在,则需要新建node
 */
 void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
-  const TValue *p = luaH_getint(t, key);
+  const TValue *p = luaH_getint(t, key);//查找t[key],找不到返回luaO_nilobject
   TValue *cell;
   if (p != luaO_nilobject)
     cell = cast(TValue *, p);
