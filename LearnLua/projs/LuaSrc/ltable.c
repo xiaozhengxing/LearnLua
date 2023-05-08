@@ -479,8 +479,8 @@ static Node *getfreepos (Table *t) {
 ** put new key in its main position; otherwise (colliding node is in its main
 ** position), new key goes to an empty position.
 *
-* 将新的key(TValue*)插入到table的hash node中,
-* xzxtodo
+* 将新的key(TValue*)插入到table的hash node(检测是否需要扩容,并检测是否冲突)中,并返回node.i_val(类型为TValue*,注意该node已填充好了key)
+* 
 */
 TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   Node *mp;
@@ -545,10 +545,10 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
   }
 
   //xzxtodo
-  setnodekey(L, &mp->i_key, key);
+  setnodekey(L, &mp->i_key, key);//将key赋值给Node.i_key
   luaC_barrierback(L, t, key);
   lua_assert(ttisnil(gval(mp)));
-  return gval(mp);
+  return gval(mp);//返回node.i_val(类型为TValue*), 注意该node已填充好了key 
 }
 
 
