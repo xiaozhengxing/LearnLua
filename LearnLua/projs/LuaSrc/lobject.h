@@ -394,7 +394,9 @@ typedef struct lua_TValue {
 #define setobj2n	setobj
 #define setsvalue2n	setsvalue
 
-/* to table (define it as an expression to be used in macros) */
+/* to table (define it as an expression to be used in macros)
+ * 赋值 o1=o2,其中o1和o2的类型都是(TValue *)
+ */
 #define setobj2t(L,o1,o2)  ((void)L, *(o1)=*(o2), checkliveness(L,(o1)))
 
 

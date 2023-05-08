@@ -543,8 +543,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
       mp = f;
     }
   }
-
-  //xzxtodo
+  
   setnodekey(L, &mp->i_key, key);//将key赋值给Node.i_key
   luaC_barrierback(L, t, key);
   lua_assert(ttisnil(gval(mp)));
@@ -658,11 +657,10 @@ TValue *luaH_set (lua_State *L, Table *t, const TValue *key) {
   else return luaH_newkey(L, t, key);
 }
 
-/*xzxtodo,
- *
+/*
  * key为整数, 设置t[key] = value,
 1 如果t[key]存在(包含情况:key<arraysize,但 t[key]=nil,也就是找得到对应的TValue就行),则更新即可,
-2 如果t[key]不存在,则需要新建node
+2 如果t[key]不存在,则需要在table中新初始化node,将key和value都赋值到node中,
 */
 void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
   const TValue *p = luaH_getint(t, key);//查找t[key],找不到返回luaO_nilobject
