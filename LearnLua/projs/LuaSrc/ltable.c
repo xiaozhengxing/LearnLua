@@ -363,7 +363,7 @@ static void setnodevector (lua_State *L, Table *t, unsigned int size) {
   }
 }
 
-/* xzxtodo
+/* 更新table的大小(array和node hash), 并将原array和node hash的值插入到新的array和node hash中,
  * nasize: new array size
  * nhsize: new hash node size
  */
@@ -373,7 +373,7 @@ void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
   int j;
   unsigned int oldasize = t->sizearray;
   int oldhsize = allocsizenode(t);
-  Node *nold = t->node;  /* save old hash ... */
+  Node *nold = t->node;  /* save old hash ... 注意这里保存了老node hash的首地址 */
   
   if (nasize > oldasize)  /* array part must grow? 数组扩容 */
     setarrayvector(L, t, nasize);//设置table.array的大小为size,并更新array中的元素值,
@@ -386,13 +386,14 @@ void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
     /* re-insert elements from vanishing slice */
     for (i=nasize; i<oldasize; i++) {
       if (!ttisnil(&t->array[i]))
-        luaH_setint(L, t, i + 1, &t->array[i]);
+        luaH_setint(L, t, i + 1, &t->array[i]);//插入到node hash中,
     }
-    /* shrink array */
+    /* shrink array, 注意这里的realloc会做copy操作,old array中的数据会copy到new array中, */
     luaM_reallocvector(L, t->array, oldasize, nasize, TValue);
   }
+  
   /* re-insert elements from hash part */
-  for (j = oldhsize - 1; j >= 0; j--) {
+  for (j = oldhsize - 1; j >= 0; j--) {//将old node hash中的key-value插入到新的table中(插入到新的array或新的node hash中)
     Node *old = nold + j;
     if (!ttisnil(gval(old))) {
       /* doesn't need barrier/invalidate cache, as entry was
@@ -400,7 +401,7 @@ void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
       setobjt2t(L, luaH_set(L, t, gkey(old)), gval(old));
     }
   }
-  if (oldhsize > 0)  /* not the dummy node? */
+  if (oldhsize > 0)  /* not the dummy node? 释放旧的node hash */
     luaM_freearray(L, nold, cast(size_t, oldhsize)); /* free old hash */
 }
 
@@ -649,6 +650,7 @@ const TValue *luaH_get (Table *t, const TValue *key) {
 /*
 ** beware: when using this function you probably need to check a GC
 ** barrier and invalidate the TM cache.
+* 返回 table[key](类型转为TValue*),如果找不到table[key]则将key新插入到table中(数组或node hash)
 */
 TValue *luaH_set (lua_State *L, Table *t, const TValue *key) {
   const TValue *p = luaH_get(t, key);

@@ -656,7 +656,7 @@ typedef struct Table {
 //1<<x
 #define twoto(x)	(1<<(x))
 
-//求table的node数组大小,
+//求table的hash node数组大小,
 #define sizenode(t)	(twoto((t)->lsizenode))
 
 
