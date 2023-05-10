@@ -587,11 +587,14 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
 
 /* 
 ** search function for short strings
-* xzxtodo
+* 查找t[key], key为字符串, 找到了返回node.val(类型为TValue*);没找到返回luaO_nilobject
+* 不会调用元方法,
 */
 const TValue *luaH_getshortstr (Table *t, TString *key) {
   Node *n = hashstr(t, key);
   lua_assert(key->tt == LUA_TSHRSTR);
+
+  //根据node和node.next,一直查找到最后一个元素, 查找key是否已存在,
   for (;;) {  /* check whether 'key' is somewhere in the chain */
     const TValue *k = gkey(n);
     if (ttisshrstring(k) && eqshrstr(tsvalue(k), key))
@@ -609,6 +612,7 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 /*
 ** "Generic" get version. (Not that generic: not valid for integers,
 ** which may be in array part, nor for floats with integral values.)
+* xzxtodo
 */
 static const TValue *getgeneric (Table *t, const TValue *key) {
   Node *n = mainposition(t, key);
