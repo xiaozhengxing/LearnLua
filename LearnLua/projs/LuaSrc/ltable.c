@@ -587,7 +587,7 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
 
 /* 
 ** search function for short strings
-* 查找t[key], key为字符串, 找到了返回node.val(类型为TValue*);没找到返回luaO_nilobject
+* 查找t[key], key为短字符串, 找到了返回node.val(类型为TValue*);没找到返回luaO_nilobject
 * 不会调用元方法,
 */
 const TValue *luaH_getshortstr (Table *t, TString *key) {
@@ -612,7 +612,7 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 /*
 ** "Generic" get version. (Not that generic: not valid for integers,
 ** which may be in array part, nor for floats with integral values.)
-* xzxtodo
+*  返回t[key],是在table.node中查找, 所以key不能为整数或可转成整数的浮点数,
 */
 static const TValue *getgeneric (Table *t, const TValue *key) {
   Node *n = mainposition(t, key);
@@ -628,7 +628,7 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
   }
 }
 
-
+//xzxtodo
 const TValue *luaH_getstr (Table *t, TString *key) {
   if (key->tt == LUA_TSHRSTR)
     return luaH_getshortstr(t, key);
