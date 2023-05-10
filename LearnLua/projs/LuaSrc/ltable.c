@@ -443,7 +443,9 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
 ** }=============================================================
 */
 
-
+/*
+ * 新建table, array和node hash大小都为0
+ */
 Table *luaH_new (lua_State *L) {
   GCObject *o = luaC_newobj(L, LUA_TTABLE, sizeof(Table));
   Table *t = gco2t(o);
@@ -455,7 +457,9 @@ Table *luaH_new (lua_State *L) {
   return t;
 }
 
-
+/*
+ * free table{包含table中的array和 node hash}
+ */
 void luaH_free (lua_State *L, Table *t) {
   if (!isdummy(t))
     luaM_freearray(L, t->node, cast(size_t, sizenode(t)));
@@ -507,7 +511,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
     Node *othern;
     Node *f = getfreepos(t);  /* get a free place */
     if (f == NULL) {  /* cannot find a free place? 没有空间了,则扩容 */
-      rehash(L, t, key);  /* grow table */
+      rehash(L, t, key);  /* grow table, 注意这里面会考虑等待新插入的key */
       /* whatever called 'newkey' takes care of TM cache */
       return luaH_set(L, t, key);  /* insert key into grown table */
     }
@@ -581,8 +585,9 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
 }
 
 
-/*
+/* 
 ** search function for short strings
+* xzxtodo
 */
 const TValue *luaH_getshortstr (Table *t, TString *key) {
   Node *n = hashstr(t, key);
