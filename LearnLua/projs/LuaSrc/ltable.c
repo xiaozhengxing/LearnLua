@@ -405,7 +405,8 @@ void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
     luaM_freearray(L, nold, cast(size_t, oldhsize)); /* free old hash */
 }
 
-
+//更新table的数组大小(nasize:new array size), node hash的大小不变,
+//注意,table中的数组和node内容不变,key-value放的位置可能需要更新,
 void luaH_resizearray (lua_State *L, Table *t, unsigned int nasize) {
   int nsize = allocsizenode(t);
   luaH_resize(L, t, nasize, nsize);
@@ -413,6 +414,7 @@ void luaH_resizearray (lua_State *L, Table *t, unsigned int nasize) {
 
 /*
 ** nums[i] = number of keys 'k' where 2^(i - 1) < k <= 2^i
+* xzxtodo
 */
 static void rehash (lua_State *L, Table *t, const TValue *ek) {
   unsigned int asize;  /* optimal size for array part */

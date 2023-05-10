@@ -37,7 +37,7 @@
 #define isdummy(t)		((t)->lastfree == NULL)
 
 
-/* allocated size for hash nodes, t为table,返回table的hash node大小 */
+/* allocated size for hash nodes, t为table, 返回table的hash node大小(实际分配的node数组长度) */
 #define allocsizenode(t)	(isdummy(t) ? 0 : sizenode(t))
 
 
