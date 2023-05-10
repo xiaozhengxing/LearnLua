@@ -259,7 +259,7 @@ static unsigned int computesizes (unsigned int nums[], unsigned int *pna) {
 }
 
 /*
- * nums[i]用来保存 key(注意key中保存的值为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
+ * nums[i]用来保存 key(注意key中保存的值为整数)的个数, key符合要求 {2^(i-1) < key <= 2^i 且table[key]不为nil} 
  * key中保存的值为整数,则往nums数组中相应的值+1,并返回1
  * 不是整数则返回0
  */
@@ -278,7 +278,7 @@ static int countint (const TValue *key, unsigned int *nums) {
 ** Count keys in array part of table 't': Fill 'nums[i]' with
 ** number of keys that will go into corresponding slice and return
 ** total number of non-nil keys.
-* nums[i]用来保存 key(注意key为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
+* 只查找table.array部分, nums[i]用来保存 key(注意key为整数)的个数, 其中key符合{ 2^(i-1) < key <= 2^i 且table[key]不为nil} 
 * 返回table.array中总的“table[key]不为nil”的key的个数,
 */
 static unsigned int numusearray (const Table *t, unsigned int *nums) {
@@ -307,9 +307,9 @@ static unsigned int numusearray (const Table *t, unsigned int *nums) {
 }
 
 /*
- * nums[i]用来保存 key(注意key为整数)的个数, 其中 2^(i-1) < key <= 2^i 且table[key]不为nil
- * pna用来保存node中key(TValue)中保存的类型为整数，这样的key的个数
- * 返回table的node中value(TValue)不为nil的个数
+* nums[i]用来保存 符合要求的key(注意key为整数)的个数, 其中key符合{2^(i-1) < key <= 2^i 且table[key]不为nil} 
+ * pna用来保存node中key(TValue)中保存的类型为整数，这样的key的个数,
+ * 返回table的node中value(TValue)不为nil的个数,
  */
 static int numusehash (const Table *t, unsigned int *nums, unsigned int *pna) {
   int totaluse = 0;  /* total number of elements */
@@ -379,7 +379,7 @@ void luaH_resize (lua_State *L, Table *t, unsigned int nasize,
     setarrayvector(L, t, nasize);//设置table.array的大小为size,并更新array中的元素值,
 
   /* create new hash part with appropriate size */
-  setnodevector(L, t, nhsize);//设置table.node的大小为size,并将node中的所有元素信息清除
+  setnodevector(L, t, nhsize);//设置table.node的大小为size,并将node中的所有元素信息清除,
   
   if (nasize < oldasize) {  /* array part must shrink?数组缩容 */
     t->sizearray = nasize;
@@ -414,11 +414,12 @@ void luaH_resizearray (lua_State *L, Table *t, unsigned int nasize) {
 
 /*
 ** nums[i] = number of keys 'k' where 2^(i - 1) < k <= 2^i
-* xzxtodo
+* ek:extral key, 等待新插入的key
+*  考虑即将要新插入的key(extral key), 计算table中的array和node hash的最适当的大小, 并resize(这里面会调整array和node hash元素的位置),
 */
 static void rehash (lua_State *L, Table *t, const TValue *ek) {
   unsigned int asize;  /* optimal size for array part */
-  unsigned int na;  /* number of keys in the array part */
+  unsigned int na;  /* number of keys in the array part,计算有效的key的个数: table.array[key]不为 nil(其中key为整数) 或 table.node[i].key(类型为TValue,保存的值为整数) */
   unsigned int nums[MAXABITS + 1];
   int i;
   int totaluse;
@@ -426,9 +427,10 @@ static void rehash (lua_State *L, Table *t, const TValue *ek) {
   na = numusearray(t, nums);  /* count keys in array part */
   totaluse = na;  /* all those keys are integer keys */
   totaluse += numusehash(t, nums, &na);  /* count keys in hash part */
-  /* count extra key */
+  /* count extra key ,判断extral key中保存的是不是整数 */
   na += countint(ek, nums);
   totaluse++;
+  
   /* compute new size for array part */
   asize = computesizes(nums, &na);
   /* resize the table to new computed sizes */
