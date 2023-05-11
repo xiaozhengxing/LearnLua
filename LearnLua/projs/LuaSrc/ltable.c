@@ -692,12 +692,15 @@ void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
 }
 
 /*
+ * 根据上层调用,此时j已经是 table.node部分了, 因为 j = table.arraySize
  * xzxtodo
  */
 static int unbound_search (Table *t, unsigned int j) {
   unsigned int i = j;  /* i is zero or a present index */
   j++;
-  /* find 'i' and 'j' such that i is present and j is not */
+  /* find 'i' and 'j' such that i is present and j is not
+   * 先大致找到一个范围,使得 {t[j]!=nil && t[i] = nil, 其中 j = i * 2}
+   */
   while (!ttisnil(luaH_getint(t, j))) {
     i = j;
     if (j > cast(unsigned int, MAX_INT)/2) {  /* overflow? */
@@ -708,6 +711,7 @@ static int unbound_search (Table *t, unsigned int j) {
     }
     j *= 2;
   }
+  
   /* now do a binary search between them */
   while (j - i > 1) {
     unsigned int m = (i+j)/2;
@@ -723,11 +727,14 @@ static int unbound_search (Table *t, unsigned int j) {
 ** such that t[i] is non-nil and t[i+1] is nil (and 0 if t[1] is nil).
 */
 int luaH_getn (Table *t) {
-  unsigned int j = t->sizearray;//数组,
+  //检查数组部分,
+  unsigned int j = t->sizearray;
   if (j > 0 && ttisnil(&t->array[j - 1])) {//数组里面最后一格元素是nil,
     /* there is a boundary in the array part: (binary) search for it, 二分法 */
     unsigned int i = 0;
-    while (j - i > 1) {
+    
+    //二分查找,
+    while (j - i > 1) { 
       unsigned int m = (i+j)/2;
       if (ttisnil(&t->array[m - 1])) j = m;
       else i = m;
