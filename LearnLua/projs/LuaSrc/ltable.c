@@ -693,13 +693,13 @@ void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
 
 /*
  * 根据上层调用,此时j已经是 table.node部分了, 因为 j = table.arraySize
- * xzxtodo
+ * 查找table.node中, 返回i值, 符合{table[i]!=nil and table[i+1]==nil}
  */
 static int unbound_search (Table *t, unsigned int j) {
   unsigned int i = j;  /* i is zero or a present index */
   j++;
   /* find 'i' and 'j' such that i is present and j is not
-   * 先大致找到一个范围,使得 {t[j]!=nil && t[i] = nil, 其中 j = i * 2}
+   * 先大致找到一个范围,使得 {t[i] != nil and t[j]==nil , 其中 j = i * 2}
    */
   while (!ttisnil(luaH_getint(t, j))) {
     i = j;
@@ -725,6 +725,8 @@ static int unbound_search (Table *t, unsigned int j) {
 /*
 ** Try to find a boundary in table 't'. A 'boundary' is an integer index
 ** such that t[i] is non-nil and t[i+1] is nil (and 0 if t[1] is nil).
+* 返回i,符合 t[i]!=nil and t[i+1]==nil
+* 先数组部分找,找不到则在node中找, 所返回的i值并不能认为就是table中有效值的个数,比如数组中 {1,2,3,nil,5,6,7,nil},返回的就是3,会把5,6,7忽略的,
 */
 int luaH_getn (Table *t) {
   //检查数组部分,
