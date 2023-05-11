@@ -612,7 +612,7 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 /*
 ** "Generic" get version. (Not that generic: not valid for integers,
 ** which may be in array part, nor for floats with integral values.)
-*  返回t[key],是在table.node中查找, 所以key不能为整数或可转成整数的浮点数,
+*  返回t[key],是在table.node中查找(没有触发元方法), 所以key不能为整数或可转成整数的浮点数,
 */
 static const TValue *getgeneric (Table *t, const TValue *key) {
   Node *n = mainposition(t, key);
@@ -642,7 +642,7 @@ const TValue *luaH_getstr (Table *t, TString *key) {
 
 /*
 ** main search function
-* xzxtodo
+* 查找t[key],(貌似不会触发元方法)
 */
 const TValue *luaH_get (Table *t, const TValue *key) {
   switch (ttype(key)) {
@@ -664,7 +664,7 @@ const TValue *luaH_get (Table *t, const TValue *key) {
 /*
 ** beware: when using this function you probably need to check a GC
 ** barrier and invalidate the TM cache.
-* 返回 table[key](类型转为TValue*),如果找不到table[key]则将key新插入到table中(数组或node hash)
+* 返回 table[key](类型转为TValue*),如果找不到table[key]则将key 新插入到table中(数组或node hash)
 */
 TValue *luaH_set (lua_State *L, Table *t, const TValue *key) {
   const TValue *p = luaH_get(t, key);
@@ -691,7 +691,9 @@ void luaH_setint (lua_State *L, Table *t, lua_Integer key, TValue *value) {
   setobj2t(L, cell, value);
 }
 
-
+/*
+ * xzxtodo
+ */
 static int unbound_search (Table *t, unsigned int j) {
   unsigned int i = j;  /* i is zero or a present index */
   j++;
