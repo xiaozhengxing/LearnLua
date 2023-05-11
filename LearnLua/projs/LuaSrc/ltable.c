@@ -628,7 +628,7 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
   }
 }
 
-//xzxtodo
+//查找 t[key], key为string
 const TValue *luaH_getstr (Table *t, TString *key) {
   if (key->tt == LUA_TSHRSTR)
     return luaH_getshortstr(t, key);
@@ -642,6 +642,7 @@ const TValue *luaH_getstr (Table *t, TString *key) {
 
 /*
 ** main search function
+* xzxtodo
 */
 const TValue *luaH_get (Table *t, const TValue *key) {
   switch (ttype(key)) {
