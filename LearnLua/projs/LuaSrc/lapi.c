@@ -473,7 +473,7 @@ LUA_API const char *lua_tolstring (lua_State *L, int idx, size_t *len) {
 }
 
 /*
- * xzxtodo(完成TString的时候再看)
+ * 简单的len操作,不涉及元方法,
  */
 LUA_API size_t lua_rawlen (lua_State *L, int idx) {
   StkId o = index2addr(L, idx);
@@ -481,7 +481,7 @@ LUA_API size_t lua_rawlen (lua_State *L, int idx) {
     case LUA_TSHRSTR: return tsvalue(o)->shrlen;//短字符串长度,
     case LUA_TLNGSTR: return tsvalue(o)->u.lnglen;//长字符串长度
     case LUA_TUSERDATA: return uvalue(o)->len;//userdata中申请的内存块大小,
-    case LUA_TTABLE: return luaH_getn(hvalue(o));
+    case LUA_TTABLE: return luaH_getn(hvalue(o));//table的长度,不是很准确,主要是找到并返回i,符合 t[i]!=nil and t[i+1]==nil
     default: return 0;
   }
 }
