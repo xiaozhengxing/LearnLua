@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <csetjmp>
 #include <windows.h>
 
 using namespace  std;
@@ -42,9 +43,35 @@ int main(int argc, char* argv[])
 
 #else
 
+jmp_buf env;
+
+int my_test(int a, int b)
+{
+    if(b == 0)
+    {
+        printf("test 0\n");
+        longjmp(env, 2);
+    }
+    return a / b;
+}
+
 int main(int argc, char* argv[])
 {
-    cout << "hello world!" << endl;
+    int res = setjmp(env);
+    if(res == 0)//执行my_test方法
+    {
+        cout<< "return from setjmp" <<endl;
+        my_test(10, 0);
+    }
+    else if(res == 1)//遇到longjmp,则进入该分支
+    {
+        cout << "1return from longjmp: " << res << endl;
+    }
+    else if(res == 2)
+    {
+        cout << "2return from longjmp: " << res << endl;
+    }
+    
     return 0;
 }
 #endif
