@@ -156,6 +156,7 @@ typedef struct global_State {
 
 /*
 ** 'per thread' state
+* lua_State.tt = LUA_TTHREAD
 */
 struct lua_State {
   CommonHeader;
