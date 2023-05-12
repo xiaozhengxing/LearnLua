@@ -16,6 +16,9 @@ extern "C"//跟着<自己动手实现lua虚拟机>,使用5.3.4版本
 #include "LuaSrc/lgc.h"
 }
 
+//#define xzxTest
+
+#ifdef xzxTest
 int main(int argc, char* argv[])
 {
     lua_State* L = luaL_newstate();
@@ -36,3 +39,15 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
+
+#else
+
+int main(int argc, char* argv[])
+{
+    cout << "hello world!" << endl;
+    return 0;
+}
+#endif
+
+
+
