@@ -156,8 +156,9 @@ static void stack_init (lua_State *L1, lua_State *L) {
   for (i = 0; i < BASIC_STACK_SIZE; i++)
     setnilvalue(L1->stack + i);  /* erase new stack */
   L1->top = L1->stack;//top指向第一个元素,就是数组stack[0],所以指向的是一个空闲位置,push的时候先赋值再执行top++
-  L1->stack_last = L1->stack + L1->stacksize - EXTRA_STACK;
-  /* initialize first ci */
+  L1->stack_last = L1->stack + L1->stacksize - EXTRA_STACK;//stack_last再往后留了一些空间,
+  
+  /* initialize first ci,初始化第一个callInfo */
   ci = &L1->base_ci;
   ci->next = ci->previous = NULL;
   ci->callstatus = 0;
