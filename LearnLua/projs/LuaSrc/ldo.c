@@ -142,7 +142,7 @@ int luaD_rawrunprotected (lua_State *L, Pfunc f, void *ud) {
 
   //LUAI_TRY(L,c,a) if(setjmp((c)->b) == 0) {a}, 注意在这里设置jmp
   LUAI_TRY(L, &lj,
-    (*f)(L, ud);//注意函数f中如果有异常,会调用luaD_throw抛出异常{调用longjmp来跳转到setjmp的地方}
+    (*f)(L, ud);//注意函数f中如果有异常,会调用luaD_throw抛出异常{先设置lj的status,再调用longjmp来跳转到setjmp的地方}
   );
   L->errorJmp = lj.previous;  /* restore old error handler, 执行完后,恢复当前errorJmp */
   L->nCcalls = oldnCcalls;
