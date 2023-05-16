@@ -147,7 +147,7 @@ void luaE_shrinkCI (lua_State *L) {
   }
 }
 
-
+//1 初始化stack数组, 2 初始化第一个callInfo
 static void stack_init (lua_State *L1, lua_State *L) {
   int i; CallInfo *ci;
   /* initialize stack array */
@@ -181,6 +181,7 @@ static void freestack (lua_State *L) {
 
 /*
 ** Create registry table and its predefined values
+* 初始化G->registry
 */
 static void init_registry (lua_State *L, global_State *g) {
   TValue temp;
@@ -188,10 +189,12 @@ static void init_registry (lua_State *L, global_State *g) {
   Table *registry = luaH_new(L);
   sethvalue(L, &g->l_registry, registry);
   luaH_resize(L, registry, LUA_RIDX_LAST, 0);
-  /* registry[LUA_RIDX_MAINTHREAD] = L */
+
+  /* registry[LUA_RIDX_MAINTHREAD] = L, 即 g->l_registry[1] = L*/
   setthvalue(L, &temp, L);  /* temp = L */
   luaH_setint(L, registry, LUA_RIDX_MAINTHREAD, &temp);
-  /* registry[LUA_RIDX_GLOBALS] = table of globals */
+
+  /* registry[LUA_RIDX_GLOBALS] = table of globals, 即 g->l_registry[2] = new table(即全局表) */
   sethvalue(L, &temp, luaH_new(L));  /* temp = new table (global table) */
   luaH_setint(L, registry, LUA_RIDX_GLOBALS, &temp);
 }
@@ -205,7 +208,7 @@ static void f_luaopen (lua_State *L, void *ud) {
   global_State *g = G(L);
   UNUSED(ud);
   stack_init(L, L);  /* init stack */
-  init_registry(L, g);
+  init_registry(L, g);//xzxtodo
   luaS_init(L);
   luaT_init(L);
   luaX_init(L);

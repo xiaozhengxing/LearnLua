@@ -357,6 +357,11 @@ typedef struct lua_TValue {
     val_(io).gc = obj2gco(x_); settt_(io, ctb(LUA_TCCL)); \
     checkliveness(L,io); }
 
+/*
+ * 将x的值copy给obj,且设置obj的tag为( 1<<6 | LUA_TTABLE),即添加collectable tag, 表示需回收
+ * obj: TValue*类型
+ * x: Table*类型
+ */
 #define sethvalue(L,obj,x) \
   { TValue *io = (obj); Table *x_ = (x); \
     val_(io).gc = obj2gco(x_); settt_(io, ctb(LUA_TTABLE)); \
