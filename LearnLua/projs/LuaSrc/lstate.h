@@ -171,7 +171,7 @@ struct lua_State {
   UpVal *openupval;  /* list of open upvalues in this stack */
   GCObject *gclist;
   struct lua_State *twups;  /* list of threads with open upvalues */
-  struct lua_longjmp *errorJmp;  /* current error recover point */
+  struct lua_longjmp *errorJmp;  /* current error recover point, 当前执行的luaD_rawrunprotected中所在的jmp_buf点 */
   CallInfo base_ci;  /* CallInfo for first level (C calling Lua) */
   volatile lua_Hook hook;
   ptrdiff_t errfunc;  /* current error handling function (stack index) */

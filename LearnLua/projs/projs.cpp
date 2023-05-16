@@ -17,7 +17,7 @@ extern "C"//跟着<自己动手实现lua虚拟机>,使用5.3.4版本
 #include "LuaSrc/lgc.h"
 }
 
-//#define xzxTest
+#define xzxTest
 
 #ifdef xzxTest
 int main(int argc, char* argv[])

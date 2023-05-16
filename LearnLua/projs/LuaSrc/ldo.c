@@ -132,17 +132,19 @@ l_noret luaD_throw (lua_State *L, int errcode) {
   }
 }
 
-
+//lua的函数执行异常保护方法,
 int luaD_rawrunprotected (lua_State *L, Pfunc f, void *ud) {
   unsigned short oldnCcalls = L->nCcalls;
   struct lua_longjmp lj;
   lj.status = LUA_OK;
-  lj.previous = L->errorJmp;  /* chain new error handler */
+  lj.previous = L->errorJmp;  /* chain new error handler, 设置lj为最新的errorJmp, 当前的errorJmp为lj的上一层, 串成链表 */
   L->errorJmp = &lj;
+
+  //LUAI_TRY(L,c,a) if(setjmp((c)->b) == 0) {a}, 注意在这里设置jmp
   LUAI_TRY(L, &lj,
-    (*f)(L, ud);
+    (*f)(L, ud);//注意函数f中如果有异常,会调用luaD_throw抛出异常{调用longjmp来跳转到setjmp的地方}
   );
-  L->errorJmp = lj.previous;  /* restore old error handler */
+  L->errorJmp = lj.previous;  /* restore old error handler, 执行完后,恢复当前errorJmp */
   L->nCcalls = oldnCcalls;
   return lj.status;
 }
