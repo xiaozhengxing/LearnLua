@@ -85,18 +85,20 @@ void luaS_resize (lua_State *L, int newsize) {
     tb->hash[i] = NULL;
     while (p) {  /* for each node in the list */
       TString *hnext = p->u.hnext;  /* save next */
-      unsigned int h = lmod(p->hash, newsize);  /* new position */
+      unsigned int h = lmod(p->hash, newsize);  /* new position, 使用string.hash来计算位置 */
+      
       p->u.hnext = tb->hash[h];  /* chain it */
       tb->hash[h] = p;//放到链首,
+
       p = hnext;
     }
   }
 
-  //?
+  //xzxtodo?
   if (newsize < tb->size) {  /* shrink table if needed */
     /* vanishing slice should be empty */
     lua_assert(tb->hash[newsize] == NULL && tb->hash[tb->size - 1] == NULL);
-    //有点看不懂这里了,感觉因为要缩容,直接将[tb->size, newSize]之间的hash表中的元素不管了,
+    //有点看不懂这里了,感觉因为要缩容,直接将[tb->size, newSize]之间的hash表中的元素不管了,{解答:没有不管,在上面的for循环中,重新hash后只会分布在[0,newSize)之间,}
     //不过因为这个只是stringtable,即使不管了,丢弃了,也不会引起什么问题,因为可以再次构建newTString就可以了,
     //丢弃了的hash表中的元素再之后也会被GC掉,???但还是有问题,对字符串对比的时候是直接对比的指针(eqshrstr)
     luaM_reallocvector(L, tb->hash, tb->size, newsize, TString *);

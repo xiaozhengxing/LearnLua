@@ -181,7 +181,7 @@ static void freestack (lua_State *L) {
 
 /*
 ** Create registry table and its predefined values
-* 初始化G->registry
+* 初始化 G->l_registry
 */
 static void init_registry (lua_State *L, global_State *g) {
   TValue temp;
@@ -208,8 +208,8 @@ static void f_luaopen (lua_State *L, void *ud) {
   global_State *g = G(L);
   UNUSED(ud);
   stack_init(L, L);  /* init stack */
-  init_registry(L, g);//xzxtodo
-  luaS_init(L);
+  init_registry(L, g);//初始化 G->l_registry
+  luaS_init(L);//xzxtodo
   luaT_init(L);
   luaX_init(L);
   g->gcrunning = 1;  /* allow gc */
