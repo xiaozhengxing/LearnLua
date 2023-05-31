@@ -22,7 +22,7 @@ extern "C"//跟着<自己动手实现lua虚拟机>,使用5.3.4版本
 #ifdef xzxTest
 int main(int argc, char* argv[])
 {
-    lua_State* L = luaL_newstate();
+    lua_State* L = luaL_newstate();//xzxtodo0
     assert(L != NULL);    
 
     luaopen_base(L);

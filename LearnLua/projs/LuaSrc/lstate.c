@@ -188,7 +188,7 @@ static void init_registry (lua_State *L, global_State *g) {
   /* create registry */
   Table *registry = luaH_new(L);
   sethvalue(L, &g->l_registry, registry);
-  luaH_resize(L, registry, LUA_RIDX_LAST, 0);
+  luaH_resize(L, registry, LUA_RIDX_LAST, 0);/* 最初始的时候只有数组有两个空间 */
 
   /* registry[LUA_RIDX_MAINTHREAD] = L, 即 g->l_registry[1] = L*/
   setthvalue(L, &temp, L);  /* temp = L */
@@ -209,8 +209,8 @@ static void f_luaopen (lua_State *L, void *ud) {
   UNUSED(ud);
   stack_init(L, L);  /* init stack */
   init_registry(L, g);//初始化 G->l_registry
-  luaS_init(L);//xzxtodo
-  luaT_init(L);
+  luaS_init(L);//初始化G中字符串(S)相关的变量{初始化G->strt(string table)和G->strcache}
+  luaT_init(L);//xzxtodo3
   luaX_init(L);
   g->gcrunning = 1;  /* allow gc */
   g->version = lua_version(NULL);
@@ -333,7 +333,7 @@ LUA_API lua_State *lua_newstate (lua_Alloc f, void *ud) {
   g->gcpause = LUAI_GCPAUSE;
   g->gcstepmul = LUAI_GCMUL;
   for (i=0; i < LUA_NUMTAGS; i++) g->mt[i] = NULL;//初始化时,每个类型对应的元表为null, 
-  if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK) {
+  if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK) {//xzxtodo2
     /* memory allocation error: free partial state */
     close_state(L);
     L = NULL;
