@@ -33,7 +33,7 @@ LUAI_DDEF const char *const luaT_typenames_[LUA_TOTALTAGS] = {
   "proto" /* this last case is used for tests only */
 };
 
-
+//初始化G->tmname[],用来保存"__index"等字符串,
 void luaT_init (lua_State *L) {
   static const char *const luaT_eventname[] = {  /* ORDER TM */
     "__index", "__newindex",

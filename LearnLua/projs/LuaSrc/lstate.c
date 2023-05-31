@@ -210,8 +210,8 @@ static void f_luaopen (lua_State *L, void *ud) {
   stack_init(L, L);  /* init stack */
   init_registry(L, g);//初始化 G->l_registry
   luaS_init(L);//初始化G中字符串(S)相关的变量{初始化G->strt(string table)和G->strcache}
-  luaT_init(L);//xzxtodo3
-  luaX_init(L);
+  luaT_init(L);//初始化G->tmname[],用来保存"__index"等字符串,
+  luaX_init(L);// xzxtodo3
   g->gcrunning = 1;  /* allow gc */
   g->version = lua_version(NULL);
   luai_userstateopen(L);

@@ -148,7 +148,7 @@ typedef struct global_State {
   struct lua_State *mainthread;
   const lua_Number *version;  /* pointer to version number */
   TString *memerrmsg;  /* memory-error message */
-  TString *tmname[TM_N];  /* array with tag-method names */
+  TString *tmname[TM_N];  /* array with tag-method names,存放"__index"等字符串{见 luaT_eventname} */
   struct Table *mt[LUA_NUMTAGS];  /* metatables for basic types, 除了UserData和Table, 对于其他类型, 每个类型共用一个global元表 */
   TString *strcache[STRCACHE_N][STRCACHE_M];  /* cache for strings in API,一个快速的缓存,新建字符串(长或短)时会现在这里面找,找不到则新建字符串,并将字符串更新到strcache中 */
 } global_State;
