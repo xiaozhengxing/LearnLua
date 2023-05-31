@@ -15,8 +15,8 @@
 * WARNING: if you change the order of this enumeration,
 * grep "ORDER TM" and "ORDER OP"
 */
-typedef enum {
-  TM_INDEX,
+typedef enum {//对应的字符串在luaT_eventname中,
+  TM_INDEX,//"__index"
   TM_NEWINDEX,
   TM_GC,
   TM_MODE,
@@ -40,7 +40,7 @@ typedef enum {
   TM_LE,
   TM_CONCAT,
   TM_CALL,
-  TM_N		/* number of elements in the enum */
+  TM_N		/* number of elements in the enum, value=24 */
 } TMS;
 
 
