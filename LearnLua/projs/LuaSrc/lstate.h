@@ -139,7 +139,7 @@ typedef struct global_State {
   GCObject *ephemeron;  /* list of ephemeron tables (weak keys) */
   GCObject *allweak;  /* list of all-weak tables */
   GCObject *tobefnz;  /* list of userdata to be GC */
-  GCObject *fixedgc;  /* list of objects not to be collected, 比如保留字对应的TString就会放到这里面(见luaX_init()) */
+  GCObject *fixedgc;  /* list of objects not to be collected, 比如保留字符串对应的TString就会放到这里面(见luaX_init()) */
   struct lua_State *twups;  /* list of threads with open upvalues */
   unsigned int gcfinnum;  /* number of finalizers to call in each GC step */
   int gcpause;  /* size of pause between successive GCs */
