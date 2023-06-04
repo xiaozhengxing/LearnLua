@@ -169,12 +169,12 @@ LUA_API lua_CFunction lua_atpanic (lua_State *L, lua_CFunction panicf) {
 
 /*
  * 返回版本号
- * L为null,返回 LUA_VERSION_NUM的地址
+ * L为null,返回 LUA_VERSION_NUM 的地址
  * L不为NULL,返回G->version
  */
 LUA_API const lua_Number *lua_version (lua_State *L) {
-  static const lua_Number version = LUA_VERSION_NUM;
-  if (L == NULL) return &version;
+  static const lua_Number version = LUA_VERSION_NUM;//503
+  if (L == NULL) return &version;//lua_State初始化的时候,传入的为null，见函数 f_luaopen()
   else return G(L)->version;
 }
 

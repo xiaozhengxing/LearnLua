@@ -213,8 +213,8 @@ static void f_luaopen (lua_State *L, void *ud) {
   luaT_init(L);//初始化G->tmname[],用来保存"__index"等字符串,
   luaX_init(L);//新建保留字符串, xzxtodo3
   g->gcrunning = 1;  /* allow gc */
-  g->version = lua_version(NULL);
-  luai_userstateopen(L);
+  g->version = lua_version(NULL);//保存版本号,
+  luai_userstateopen(L);//执行自定义函数,
 }
 
 

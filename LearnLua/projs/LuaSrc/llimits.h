@@ -235,27 +235,28 @@ typedef unsigned long Instruction;
 ** created/deleted/resumed/yielded.
 */
 #if !defined(luai_userstateopen)
-#define luai_userstateopen(L)		((void)L)
+#define luai_userstateopen(L)		((void)L)//lua_newstate中调用,
 #endif
 
 #if !defined(luai_userstateclose)
-#define luai_userstateclose(L)		((void)L)
+#define luai_userstateclose(L)		((void)L)//close_state (lua_State *L)中调用,
 #endif
 
 #if !defined(luai_userstatethread)
-#define luai_userstatethread(L,L1)	((void)L)
+#define luai_userstatethread(L,L1)	((void)L)//lua_State *lua_newthread (lua_State *L) 中调用,
 #endif
 
 #if !defined(luai_userstatefree)
-#define luai_userstatefree(L,L1)	((void)L)
+#define luai_userstatefree(L,L1)	((void)L)//luaE_freethread (lua_State *L, lua_State *L1)中调用,
 #endif
 
 #if !defined(luai_userstateresume)
-#define luai_userstateresume(L,n)	((void)L)
+#define luai_userstateresume(L,n)	((void)L)//lua_resume (lua_State *L, lua_State *from, int nargs)中调用,
 #endif
 
 #if !defined(luai_userstateyield)
-#define luai_userstateyield(L,n)	((void)L)
+#define luai_userstateyield(L,n)	((void)L)//lua_yieldk (lua_State *L, int nresults, lua_KContext ctx,lua_KFunction k)中调用,
+
 #endif
 
 
