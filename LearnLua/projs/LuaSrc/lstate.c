@@ -296,7 +296,7 @@ void luaE_freethread (lua_State *L, lua_State *L1) {
   luaM_free(L, l);
 }
 
-
+//注意这里是newState,创建的是第一个lua_State,如果需要创建其他的lua_State,使用的是 lua_newthread()
 LUA_API lua_State *lua_newstate (lua_Alloc f, void *ud) {
   int i;
   lua_State *L;
@@ -334,7 +334,7 @@ LUA_API lua_State *lua_newstate (lua_Alloc f, void *ud) {
   g->gcpause = LUAI_GCPAUSE;
   g->gcstepmul = LUAI_GCMUL;
   for (i=0; i < LUA_NUMTAGS; i++) g->mt[i] = NULL;//初始化时,每个类型对应的元表为null, 
-  if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK) {//初始化G->l_registry和一些特殊字符串("__index"和保留字符串等) xzxtodo2
+  if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK) {//初始化G->l_registry和一些特殊字符串("__index"和保留字符串等)
     /* memory allocation error: free partial state */
     close_state(L);
     L = NULL;
