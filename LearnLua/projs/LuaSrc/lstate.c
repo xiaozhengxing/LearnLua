@@ -203,6 +203,7 @@ static void init_registry (lua_State *L, global_State *g) {
 /*
 ** open parts of the state that may cause memory-allocation errors.
 ** ('g->version' != NULL flags that the state was completely build)
+* 初始化G->l_registry和一些特殊字符串("__index"和保留字符串等)
 */
 static void f_luaopen (lua_State *L, void *ud) {
   global_State *g = G(L);
@@ -211,7 +212,7 @@ static void f_luaopen (lua_State *L, void *ud) {
   init_registry(L, g);//初始化 G->l_registry
   luaS_init(L);//初始化G中字符串(S)相关的变量{初始化G->strt(string table)和G->strcache}
   luaT_init(L);//初始化G->tmname[],用来保存"__index"等字符串,
-  luaX_init(L);//新建保留字符串, xzxtodo3
+  luaX_init(L);//初始化保留字符串, 
   g->gcrunning = 1;  /* allow gc */
   g->version = lua_version(NULL);//保存版本号,
   luai_userstateopen(L);//执行自定义函数,
@@ -333,7 +334,7 @@ LUA_API lua_State *lua_newstate (lua_Alloc f, void *ud) {
   g->gcpause = LUAI_GCPAUSE;
   g->gcstepmul = LUAI_GCMUL;
   for (i=0; i < LUA_NUMTAGS; i++) g->mt[i] = NULL;//初始化时,每个类型对应的元表为null, 
-  if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK) {//xzxtodo2
+  if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK) {//初始化G->l_registry和一些特殊字符串("__index"和保留字符串等) xzxtodo2
     /* memory allocation error: free partial state */
     close_state(L);
     L = NULL;

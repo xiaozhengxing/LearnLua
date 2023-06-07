@@ -66,7 +66,7 @@ static void save (LexState *ls, int c) {
   b->buffer[luaZ_bufflen(b)++] = cast(char, c);
 }
 
-//新建保留字符串(TString, 赋值TString->extra= i+1)
+//初始化保留字符串(TString, 赋值TString->extra= i+1)
 void luaX_init (lua_State *L) {
   int i;
   TString *e = luaS_newliteral(L, LUA_ENV);  /* "_ENV", create env name */
