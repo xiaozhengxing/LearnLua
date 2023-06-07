@@ -1032,8 +1032,9 @@ static int panic (lua_State *L) {
 }
 
 
+//注意这里是newState,创建的是第一个lua_State,如果需要创建其他的lua_State,使用的是 lua_newthread()
 LUALIB_API lua_State *luaL_newstate (void) {
-  lua_State *L = lua_newstate(l_alloc, NULL);//xzxtodo1
+  lua_State *L = lua_newstate(l_alloc, NULL);
   if (L) lua_atpanic(L, &panic);
   return L;
 }

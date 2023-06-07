@@ -22,10 +22,10 @@ extern "C"//跟着<自己动手实现lua虚拟机>,使用5.3.4版本
 #ifdef xzxTest
 int main(int argc, char* argv[])
 {
-    lua_State* L = luaL_newstate();//xzxtodo0
+    lua_State* L = luaL_newstate();
     assert(L != NULL);    
 
-    luaopen_base(L);
+    luaopen_base(L);//xzxtodo0
     luaL_openlibs(L);
 
     int iRet = luaL_dofile(L, "test.lua");
