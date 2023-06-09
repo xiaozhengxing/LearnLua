@@ -114,7 +114,7 @@ typedef struct CallInfo {
 
 
 /*
-** 'global state', shared by all threads of this state
+** 'global state', shared by all threads of this state, 全局状态机,
 */
 typedef struct global_State {
   lua_Alloc frealloc;  /* function to reallocate memory */
@@ -163,7 +163,7 @@ struct lua_State {
   unsigned short nci;  /* number of items in 'ci' list */
   lu_byte status;
   StkId top;  /* first free slot in the stack, L->top指向的是当前空闲位置 */
-  global_State *l_G;
+  global_State *l_G;//全局状态机,
   CallInfo *ci;  /* call info for current function */
   const Instruction *oldpc;  /* last pc traced */
   StkId stack_last;  /* last free slot in the stack */
