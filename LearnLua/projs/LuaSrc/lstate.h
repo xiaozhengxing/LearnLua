@@ -160,28 +160,36 @@ typedef struct global_State {
 */
 struct lua_State {
   CommonHeader;
-  unsigned short nci;  /* number of items in 'ci' list */
+  
   lu_byte status;
-  StkId top;  /* first free slot in the stack, L->top指向的是当前空闲位置 */
+
   global_State *l_G;//全局状态机,
-  CallInfo *ci;  /* call info for current function */
-  const Instruction *oldpc;  /* last pc traced */
+
+  unsigned short nci;  /* number of items in 'ci' list, callinfo双向链表,一共有多少个callInfo */
+  CallInfo base_ci;  /* CallInfo for first level (C calling Lua) */
+  CallInfo *ci;  /* call info for current function, 当前运行函数 */
+
+  StkId top;  /* first free slot in the stack, L->top指向的是当前空闲位置 */
   StkId stack_last;  /* last free slot in the stack */
   StkId stack;  /* stack base, 栈底位置? */
+  
+  const Instruction *oldpc;  /* last pc traced */
   UpVal *openupval;  /* list of open upvalues in this stack */
   GCObject *gclist;
   struct lua_State *twups;  /* list of threads with open upvalues */
   struct lua_longjmp *errorJmp;  /* current error recover point, 当前执行的luaD_rawrunprotected中所在的jmp_buf点 */
-  CallInfo base_ci;  /* CallInfo for first level (C calling Lua) */
+
+  /*hook相关, 服务于debug模块*/
   volatile lua_Hook hook;
   ptrdiff_t errfunc;  /* current error handling function (stack index) */
   int stacksize; /*当前栈空间大小?*/
   int basehookcount;
   int hookcount;
-  unsigned short nny;  /* number of non-yieldable calls in stack */
-  unsigned short nCcalls;  /* number of nested C calls */
   l_signalT hookmask;
   lu_byte allowhook;
+  
+  unsigned short nny;  /* number of non-yieldable calls in stack */
+  unsigned short nCcalls;  /* number of nested C calls */
 };
 
 

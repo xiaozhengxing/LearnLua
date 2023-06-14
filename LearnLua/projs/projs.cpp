@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         cout << "load file test.lua error " << iRet << endl;
         const char* pErrorMsg = lua_tostring(L, -1);
         cout << pErrorMsg << endl;
-        lua_close(L);
+        lua_close(L);//xzxtodo0
         
         return 0;
     }

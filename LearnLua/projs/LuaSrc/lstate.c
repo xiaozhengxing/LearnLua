@@ -118,6 +118,7 @@ CallInfo *luaE_extendCI (lua_State *L) {
 
 /*
 ** free all CallInfo structures not in use by a thread
+* free L中的所有callInfo
 */
 void luaE_freeCI (lua_State *L) {
   CallInfo *ci = L->ci;
@@ -160,7 +161,7 @@ static void stack_init (lua_State *L1, lua_State *L) {
   
   /* initialize first ci,初始化第一个callInfo */
   ci = &L1->base_ci;
-  ci->next = ci->previous = NULL;
+  ci->next = ci->previous = NULL;//注意这里的previous为null,表示的是第一次callInfo,
   ci->callstatus = 0;
   ci->func = L1->top;
   setnilvalue(L1->top++);  /* 'function' entry for this 'ci' */
@@ -168,12 +169,12 @@ static void stack_init (lua_State *L1, lua_State *L) {
   L1->ci = ci;
 }
 
-
+//1 free L中的所有callInfo, 2 free L中的stack数组,
 static void freestack (lua_State *L) {
   if (L->stack == NULL)
     return;  /* stack not completely built yet */
   L->ci = &L->base_ci;  /* free the entire 'ci' list */
-  luaE_freeCI(L);
+  luaE_freeCI(L);//free L中的所有callInfo
   lua_assert(L->nci == 0);
   luaM_freearray(L, L->stack, L->stacksize);  /* free stack array */
 }
