@@ -123,7 +123,7 @@ typedef struct global_State {
   l_mem GCdebt;  /* bytes allocated not yet compensated by the collector */
   lu_mem GCmemtrav;  /* memory traversed by the GC */
   lu_mem GCestimate;  /* an estimate of the non-garbage memory in use */
-  stringtable strt;  /* hash table for strings, 注意stringtable中只保存短字符串 */
+  stringtable strt;  /* hash table for strings, 注意stringtable中只保存短字符串(<40) */
   TValue l_registry;
   unsigned int seed;  /* randomized seed for hashes */
   lu_byte currentwhite;

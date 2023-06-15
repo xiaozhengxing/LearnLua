@@ -34,7 +34,7 @@
 
 /*
 ** equality for short strings, which are always internalized
-* 对比短字符串a,b是否相等,
+* 对比短字符串a,b是否相等, 直接对比指针a,b是否相等,因为短字符串只会创建一次,
 */
 #define eqshrstr(a,b)	check_exp((a)->tt == LUA_TSHRSTR, (a) == (b))
 

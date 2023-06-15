@@ -597,7 +597,7 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
   //根据node和node.next,一直查找到最后一个元素, 查找key是否已存在,
   for (;;) {  /* check whether 'key' is somewhere in the chain */
     const TValue *k = gkey(n);
-    if (ttisshrstring(k) && eqshrstr(tsvalue(k), key))
+    if (ttisshrstring(k) && eqshrstr(tsvalue(k), key))//直接对比短字符串的指针是否相等(短字符串只会创建一次),
       return gval(n);  /* that's it */
     else {
       int nx = gnext(n);
@@ -629,8 +629,8 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
 }
 
 //查找 t[key], key为string
-const TValue *luaH_getstr (Table *t, TString *key) {
-  if (key->tt == LUA_TSHRSTR)
+const TValue *luaH_getstr (Table *t, TString *key) {//xzxtodo2
+  if (key->tt == LUA_TSHRSTR)//短字符串,
     return luaH_getshortstr(t, key);
   else {  /* for long strings, use generic case */
     TValue ko;

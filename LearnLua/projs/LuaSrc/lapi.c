@@ -700,7 +700,7 @@ LUA_API int lua_pushthread (lua_State *L) {
 static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
-  if (luaV_fastget(L, t, str, slot, luaH_getstr)) {
+  if (luaV_fastget(L, t, str, slot, luaH_getstr)) {//xzxtodo1
     setobj2s(L, L->top, slot);
     api_incr_top(L);
   }
@@ -742,7 +742,7 @@ LUA_API int lua_gettable (lua_State *L, int idx) {
  */
 LUA_API int lua_getfield (lua_State *L, int idx, const char *k) {
   lua_lock(L);
-  return auxgetstr(L, index2addr(L, idx), k);
+  return auxgetstr(L, index2addr(L, idx), k);//xzxtodo0
 }
 
 /*
