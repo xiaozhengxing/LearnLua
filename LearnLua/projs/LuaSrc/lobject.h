@@ -639,8 +639,10 @@ typedef struct Node {
 
 typedef struct Table {
   CommonHeader;
-  //问题: TM_INDEX有24个,但flags只有8个bit,这是怎么对应的,
+  //问题: TM_INDEX有24个,但flags只有8个bit,这是怎么对应的;
+  //答:查看TMS的定义中, TM_EQ(5)是最后一个快速查询的tag method,{猜测前几个比较常用,使用flags来快速确定有没有对应的tag method,如果是TM_EQ之后的,还是继续老老实实的去查找node hash表 }
   lu_byte flags;  /* 1<<p means tagmethod(p) is not present,新建table时,值为(~0,bit位全为1):{1 << TM_INDEX为1,表示其对应的node["__index"]不存在} */
+  
   lu_byte lsizenode;  /* log2 of size of 'node' array */
   unsigned int sizearray;  /* size of 'array' array */
   TValue *array;  /* array part */
