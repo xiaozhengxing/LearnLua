@@ -639,7 +639,8 @@ typedef struct Node {
 
 typedef struct Table {
   CommonHeader;
-  lu_byte flags;  /* 1<<p means tagmethod(p) is not present */
+  //问题: TM_INDEX有24个,但flags只有8个bit,这是怎么对应的,
+  lu_byte flags;  /* 1<<p means tagmethod(p) is not present,新建table时,值为(~0,bit位全为1):{1 << TM_INDEX为1,表示其对应的node["__index"]不存在} */
   lu_byte lsizenode;  /* log2 of size of 'node' array */
   unsigned int sizearray;  /* size of 'array' array */
   TValue *array;  /* array part */

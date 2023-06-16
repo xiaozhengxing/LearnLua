@@ -406,7 +406,7 @@ int luaV_lessequal (lua_State *L, const TValue *l, const TValue *r) {
 ** Main operation for equality of Lua values; return 't1 == t2'.
 ** L == NULL means raw equality (no metamethods)
 * t1==t2 返回1, 否则返回0
-* 如果L为null,则不用调用元方法__eq, todo
+* 如果 L为null, 则不用调用元方法__eq, todo
 */
 int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
   const TValue *tm;
@@ -428,10 +428,10 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
     case LUA_TLCF: return fvalue(t1) == fvalue(t2);
     case LUA_TSHRSTR: return eqshrstr(tsvalue(t1), tsvalue(t2));//短字符串直接对比指针即可(因为短字符串只会创建一次) 
     case LUA_TLNGSTR: return luaS_eqlngstr(tsvalue(t1), tsvalue(t2));//长字符串则会对比具体的字符长度与内容
-    case LUA_TUSERDATA: {//xzxtodo4.1
-      if (uvalue(t1) == uvalue(t2)) return 1;
-      else if (L == NULL) return 0;
-      tm = fasttm(L, uvalue(t1)->metatable, TM_EQ);
+    case LUA_TUSERDATA: {
+      if (uvalue(t1) == uvalue(t2)) return 1;//先直接对比指针 UData*
+      else if (L == NULL) return 0;//L为null,则不考虑元表, 
+      tm = fasttm(L, uvalue(t1)->metatable, TM_EQ);//xzxtodo4.1
       if (tm == NULL)
         tm = fasttm(L, uvalue(t2)->metatable, TM_EQ);
       break;  /* will try TM */
