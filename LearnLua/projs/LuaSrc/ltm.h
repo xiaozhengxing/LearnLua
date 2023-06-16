@@ -44,11 +44,20 @@ typedef enum {//对应的字符串在luaT_eventname中,
 } TMS;
 
 
-
+/*快速查找tag method(比如 table["__eq"])
+ *g: global_State *
+ *et:table
+ *e:TMS,比如TM_EQ, 但是要求 e<=TM_EQ
+*/
 #define gfasttm(g,et,e) ((et) == NULL ? NULL : \
   ((et)->flags & (1u<<(e))) ? NULL : luaT_gettm(et, e, (g)->tmname[e]))
 
-#define fasttm(l,et,e)	gfasttm(G(l), et, e)//xzxtodo5
+/*快速查找tag method(比如 table["__eq"])
+ *l: lua_State *
+ *et:table
+ *e:TMS,比如TM_EQ, 但是要求 e<=TM_EQ
+*/
+#define fasttm(l,et,e)	gfasttm(G(l), et, e)
 
 #define ttypename(x)	luaT_typenames_[(x) + 1]
 
