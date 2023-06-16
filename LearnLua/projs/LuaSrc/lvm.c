@@ -418,7 +418,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
       return (tointeger(t1, &i1) && tointeger(t2, &i2) && i1 == i2);
     }
   }
-  /* values have same type and same variant */
+  /* values have same type and same variant,类型相同 (variant tag + actual tag) */
   switch (ttype(t1)) {
     case LUA_TNIL: return 1;
     case LUA_TNUMINT: return (ivalue(t1) == ivalue(t2));
@@ -426,9 +426,9 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
     case LUA_TBOOLEAN: return bvalue(t1) == bvalue(t2);  /* true must be 1 !! */
     case LUA_TLIGHTUSERDATA: return pvalue(t1) == pvalue(t2);
     case LUA_TLCF: return fvalue(t1) == fvalue(t2);
-    case LUA_TSHRSTR: return eqshrstr(tsvalue(t1), tsvalue(t2));
-    case LUA_TLNGSTR: return luaS_eqlngstr(tsvalue(t1), tsvalue(t2));
-    case LUA_TUSERDATA: {
+    case LUA_TSHRSTR: return eqshrstr(tsvalue(t1), tsvalue(t2));//短字符串直接对比指针即可(因为短字符串只会创建一次) 
+    case LUA_TLNGSTR: return luaS_eqlngstr(tsvalue(t1), tsvalue(t2));//长字符串则会对比具体的字符长度与内容
+    case LUA_TUSERDATA: {//xzxtodo4.1
       if (uvalue(t1) == uvalue(t2)) return 1;
       else if (L == NULL) return 0;
       tm = fasttm(L, uvalue(t1)->metatable, TM_EQ);

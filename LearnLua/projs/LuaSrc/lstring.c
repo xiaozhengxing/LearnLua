@@ -41,8 +41,8 @@
 int luaS_eqlngstr (TString *a, TString *b) {
   size_t len = a->u.lnglen;
   lua_assert(a->tt == LUA_TLNGSTR && b->tt == LUA_TLNGSTR);
-  return (a == b) ||  /* same instance or... */
-    ((len == b->u.lnglen) &&  /* equal length and ... */
+  return (a == b) ||  /* same instance or... 同一个TString变量 */
+    ((len == b->u.lnglen) &&  /* equal length and ... 不是同一个TString变量则对比具体的字符内容 */
      (memcmp(getstr(a), getstr(b), len) == 0));  /* equal contents */
 }
 
