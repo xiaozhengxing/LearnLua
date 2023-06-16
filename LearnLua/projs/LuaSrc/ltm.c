@@ -55,11 +55,12 @@ void luaT_init (lua_State *L) {
 /*
 ** function to be used with macro "fasttm": optimized for absence of
 ** tag methods
+* 快速查找tag methods(table[ename]),利用table->falgs, 所以TMS event需要满足 evnet<= TM_EQ
 */
 const TValue *luaT_gettm (Table *events, TMS event, TString *ename) {
   const TValue *tm = luaH_getshortstr(events, ename);
-  lua_assert(event <= TM_EQ);//xzxtodo??????????
-  if (ttisnil(tm)) {  /* no tag method? */
+  lua_assert(event <= TM_EQ);//注意,TMS中只有 "<=TM_EQ"的值才会使用这个函数去查找,
+  if (ttisnil(tm)) {  /* no tag method? 按照道理table创建的时候flag的bits全部为1,但是难免在代码中显示的赋值 tag mothed为nil,后续再去查找的时候就查找不到, 所以这里再次赋值对应bit为1  */
     events->flags |= cast_byte(1u<<event);  /* cache this fact */
     return NULL;
   }
