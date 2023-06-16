@@ -614,10 +614,10 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 ** which may be in array part, nor for floats with integral values.)
 *  返回t[key],是在table.node中查找(没有触发元方法), 所以key不能为整数或可转成整数的浮点数,
 */
-static const TValue *getgeneric (Table *t, const TValue *key) {
+static const TValue *getgeneric (Table *t, const TValue *key) {//xzxtodo3
   Node *n = mainposition(t, key);
   for (;;) {  /* check whether 'key' is somewhere in the chain */
-    if (luaV_rawequalobj(gkey(n), key))
+    if (luaV_rawequalobj(gkey(n), key))//xzxtodo3.1
       return gval(n);  /* that's it */
     else {
       int nx = gnext(n);
@@ -634,8 +634,8 @@ const TValue *luaH_getstr (Table *t, TString *key) {//xzxtodo2
     return luaH_getshortstr(t, key);
   else {  /* for long strings, use generic case */
     TValue ko;
-    setsvalue(cast(lua_State *, NULL), &ko, key);
-    return getgeneric(t, &ko);
+    setsvalue(cast(lua_State *, NULL), &ko, key);//key值赋给ko
+    return getgeneric(t, &ko);//xzxtodo2.1
   }
 }
 

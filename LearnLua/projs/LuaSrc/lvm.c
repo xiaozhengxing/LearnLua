@@ -405,15 +405,16 @@ int luaV_lessequal (lua_State *L, const TValue *l, const TValue *r) {
 /*
 ** Main operation for equality of Lua values; return 't1 == t2'.
 ** L == NULL means raw equality (no metamethods)
-* 返回 t1==t2?,如果L为null,则不用调用元方法__eq, todo
+* t1==t2 返回1, 否则返回0
+* 如果L为null,则不用调用元方法__eq, todo
 */
-int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
+int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
   const TValue *tm;
-  if (ttype(t1) != ttype(t2)) {  /* not the same variant? */
+  if (ttype(t1) != ttype(t2)) {  /* not the same variant? 类型不同(variant tag + actual tag)时,仅考虑number,会将t1 t2转成整数进行对比 */
     if (ttnov(t1) != ttnov(t2) || ttnov(t1) != LUA_TNUMBER)
       return 0;  /* only numbers can be equal with different variants */
     else {  /* two numbers with different variants */
-      lua_Integer i1, i2;  /* compare them as integers */
+      lua_Integer i1, i2;  /* compare them as integers, t1,t2如果是number(float或int),会转成int进行对比 */
       return (tointeger(t1, &i1) && tointeger(t2, &i2) && i1 == i2);
     }
   }
