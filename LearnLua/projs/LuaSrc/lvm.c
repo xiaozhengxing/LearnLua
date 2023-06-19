@@ -409,7 +409,7 @@ int luaV_lessequal (lua_State *L, const TValue *l, const TValue *r) {
 * 如果 L为null, 则不用调用tag method “__eq”,
 * 如果L不为null, 简单对比不相等的时候,会调用tag method "__eq"(t1,t2类型为udata或table,且其metatable中含有tag method "__eq")
 */
-int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
+int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {
   const TValue *tm;
   if (ttype(t1) != ttype(t2)) {  /* not the same variant? 类型不同(variant tag + actual tag)时,仅考虑number,会将t1 t2转成整数进行对比 */
     if (ttnov(t1) != ttnov(t2) || ttnov(t1) != LUA_TNUMBER)

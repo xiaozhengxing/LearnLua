@@ -54,7 +54,7 @@
 
 #define intop(op,v1,v2) l_castU2S(l_castS2U(v1) op l_castS2U(v2))
 
-//判断t1(类型为TValue*)和t2(类型为TValue*)是否相等,不调用元方法__eq
+//判断t1(类型为TValue*)和t2(类型为TValue*)是否相等,不调用元方法 __eq
 #define luaV_rawequalobj(t1,t2)		luaV_equalobj(NULL,t1,t2)
 
 

@@ -614,10 +614,10 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 ** which may be in array part, nor for floats with integral values.)
 *  返回t[key],是在table.node中查找(没有触发元方法), 所以key不能为整数或可转成整数的浮点数,
 */
-static const TValue *getgeneric (Table *t, const TValue *key) {//xzxtodo3
+static const TValue *getgeneric (Table *t, const TValue *key) {
   Node *n = mainposition(t, key);
   for (;;) {  /* check whether 'key' is somewhere in the chain */
-    if (luaV_rawequalobj(gkey(n), key))//xzxtodo3.1
+    if (luaV_rawequalobj(gkey(n), key))//简单对比key,并不会触发元方法,
       return gval(n);  /* that's it */
     else {
       int nx = gnext(n);
@@ -628,14 +628,14 @@ static const TValue *getgeneric (Table *t, const TValue *key) {//xzxtodo3
   }
 }
 
-//查找 t[key], key为string
+//查找 t[key], key为string(不会触发元方法)
 const TValue *luaH_getstr (Table *t, TString *key) {//xzxtodo2
-  if (key->tt == LUA_TSHRSTR)//短字符串,
+  if (key->tt == LUA_TSHRSTR)//短字符串,只需要对比指针即可(短字符串只会创建一次)
     return luaH_getshortstr(t, key);
-  else {  /* for long strings, use generic case */
+  else {  /* for long strings, use generic case,长字符串 */
     TValue ko;
     setsvalue(cast(lua_State *, NULL), &ko, key);//key值赋给ko
-    return getgeneric(t, &ko);//xzxtodo2.1
+    return getgeneric(t, &ko);//长字符串时对比指针,不相等的话,就对比保存的字符内容(不会触发元方法)
   }
 }
 
