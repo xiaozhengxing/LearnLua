@@ -52,7 +52,7 @@ typedef enum {//对应的字符串在luaT_eventname中,
 #define gfasttm(g,et,e) ((et) == NULL ? NULL : \
   ((et)->flags & (1u<<(e))) ? NULL : luaT_gettm(et, e, (g)->tmname[e]))
 
-/*快速查找tag method(比如 table["__eq"])
+/*快速查找 tag method(比如 table["__eq"])
  *l: lua_State *
  *et:table
  *e:TMS,比如TM_EQ, 但是要求 e<=TM_EQ

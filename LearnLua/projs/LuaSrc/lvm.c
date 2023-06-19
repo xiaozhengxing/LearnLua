@@ -431,15 +431,15 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
     case LUA_TUSERDATA: {
       if (uvalue(t1) == uvalue(t2)) return 1;//先直接对比指针 UData*
       else if (L == NULL) return 0;//L为null,则不考虑元表, 
-      tm = fasttm(L, uvalue(t1)->metatable, TM_EQ);//xzxtodo4.1
+      tm = fasttm(L, uvalue(t1)->metatable, TM_EQ);//查找t1元表中的tag method ("__eq")
       if (tm == NULL)
-        tm = fasttm(L, uvalue(t2)->metatable, TM_EQ);
+        tm = fasttm(L, uvalue(t2)->metatable, TM_EQ);//查找t2中的tag method ("__eq")
       break;  /* will try TM */
     }
     case LUA_TTABLE: {
-      if (hvalue(t1) == hvalue(t2)) return 1;
-      else if (L == NULL) return 0;
-      tm = fasttm(L, hvalue(t1)->metatable, TM_EQ);
+      if (hvalue(t1) == hvalue(t2)) return 1;//先直接对比指针 Table* 
+      else if (L == NULL) return 0;//L为null,则不考虑元表, 
+      tm = fasttm(L, hvalue(t1)->metatable, TM_EQ);//注意这里不是找t1自己的tag method,而是找t1的元表的tag method
       if (tm == NULL)
         tm = fasttm(L, hvalue(t2)->metatable, TM_EQ);
       break;  /* will try TM */
@@ -449,7 +449,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
   }
   if (tm == NULL)  /* no TM? */
     return 0;  /* objects are different */
-  luaT_callTM(L, tm, t1, t2, L->top, 1);  /* call TM */
+  luaT_callTM(L, tm, t1, t2, L->top, 1);  /* call TM */ //xzxtodo4.1
   return !l_isfalse(L->top);
 }
 
