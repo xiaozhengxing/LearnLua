@@ -516,6 +516,7 @@ void luaD_call (lua_State *L, StkId func, int nResults) {
 
 /*
 ** Similar to 'luaD_call', but does not allow yields during the call
+* 调用func的过程中不会被挂起?todo
 */
 void luaD_callnoyield (lua_State *L, StkId func, int nResults) {
   L->nny++;

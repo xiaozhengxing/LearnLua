@@ -99,22 +99,29 @@ const char *luaT_objtypename (lua_State *L, const TValue *o) {
   return ttypename(ttnov(o));  /* else use standard type name */
 }
 
-
+/*
+ * 调用tag method,
+ * 如果hasres为1(表示有一个返回值),执行完tag motheod之后，p3中会保存tag method的返回值,
+ */
 void luaT_callTM (lua_State *L, const TValue *f, const TValue *p1,
                   const TValue *p2, TValue *p3, int hasres) {
-  ptrdiff_t result = savestack(L, p3);
+  ptrdiff_t result = savestack(L, p3);//记录p3与L->stack之间的偏移大小,
   StkId func = L->top;
   setobj2s(L, func, f);  /* push function (assume EXTRA_STACK) */
   setobj2s(L, func + 1, p1);  /* 1st argument */
   setobj2s(L, func + 2, p2);  /* 2nd argument */
   L->top += 3;
+  
   if (!hasres)  /* no result? 'p3' is third argument */
     setobj2s(L, L->top++, p3);  /* 3rd argument */
+  
   /* metamethod may yield only when called from Lua code */
   if (isLua(L->ci))
     luaD_call(L, func, hasres);
   else
     luaD_callnoyield(L, func, hasres);
+
+  //处理返回值,不过这里看起来最多智能有一个返回值,
   if (hasres) {  /* if has result, move it to its place */
     p3 = restorestack(L, result);
     setobjs2s(L, p3, --L->top);

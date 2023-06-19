@@ -28,8 +28,10 @@
 #define luaD_checkstack(L,n)	luaD_checkstackaux(L,n,(void)0,(void)0)
 
 
-
+//返回p与L->stack之间的偏移offset
 #define savestack(L,p)		((char *)(p) - (char *)L->stack)
+
+//返回 L->stack+n
 #define restorestack(L,n)	((TValue *)((char *)L->stack + (n)))
 
 

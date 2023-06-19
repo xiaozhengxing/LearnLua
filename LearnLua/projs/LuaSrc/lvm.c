@@ -406,7 +406,8 @@ int luaV_lessequal (lua_State *L, const TValue *l, const TValue *r) {
 ** Main operation for equality of Lua values; return 't1 == t2'.
 ** L == NULL means raw equality (no metamethods)
 * t1==t2 返回1, 否则返回0
-* 如果 L为null, 则不用调用元方法__eq, todo
+* 如果 L为null, 则不用调用tag method “__eq”,
+* 如果L不为null, 简单对比不相等的时候,会调用tag method "__eq"(t1,t2类型为udata或table,且其metatable中含有tag method "__eq")
 */
 int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
   const TValue *tm;
@@ -436,6 +437,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
         tm = fasttm(L, uvalue(t2)->metatable, TM_EQ);//查找t2中的tag method ("__eq")
       break;  /* will try TM */
     }
+    //需要注意的是,如果t1和t2是table,去查找tag method的时候,并不是查找t1["__eq"]，而是查找 t1.metatable["__eq"],
     case LUA_TTABLE: {
       if (hvalue(t1) == hvalue(t2)) return 1;//先直接对比指针 Table* 
       else if (L == NULL) return 0;//L为null,则不考虑元表, 
@@ -449,7 +451,7 @@ int luaV_equalobj (lua_State *L, const TValue *t1, const TValue *t2) {//xzxtodo4
   }
   if (tm == NULL)  /* no TM? */
     return 0;  /* objects are different */
-  luaT_callTM(L, tm, t1, t2, L->top, 1);  /* call TM */ //xzxtodo4.1
+  luaT_callTM(L, tm, t1, t2, L->top, 1);  /* call TM */ //调用tag method("__eq")
   return !l_isfalse(L->top);
 }
 
