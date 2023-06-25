@@ -64,10 +64,12 @@
 ** return 0 (meaning it will have to check metamethod) with 'slot'
 ** pointing to a nil 't[k]' (if 't' is a table) or NULL (otherwise).
 ** 'f' is the raw get function to use.
+* 如果t为table,执行f(t,k),即查找t[k],赋值给slot,如果不为nil,则返回1
+* 其余情况都返回0
 */
 #define luaV_fastget(L,t,k,slot,f) \
   (!ttistable(t)  \
-   ? (slot = NULL, 0)  /* not a table; 'slot' is NULL and result is 0 */  \
+   ? (slot = NULL, 0)  /* not a table; 'slot' is NULL and result is 0, 如果t不是一个table,则赋值slot=null,并返回0 */  \
    : (slot = f(hvalue(t), k),  /* else, do raw access */  \
       !ttisnil(slot)))  /* result not nil? */
 
