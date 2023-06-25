@@ -570,7 +570,7 @@ const TValue *luaH_getint (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */
   if (l_castS2U(key) - 1 < t->sizearray)//这里其实有个问题,在表格resize的时候,原来在hash表中的node.key>srcSize但node.key<dstSize的节点,会不会搬到新table的array中,
     return &t->array[key - 1];
-  else {//到hash表中查询,
+  else {//到 hash表中查询,
     Node *n = hashint(t, key);
     for (;;) {  /* check whether 'key' is somewhere in the chain */
       if (ttisinteger(gkey(n)) && ivalue(gkey(n)) == key)
@@ -618,7 +618,7 @@ const TValue *luaH_getshortstr (Table *t, TString *key) {
 static const TValue *getgeneric (Table *t, const TValue *key) {
   Node *n = mainposition(t, key);
   for (;;) {  /* check whether 'key' is somewhere in the chain */
-    if (luaV_rawequalobj(gkey(n), key))//简单对比key,并不会触发元方法,
+    if (luaV_rawequalobj(gkey(n), key))//简单对比key(指针),并不会触发元方法,
       return gval(n);  /* that's it */
     else {
       int nx = gnext(n);
@@ -643,21 +643,21 @@ const TValue *luaH_getstr (Table *t, TString *key) {
 
 /*
 ** main search function
-* 查找t[key],(貌似不会触发元方法)
+* 查找t[key],(不会触发元方法)
 */
-const TValue *luaH_get (Table *t, const TValue *key) {//xzxtodo2
+const TValue *luaH_get (Table *t, const TValue *key) {
   switch (ttype(key)) {
     case LUA_TSHRSTR: return luaH_getshortstr(t, tsvalue(key));//短字符串仅比较指针(因为只会创建一次),不会触发元方法,
     case LUA_TNUMINT: return luaH_getint(t, ivalue(key));//简单查找t[key],key为int,不会触发元方法,
     case LUA_TNIL: return luaO_nilobject;
-    case LUA_TNUMFLT: {//xzxtodo2.1
+    case LUA_TNUMFLT: {
       lua_Integer k;
       if (luaV_tointeger(key, &k, 0)) /* index is int? */
         return luaH_getint(t, k);  /* use specialized version */
       /* else... */
     }  /* FALLTHROUGH */
     default:
-      return getgeneric(t, key);
+      return getgeneric(t, key);//在table.node hash中对比key来查找table[key],不会触发元方法,
   }
 }
 
