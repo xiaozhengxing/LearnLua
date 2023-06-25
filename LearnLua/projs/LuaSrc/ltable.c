@@ -564,6 +564,7 @@ TValue *luaH_newkey (lua_State *L, Table *t, const TValue *key) {
 ** search function for integers
 * 返回table[key],key是个整数, 可能是在数组array中,也可能是在hash node中,
 * 找到返回对应的value,找不到返回luaO_nilobject
+* 不会触发元方法
 */
 const TValue *luaH_getint (Table *t, lua_Integer key) {
   /* (1 <= key && key <= t->sizearray) */
@@ -628,8 +629,8 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
   }
 }
 
-//查找 t[key], key为string(不会触发元方法)
-const TValue *luaH_getstr (Table *t, TString *key) {//xzxtodo2
+//简单查找 t[key], key为string(不会触发元方法)
+const TValue *luaH_getstr (Table *t, TString *key) {
   if (key->tt == LUA_TSHRSTR)//短字符串,只需要对比指针即可(短字符串只会创建一次)
     return luaH_getshortstr(t, key);
   else {  /* for long strings, use generic case,长字符串 */
@@ -644,12 +645,12 @@ const TValue *luaH_getstr (Table *t, TString *key) {//xzxtodo2
 ** main search function
 * 查找t[key],(貌似不会触发元方法)
 */
-const TValue *luaH_get (Table *t, const TValue *key) {
+const TValue *luaH_get (Table *t, const TValue *key) {//xzxtodo2
   switch (ttype(key)) {
-    case LUA_TSHRSTR: return luaH_getshortstr(t, tsvalue(key));
-    case LUA_TNUMINT: return luaH_getint(t, ivalue(key));
+    case LUA_TSHRSTR: return luaH_getshortstr(t, tsvalue(key));//短字符串仅比较指针(因为只会创建一次),不会触发元方法,
+    case LUA_TNUMINT: return luaH_getint(t, ivalue(key));//简单查找t[key],key为int,不会触发元方法,
     case LUA_TNIL: return luaO_nilobject;
-    case LUA_TNUMFLT: {
+    case LUA_TNUMFLT: {//xzxtodo2.1
       lua_Integer k;
       if (luaV_tointeger(key, &k, 0)) /* index is int? */
         return luaH_getint(t, k);  /* use specialized version */
