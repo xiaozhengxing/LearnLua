@@ -700,14 +700,14 @@ LUA_API int lua_pushthread (lua_State *L) {
 static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
-  if (luaV_fastget(L, t, str, slot, luaH_getstr)) {//查找t[str]{不会触发元方法},并赋值给slot, xzxtodo1
+  if (luaV_fastget(L, t, str, slot, luaH_getstr)) {//查找t[str]{不会触发元方法},并赋值给slot, 
     setobj2s(L, L->top, slot);
     api_incr_top(L);
   }
   else {
     setsvalue2s(L, L->top, str);
     api_incr_top(L);
-    luaV_finishget(L, t, L->top - 1, L->top - 1, slot);
+    luaV_finishget(L, t, L->top - 1, L->top - 1, slot);//xzxtodo1
   }
   lua_unlock(L);
   return ttnov(L->top - 1);

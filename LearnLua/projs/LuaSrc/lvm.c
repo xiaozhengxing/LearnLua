@@ -158,28 +158,31 @@ static int forlimit (const TValue *obj, lua_Integer *p, lua_Integer step,
 ** Finish the table access 'val = t[key]'.
 ** if 'slot' is NULL, 't' is not a table; otherwise, 'slot' points to
 ** t[k] entry (which must be nil).
+* 传入的参数必须符合: 如果slot为null,则t不为table;如果slot不为null则t为table
 */
 void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val,
-                      const TValue *slot) {
+                      const TValue *slot) {//xzxtodo2
   int loop;  /* counter to avoid infinite loops */
   const TValue *tm;  /* metamethod */
   for (loop = 0; loop < MAXTAGLOOP; loop++) {
+    
     if (slot == NULL) {  /* 't' is not a table? */
       lua_assert(!ttistable(t));
-      tm = luaT_gettmbyobj(L, t, TM_INDEX);
+      tm = luaT_gettmbyobj(L, t, TM_INDEX);//xzxtodo2.1
       if (ttisnil(tm))
         luaG_typeerror(L, t, "index");  /* no metamethod */
       /* else will try the metamethod */
     }
     else {  /* 't' is a table */
       lua_assert(ttisnil(slot));
-      tm = fasttm(L, hvalue(t)->metatable, TM_INDEX);  /* table's metamethod */
+      tm = fasttm(L, hvalue(t)->metatable, TM_INDEX);  /* table's metamethod, 注意这里是查找table.metatable["__index"],而不是查找table["__index"] */
       if (tm == NULL) {  /* no metamethod? */
         setnilvalue(val);  /* result is nil */
         return;
       }
       /* else will try the metamethod */
     }
+    
     if (ttisfunction(tm)) {  /* is metamethod a function? */
       luaT_callTM(L, tm, t, key, val, 1);  /* call it */
       return;

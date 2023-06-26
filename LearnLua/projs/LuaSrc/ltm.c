@@ -67,7 +67,10 @@ const TValue *luaT_gettm (Table *events, TMS event, TString *ename) {
   else return tm;
 }
 
-
+/*
+ * 获取o.metatable[tmname],比如tmname为event对应的字符串名,比如"__index"
+ * 没有的话返回nilobject
+ */
 const TValue *luaT_gettmbyobj (lua_State *L, const TValue *o, TMS event) {
   Table *mt;
   switch (ttnov(o)) {
