@@ -185,8 +185,9 @@ typedef struct lua_TValue {
 //判断o(类型为TValue*)是不是Table
 #define ttistable(o)		checktag((o), ctb(LUA_TTABLE))
 
-
+//判断o(类型为TValue*)是不是函数function(包括Lua Closure, Light C function, C Closure)
 #define ttisfunction(o)		checktype(o, LUA_TFUNCTION)
+
 #define ttisclosure(o)		((rttype(o) & 0x1F) == LUA_TFUNCTION)
 
 //判断o(类型为TValue*)是不是 C Closure(collectable tag为1)

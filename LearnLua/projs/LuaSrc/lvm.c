@@ -158,17 +158,16 @@ static int forlimit (const TValue *obj, lua_Integer *p, lua_Integer step,
 ** Finish the table access 'val = t[key]'.
 ** if 'slot' is NULL, 't' is not a table; otherwise, 'slot' points to
 ** t[k] entry (which must be nil).
-* 传入的参数必须符合: 如果slot为null,则t不为table;如果slot不为null则t为table
+* 传入的参数必须符合: 如果slot为null,则t不为table;如果slot不为null则t为table 
 */
-void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val,
-                      const TValue *slot) {//xzxtodo2
+void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, const TValue *slot) {//xzxtodo2
   int loop;  /* counter to avoid infinite loops */
   const TValue *tm;  /* metamethod */
   for (loop = 0; loop < MAXTAGLOOP; loop++) {
-    
-    if (slot == NULL) {  /* 't' is not a table? */
+
+    if (slot == NULL) {  /* 't' is not a table? t不是table */
       lua_assert(!ttistable(t));
-      tm = luaT_gettmbyobj(L, t, TM_INDEX);//xzxtodo2.1
+      tm = luaT_gettmbyobj(L, t, TM_INDEX);//查找t对应的元表metable["__index"],
       if (ttisnil(tm))
         luaG_typeerror(L, t, "index");  /* no metamethod */
       /* else will try the metamethod */
@@ -182,13 +181,15 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val,
       }
       /* else will try the metamethod */
     }
-    
+
+    //如果是tm是一个函数,则执行函数tm并返回其值,
     if (ttisfunction(tm)) {  /* is metamethod a function? */
+      //执行tm(t, key)之后, val中保存tm函数执行的返回值,
       luaT_callTM(L, tm, t, key, val, 1);  /* call it */
-      return;
+      return;//注意这里是直接退出了函数,
     }
     t = tm;  /* else try to access 'tm[key]' */
-    if (luaV_fastget(L,t,key,slot,luaH_get)) {  /* fast track? */
+    if (luaV_fastget(L,t,key,slot,luaH_get)) {  /* fast track? xzxtodo2.1*/
       setobj2s(L, val, slot);  /* done */
       return;
     }

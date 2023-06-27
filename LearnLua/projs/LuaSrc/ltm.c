@@ -104,10 +104,10 @@ const char *luaT_objtypename (lua_State *L, const TValue *o) {
 
 /*
  * 调用tag method,
- * 如果hasres为1(表示有一个返回值),执行完tag motheod之后，p3中会保存tag method的返回值,
+ * 如果hasres为1(表示有一个返回值),执行完tag method{ f(p1, p2) }之后，p3中会保存tag method的返回值,
+ * 如果hasres为0(表示没有返回值),执行tag method{ f{p1,p2,p3} }
  */
-void luaT_callTM (lua_State *L, const TValue *f, const TValue *p1,
-                  const TValue *p2, TValue *p3, int hasres) {
+void luaT_callTM (lua_State *L, const TValue *f, const TValue *p1, const TValue *p2, TValue *p3, int hasres) {
   ptrdiff_t result = savestack(L, p3);//记录p3与L->stack之间的偏移大小,
   StkId func = L->top;
   setobj2s(L, func, f);  /* push function (assume EXTRA_STACK) */
