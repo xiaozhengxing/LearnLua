@@ -188,6 +188,10 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
       luaT_callTM(L, tm, t, key, val, 1);  /* call it */
       return;//注意这里是直接退出了函数,
     }
+
+    /* tm为table,则简单查找tm[key](不触发元方法),并赋值给slot
+     * tm不为table,直接置slot=null
+     */
     t = tm;  /* else try to access 'tm[key]' */
     if (luaV_fastget(L,t,key,slot,luaH_get)) {  /* fast track? xzxtodo2.1*/
       setobj2s(L, val, slot);  /* done */

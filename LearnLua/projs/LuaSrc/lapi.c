@@ -700,7 +700,10 @@ LUA_API int lua_pushthread (lua_State *L) {
 static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
-  if (luaV_fastget(L, t, str, slot, luaH_getstr)) {//查找t[str]{不会触发元方法},并赋值给slot, 
+  /*t为table,查找t[str]{不会触发元方法},并赋值给slot,
+   *t不为table,直接赋值slot=null
+  */
+  if (luaV_fastget(L, t, str, slot, luaH_getstr)) { 
     setobj2s(L, L->top, slot);
     api_incr_top(L);
   }
