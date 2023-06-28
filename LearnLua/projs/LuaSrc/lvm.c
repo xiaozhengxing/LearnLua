@@ -154,13 +154,13 @@ static int forlimit (const TValue *obj, lua_Integer *p, lua_Integer step,
 }
 
 
-/*
+/* 获取t[key],会触发元方法,查找到了则赋值到val,否则val为nil
 ** Finish the table access 'val = t[key]'.
 ** if 'slot' is NULL, 't' is not a table; otherwise, 'slot' points to
 ** t[k] entry (which must be nil).
-* 传入的参数必须符合: 如果slot为null,则t不为table;如果slot不为null则t为table 
+* 传入的参数必须符合: 如果slot为null,则t不为table;如果slot不为null则t为table
 */
-void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, const TValue *slot) {//xzxtodo2
+void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, const TValue *slot) {
   int loop;  /* counter to avoid infinite loops */
   const TValue *tm;  /* metamethod */
   for (loop = 0; loop < MAXTAGLOOP; loop++) {
@@ -169,7 +169,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
       lua_assert(!ttistable(t));
       tm = luaT_gettmbyobj(L, t, TM_INDEX);//查找t对应的元表metable["__index"],
       if (ttisnil(tm))
-        luaG_typeerror(L, t, "index");  /* no metamethod */
+        luaG_typeerror(L, t, "index");  /* no metamethod*/
       /* else will try the metamethod */
     }
     else {  /* 't' is a table */
@@ -193,13 +193,13 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
      * tm不为table,直接置slot=null
      */
     t = tm;  /* else try to access 'tm[key]' */
-    if (luaV_fastget(L,t,key,slot,luaH_get)) {  /* fast track? xzxtodo2.1*/
+    if (luaV_fastget(L,t,key,slot,luaH_get)) {  /* fast track?*/
       setobj2s(L, val, slot);  /* done */
       return;
     }
     /* else repeat (tail call 'luaV_finishget') */
   }
-  luaG_runerror(L, "'__index' chain too long; possible loop");
+  luaG_runerror(L, "'__index' chain too long; possible loop");//超出循环次数了,
 }
 
 

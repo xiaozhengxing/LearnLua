@@ -696,8 +696,8 @@ LUA_API int lua_pushthread (lua_State *L) {
 ** get functions (Lua -> stack)
 */
 
-//todo,可能会触发元方法__index
-static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
+//查找t[k],t不一定是table,会触发元方法
+static int auxgetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
   const TValue *slot;
   TString *str = luaS_new(L, k);
   /*t为table,查找t[str]{不会触发元方法},并赋值给slot,
@@ -710,7 +710,7 @@ static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   else {
     setsvalue2s(L, L->top, str);
     api_incr_top(L);
-    luaV_finishget(L, t, L->top - 1, L->top - 1, slot);//xzxtodo1
+    luaV_finishget(L, t, L->top - 1, L->top - 1, slot);//真正的查找t[k],会触发元方法tag method"__index",L->top-1中保存t[k],
   }
   lua_unlock(L);
   return ttnov(L->top - 1);
