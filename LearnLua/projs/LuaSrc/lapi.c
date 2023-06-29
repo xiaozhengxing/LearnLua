@@ -696,8 +696,8 @@ LUA_API int lua_pushthread (lua_State *L) {
 ** get functions (Lua -> stack)
 */
 
-//查找t[k],t不一定是table,会触发元方法
-static int auxgetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
+//查找t[k],t不一定是table,会触发元方法, 执行完后,栈顶为t[k]{值可能为nil},返回t[k]的actual tag(bits 0-3, 最低的四个bit)
+static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
   /*t为table,查找t[str]{不会触发元方法},并赋值给slot,
@@ -708,7 +708,7 @@ static int auxgetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
     api_incr_top(L);
   }
   else {
-    setsvalue2s(L, L->top, str);
+    setsvalue2s(L, L->top, str);//这里栈顶为str,下面执行完luaV_finishget之后str位置的值被赋值为t[str]
     api_incr_top(L);
     luaV_finishget(L, t, L->top - 1, L->top - 1, slot);//真正的查找t[k],会触发元方法tag method"__index",L->top-1中保存t[k],
   }
@@ -891,16 +891,16 @@ LUA_API int lua_getuservalue (lua_State *L, int idx) {
 */
 
 /*
-** t[k] = value at the top of the stack (where 'k' is a string)
+** t[k] = value at the top of the stack (where 'k' is a string), 栈顶为val
 * todo,可能会触发元方法__newindex
 */
-static void auxsetstr (lua_State *L, const TValue *t, const char *k) {
+static void auxsetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
   const TValue *slot;
   TString *str = luaS_new(L, k);
   api_checknelems(L, 1);
-  if (luaV_fastset(L, t, str, slot, luaH_getstr, L->top - 1))
+  if (luaV_fastset(L, t, str, slot, luaH_getstr, L->top - 1))//找到了t[str]的话,则直接将栈顶的值赋给t[str],并返回1,
     L->top--;  /* pop value */
-  else {
+  else {//xzxtodo1.1
     setsvalue2s(L, L->top, str);  /* push 'str' (to make it a TValue) */
     api_incr_top(L);
     luaV_finishset(L, t, L->top - 1, L->top - 2, slot);
