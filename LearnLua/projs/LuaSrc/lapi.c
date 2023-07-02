@@ -902,7 +902,7 @@ static void auxsetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
     L->top--;  /* pop value */
   else {//xzxtodo1.1
     setsvalue2s(L, L->top, str);  /* push 'str' (to make it a TValue) */
-    api_incr_top(L);
+    api_incr_top(L);//此时栈顶情况为: [value][str][top]
     luaV_finishset(L, t, L->top - 1, L->top - 2, slot);
     L->top -= 2;  /* pop value and key */
   }
