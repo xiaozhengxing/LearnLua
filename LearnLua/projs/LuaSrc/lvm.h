@@ -65,7 +65,7 @@
 ** pointing to a nil 't[k]' (if 't' is a table) or NULL (otherwise).
 ** 'f' is the raw get function to use.
 * 如果t为table,执行f(t,k),即查找t[k],赋值给slot,如果不为nil,则返回1
-* 如果t不为table,则直接赋值slot=null,返回0
+* 如果t不为table,则直接赋值slot=null,返回l,返0
 * 其余情况都返回0
 */
 #define luaV_fastget(L,t,k,slot,f) \

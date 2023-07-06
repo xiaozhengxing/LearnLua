@@ -173,7 +173,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
       /* else will try the metamethod */
     }
     else {  /* 't' is a table */
-      lua_assert(ttisnil(slot));
+      lua_assert(ttisnil(slot));//t为table, 没找到t[key],slot为nilobj
       tm = fasttm(L, hvalue(t)->metatable, TM_INDEX);  /* table's metamethod, 注意这里是查找table.metatable["__index"],而不是查找table["__index"] */
       if (tm == NULL) {  /* no metamethod? */
         setnilvalue(val);  /* result is nil */
@@ -189,7 +189,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
       return;//注意这里是直接退出了函数,
     }
 
-    /* tm为table,则简单查找tm[key](不触发元方法),并赋值给slot
+    /* tm为table,则简单查找tm[key](不触发元方法),并赋值给slot,查不到的话,则slot赋值为nilObj
      * tm不为table,直接置slot=null
      */
     t = tm;  /* else try to access 'tm[key]' */
@@ -210,8 +210,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
 ** entry.  (The value at 'slot' must be nil, otherwise 'luaV_fastset'
 ** would have done the job.)
 */
-void luaV_finishset (lua_State *L, const TValue *t, TValue *key,
-                     StkId val, const TValue *slot) {
+void luaV_finishset (lua_State *L, const TValue *t, TValue *key, StkId val, const TValue *slot) {//xzxtodo2
   int loop;  /* counter to avoid infinite loops */
   for (loop = 0; loop < MAXTAGLOOP; loop++) {
     const TValue *tm;  /* '__newindex' metamethod */
