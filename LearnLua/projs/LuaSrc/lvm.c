@@ -167,7 +167,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
 
     if (slot == NULL) {  /* 't' is not a table? t不是table */
       lua_assert(!ttistable(t));
-      tm = luaT_gettmbyobj(L, t, TM_INDEX);//查找t对应的元表metable["__index"],
+      tm = luaT_gettmbyobj(L, t, TM_INDEX);//查找t对应的元表metatable["__index"],
       if (ttisnil(tm))
         luaG_typeerror(L, t, "index");  /* no metamethod*/
       /* else will try the metamethod */
@@ -186,7 +186,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
     if (ttisfunction(tm)) {  /* is metamethod a function? */
       //执行tm(t, key)之后, val中保存tm函数执行的返回值,
       luaT_callTM(L, tm, t, key, val, 1);  /* call it */
-      return;//注意这里是直接退出了函数,
+      return;//注意这里是直接退出了函数(不再循环),
     }
 
     /* tm为table,则简单查找tm[key](不触发元方法),并赋值给slot,查不到的话,则slot赋值为nilObj
@@ -216,21 +216,21 @@ void luaV_finishset (lua_State *L, const TValue *t, TValue *key, StkId val, cons
     const TValue *tm;  /* '__newindex' metamethod */
     if (slot != NULL) {  /* is 't' a table? */
       Table *h = hvalue(t);  /* save 't' table */
-      lua_assert(ttisnil(slot));  /* old value must be nil */
-      tm = fasttm(L, h->metatable, TM_NEWINDEX);  /* get metamethod */
+      lua_assert(ttisnil(slot));  /* old value must be nil,t为table,t[key]找不到的时候,赋值slot为nilobj */
+      tm = fasttm(L, h->metatable, TM_NEWINDEX);  /* get metamethod,注意这里是查找table.metatable["__newindex"],而不是查找table["__newindex"] */
       if (tm == NULL) {  /* no metamethod? */
         if (slot == luaO_nilobject)  /* no previous entry? */
-          slot = luaH_newkey(L, h, key);  /* create one */
+          slot = luaH_newkey(L, h, key);  /* create one,新建node, 此时slot指向node.val */
         /* no metamethod and (now) there is an entry with given key */
-        setobj2t(L, cast(TValue *, slot), val);  /* set its new value */
-        invalidateTMcache(h);
+        setobj2t(L, cast(TValue *, slot), val);  /* set its new value, */
+        invalidateTMcache(h);//todo?这里看不懂,找不到tag method但是设置为0(0表示存在tag method)
         luaC_barrierback(L, h, val);
         return;
       }
       /* else will try the metamethod */
     }
     else {  /* not a table; check metamethod */
-      if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_NEWINDEX)))
+      if (ttisnil(tm = luaT_gettmbyobj(L, t, TM_NEWINDEX)))//查找t对应的元表metatable["__newindex"]
         luaG_typeerror(L, t, "index");
     }
     /* try the metamethod */
@@ -238,6 +238,10 @@ void luaV_finishset (lua_State *L, const TValue *t, TValue *key, StkId val, cons
       luaT_callTM(L, tm, t, key, val, 0);
       return;
     }
+  /*
+    tm为table,如果t[key]存在,则将t[key]的值更新为val,查不到的话,则slot赋值为nilobj,返回1,此时return整个函数,
+    tm不为table,则直接赋值slot=null
+  */  
     t = tm;  /* else repeat assignment over 'tm' */
     if (luaV_fastset(L, t, key, slot, luaH_get, val))
       return;  /* done */

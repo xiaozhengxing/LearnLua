@@ -90,7 +90,7 @@
 ** 'nil'. (This is needed by 'luaV_finishget'.) Note that, if the macro
 ** returns true, there is no need to 'invalidateTMcache', because the
 ** call is not creating a new entry.
-* 如果t为table,且存在t[k],执行f(t,k), 则将t[k]的TValue*指针赋值给slot,并返回1
+* 如果t为table,且存在t[k],执行f(t,k){查找t[k]}, 则将t[k]的值更新为v{TValue*指针赋值给slot,val的值再赋给slot}并返回1
 * 如果t不为table,则直接赋值slot=null,返回0
 * 其余情况都返回0
 */
