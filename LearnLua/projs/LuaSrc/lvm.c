@@ -203,7 +203,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
 }
 
 
-/*
+/* 设置t[key]=val,会触发元方法,如果最终找不到t[key]又没有元表(或元表中无tagmethod("__newindex")),则报错,
 ** Finish a table assignment 't[key] = val'.
 ** If 'slot' is NULL, 't' is not a table.  Otherwise, 'slot' points
 ** to the entry 't[key]', or to 'luaO_nilobject' if there is no such
