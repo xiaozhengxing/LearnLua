@@ -696,7 +696,7 @@ LUA_API int lua_pushthread (lua_State *L) {
 ** get functions (Lua -> stack)
 */
 
-//查找t[k],t不一定是table,会触发元方法, 执行完后,栈顶为t[k]{值可能为nil},返回t[k]的actual tag(bits 0-3, 最低的四个bit)
+//查找t[k],t不一定是table,可能会触发元方法("__newindex"), 执行完后,栈顶为t[k]{值可能为nil},返回t[k]的actual tag(bits 0-3, 最低的四个bit)
 static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
@@ -892,7 +892,7 @@ LUA_API int lua_getuservalue (lua_State *L, int idx) {
 
 /*
 ** t[k] = value at the top of the stack (where 'k' is a string), 栈顶为val
-* todo,可能会触发元方法__newindex
+* 赋值t[k] = val(val为栈顶的值),t不一定是table,可能会触发元方法("__newindex"),执行完后pop栈顶的值(val)
 */
 static void auxsetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
   const TValue *slot;
