@@ -703,7 +703,7 @@ static int auxgetstr (lua_State *L, const TValue *t, const char *k) {
   /*t为table,查找t[str]{不会触发元方法},并赋值给slot,
    *t不为table,直接赋值slot=null
   */
-  if (luaV_fastget(L, t, str, slot, luaH_getstr)) { 
+  if (luaV_fastget(L, t, str, slot, luaH_getstr)) {//只要t为talbe, slot就不为null(值为t[str]或nilobj) 
     setobj2s(L, L->top, slot);
     api_incr_top(L);
   }
@@ -745,7 +745,7 @@ LUA_API int lua_gettable (lua_State *L, int idx) {
  */
 LUA_API int lua_getfield (lua_State *L, int idx, const char *k) {
   lua_lock(L);
-  return auxgetstr(L, index2addr(L, idx), k);//xzxtodo0
+  return auxgetstr(L, index2addr(L, idx), k);
 }
 
 /*
@@ -894,13 +894,13 @@ LUA_API int lua_getuservalue (lua_State *L, int idx) {
 ** t[k] = value at the top of the stack (where 'k' is a string), 栈顶为val
 * 赋值t[k] = val(val为栈顶的值),t不一定是table,可能会触发元方法("__newindex"),执行完后pop栈顶的值(val)
 */
-static void auxsetstr (lua_State *L, const TValue *t, const char *k) {//xzxtodo1
+static void auxsetstr (lua_State *L, const TValue *t, const char *k) {
   const TValue *slot;
   TString *str = luaS_new(L, k);
   api_checknelems(L, 1);
   if (luaV_fastset(L, t, str, slot, luaH_getstr, L->top - 1))//找到了t[str]的话,则直接将栈顶的值赋给t[str],并返回1,
     L->top--;  /* pop value */
-  else {//xzxtodo1.1
+  else {
     setsvalue2s(L, L->top, str);  /* push 'str' (to make it a TValue) */
     api_incr_top(L);//此时栈顶情况为: [value][str][top]
     luaV_finishset(L, t, L->top - 1, L->top - 2, slot);

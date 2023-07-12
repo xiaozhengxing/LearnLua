@@ -210,7 +210,7 @@ void luaV_finishget (lua_State *L, const TValue *t, TValue *key, StkId val, cons
 ** entry.  (The value at 'slot' must be nil, otherwise 'luaV_fastset'
 ** would have done the job.)
 */
-void luaV_finishset (lua_State *L, const TValue *t, TValue *key, StkId val, const TValue *slot) {//xzxtodo2
+void luaV_finishset (lua_State *L, const TValue *t, TValue *key, StkId val, const TValue *slot) {
   int loop;  /* counter to avoid infinite loops */
   for (loop = 0; loop < MAXTAGLOOP; loop++) {
     const TValue *tm;  /* '__newindex' metamethod */

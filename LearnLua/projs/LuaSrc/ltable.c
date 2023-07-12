@@ -629,7 +629,9 @@ static const TValue *getgeneric (Table *t, const TValue *key) {
   }
 }
 
-//简单查找 t[key], key为string(不会触发元方法)
+/*简单查找 t[key], key为string(不会触发元方法)
+查不到则返回nilobj(有值不为null,但类型是nil)
+*/
 const TValue *luaH_getstr (Table *t, TString *key) {
   if (key->tt == LUA_TSHRSTR)//短字符串,只需要对比指针即可(短字符串只会创建一次)
     return luaH_getshortstr(t, key);
