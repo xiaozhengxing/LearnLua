@@ -479,14 +479,17 @@ static const luaL_Reg base_funcs[] = {
   /* placeholders */
   {"_G", NULL},
   {"_VERSION", NULL},
-  {NULL, NULL}
+  {NULL, NULL}//注意最后一个元素一定是(NULL,NULL)
 };
 
 
 LUAMOD_API int luaopen_base (lua_State *L) {
   /* open lib into global table */
   lua_pushglobaltable(L);
-  luaL_setfuncs(L, base_funcs, 0);
+  luaL_setfuncs(L, base_funcs, 0);//将base_funcs中的基础函数插入到global table中,
+
+  //此时栈顶情况为[global table][top]
+  
   /* set global _G */
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "_G");

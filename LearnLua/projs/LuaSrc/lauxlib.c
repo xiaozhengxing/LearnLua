@@ -934,11 +934,11 @@ LUALIB_API void luaL_openlib (lua_State *L, const char *libname,
 *  执行前: 栈情况[table][upvalue]...[upvalue][top]
 *  执行后: 栈情况[table][top]
 *  nup: 栈中的upvalue个数
-*  l: 数组, 每个元素为(name, c函数)
+*  l: 数组, 每个元素为(name, c函数),注意最后一个元素一定是(NULL,NULL)
 */
 LUALIB_API void luaL_setfuncs (lua_State *L, const luaL_Reg *l, int nup) {
   luaL_checkstack(L, nup, "too many upvalues");
-  for (; l->name != NULL; l++) {  /* fill the table with given functions */
+  for (; l->name != NULL; l++) {  /* fill the table with given functions,注意最后一个元素一定是(NULL,NULL) */
     int i;
     for (i = 0; i < nup; i++)  /* copy upvalues to the top */
       lua_pushvalue(L, -nup);
